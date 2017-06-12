@@ -1,0 +1,17 @@
+@mixin widgets-button-status-widget {
+
+  .current-status-widget {
+    float: left;
+    text-align: center;
+    //width: 30%;
+    line-height: 1.35;
+    margin: 20px;
+
+    > tbody {
+      display: inline-block;
+    }
+
+  }
+
+}
+
