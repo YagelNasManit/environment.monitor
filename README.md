@@ -13,3 +13,18 @@ For example this view and mutch more:
 - current environments status dashboard
 - environment last 24h status dashboard
 - current environment status service
+
+
+
+#add environment monitor artefacts repository with maven:
+
+<repositories>
+    <repository>
+        <id>Cybercat-mvn-repo</id>
+        <url>https://raw.github.com/YagelNasManit/Cybercat/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
