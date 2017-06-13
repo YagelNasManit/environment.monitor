@@ -17,7 +17,8 @@ For example this view and mutch more:
 
 
 #add environment monitor artefacts repository with maven:
-
+```xml
+...
 <repositories>
     <repository>
         <id>Cybercat-mvn-repo</id>
@@ -28,3 +29,5 @@ For example this view and mutch more:
         </snapshots>
     </repository>
 </repositories>
+...
+```
