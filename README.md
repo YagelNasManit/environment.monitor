@@ -22,7 +22,7 @@ For example this view and mutch more:
 <repositories>
     <repository>
         <id>Cybercat-mvn-repo</id>
-        <url>https://raw.github.com/YagelNasManit/Cybercat/mvn-repo/</url>
+        <url>https://raw.github.com/YagelNasManit/environment.monitor/mvn-repo/</url>
         <snapshots>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
