@@ -33,7 +33,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
 
   private ScheduleRunnerImpl(ClassLoader classLoader) {
     this.classLoader = classLoader;
-    JarScanner jarScanner = new JarScanner(classLoader, "/Users/oleh_kovalyshyn/Self_Development/Github/EnvMonitor/source/plugin-extension/target/plugin-extension-1.0-SNAPSHOT.jar");
+    JarScanner jarScanner = new JarScanner(classLoader, this.getPluginPath());
     jarScanner.scanJar();
     this.collectorLoader = new ProxyCollectorLoader(jarScanner.getStatusCollectorLoader());
     this.config = jarScanner.getMonitorConfig();
@@ -116,6 +116,14 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
         }
       }
     }
+  }
+
+  private String getPluginPath() {
+    String location = System.getProperty("plugin.jar.location");
+    if (location == null)
+      throw new ScheduleRunnerException("Plugin jar path should be provided, pls define system property: plugin.jar.location");
+
+    return location;
   }
 
 
