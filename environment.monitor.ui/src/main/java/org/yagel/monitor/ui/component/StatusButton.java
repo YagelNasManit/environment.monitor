@@ -37,7 +37,7 @@ public class StatusButton extends Button {
   public StatusButton(Resource resource) {
     super(resource.getName());
     this.resource = resource;
-    setDescription(this.resource.getName());
+    setCaption(this.resource.getName());
 
   }
 
@@ -52,6 +52,12 @@ public class StatusButton extends Button {
    */
   public void update(ResourceStatus resource) {
     setStateIcon(resource.getStatus());
+  }
+
+  public void update(Resource resource, ResourceStatus resourceStatus) {
+    this.update(resourceStatus);
+    this.resource = resource;
+    setCaption(this.resource.getName());
   }
 
   /**

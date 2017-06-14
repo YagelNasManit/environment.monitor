@@ -8,15 +8,16 @@ import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.UpdateStatusListener;
 import org.yagel.monitor.mongo.MongoConnector;
+import org.yagel.monitor.resource.ResourceImpl;
 import org.yagel.monitor.ui.common.AbstractMultipleResourcesWidget;
 import org.yagel.monitor.ui.component.StatusButton;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EnvironmentStatusWidget extends AbstractMultipleResourcesWidget implements UpdateStatusListener {
 
@@ -40,16 +41,23 @@ public class EnvironmentStatusWidget extends AbstractMultipleResourcesWidget imp
 
     this.widgetLayout = new VerticalLayout();
 
-    Set<Resource> resources = loadResources();
     initWidgetHeader();
-    initWidgetBody(resources);
 
-    List<ResourceStatus> lastStates = loadLastResourceStates();
-    reloadWidgetData(lastStates);
+    this.resourcesToDisplay = loadResources();
 
+    if (resourcesToDisplay.size() == 0) {
+      resourcesToDisplay = resourcesToDisplayId.stream().map(s -> new ResourceImpl(s, null)).collect(Collectors.toSet());
+      initWidgetBody(resourcesToDisplay);
+    } else {
+      initWidgetBody(resourcesToDisplay);
+
+      List<ResourceStatus> lastStates = loadLastResourceStates();
+      loadWidgetData(lastStates);
+    }
     this.setContent(widgetLayout);
 
   }
+
 
 
   private void initWidgetHeader() {
@@ -78,9 +86,16 @@ public class EnvironmentStatusWidget extends AbstractMultipleResourcesWidget imp
   }
 
 
-  private void reloadWidgetData(List<ResourceStatus> lastStates) {
-    for (ResourceStatus resource : lastStates) {
-      controls.get(resource.getResourceId()).update(resource);
+  private void loadWidgetData(List<ResourceStatus> resourceStatuses) {
+    for (ResourceStatus status : resourceStatuses)
+      controls.get(status.getResourceId()).update(status);
+  }
+
+  private void reloadWidgetData(Map<Resource, ResourceStatus> lastStates) {
+
+    for (Map.Entry<Resource, ResourceStatus> resourceStatus : lastStates.entrySet()) {
+      StatusButton statusButton = controls.get(resourceStatus.getKey().getId());
+      statusButton.update(resourceStatus.getKey(), resourceStatus.getValue());
     }
   }
 
@@ -109,7 +124,7 @@ public class EnvironmentStatusWidget extends AbstractMultipleResourcesWidget imp
 
   @Override
   public void update(Map<Resource, ResourceStatus> lastChangedStatus) {
-    reloadWidgetData(new ArrayList<>(lastChangedStatus.values()));
+    reloadWidgetData(lastChangedStatus);
     refreshUpdatedDate();
   }
 
