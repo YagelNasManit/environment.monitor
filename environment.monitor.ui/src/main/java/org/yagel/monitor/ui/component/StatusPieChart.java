@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.text.NumberFormat;
 import java.util.Map;
 
+@Deprecated
 public class StatusPieChart {
 
   public StatusPieChart() {

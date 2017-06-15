@@ -81,6 +81,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.byteowls</groupId>
+            <artifactId>vaadin-chartjs</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.yagel</groupId>
             <artifactId>environment.monitor.runner</artifactId>
             <version>${project.version}</version>

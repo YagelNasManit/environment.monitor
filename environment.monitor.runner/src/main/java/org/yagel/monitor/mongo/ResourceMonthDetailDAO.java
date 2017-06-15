@@ -1,8 +1,9 @@
 package org.yagel.monitor.mongo;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.yagel.monitor.ResourceStatus;
@@ -20,7 +21,7 @@ public class ResourceMonthDetailDAO {
 
   private final static String COLLECTION_NAME = "ResourceMonthDetail%s";
   private MongoDatabase mongoDatabase;
-  private MongoCollection thisCollection;
+  private MongoCollection<Document> thisCollection;
   private int thisDate = -1;
 
   public ResourceMonthDetailDAO(MongoDatabase mongoDatabase) {
@@ -73,12 +74,14 @@ public class ResourceMonthDetailDAO {
 
   public synchronized Map<String, Map<Status, Integer>> getAggregatedStatuses(String environmentName, Date from, Date to) {
     switchCollection(from);
-
-    MongoIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
-        Document.parse("{$match:{'environmentName':'Local'}}"),
+    AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
+        Aggregates.match(new Document("environmentName", environmentName).append("updated", new Document("$gte", from).append("$lte", to))),
         Document.parse("{$group: {'_id':{ 'resId': '$resourceId','status':'$statusOrdinal'},'total':{ '$sum' :1}}}"),
         Document.parse("{$group: {'_id':'$_id.resId','statuses': {'$push': {'statusOrdinal':'$_id.status', 'total': '$total'}}}}")
+
     ));
+
+
 
     Map<String, Map<Status, Integer>> aggStatuses = new HashMap<>();
 

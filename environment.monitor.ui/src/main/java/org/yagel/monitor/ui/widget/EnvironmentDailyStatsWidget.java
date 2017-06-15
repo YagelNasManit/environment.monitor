@@ -6,7 +6,7 @@ import org.yagel.monitor.Resource;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.resource.Status;
 import org.yagel.monitor.ui.common.AbstractMultipleResourcesWidget;
-import org.yagel.monitor.ui.component.StatusPieChart;
+import org.yagel.monitor.ui.component.JChartStatusPieChart;
 import org.yagel.monitor.utils.DataUtils;
 
 import java.util.Date;
@@ -58,7 +58,7 @@ public class EnvironmentDailyStatsWidget extends AbstractMultipleResourcesWidget
 
   private Component initChart(String resourceId, Map<Status, Integer> statuses) {
     Resource resource = MongoConnector.getInstance().getResourceDAO().find(resourceId);
-    return new StatusPieChart().createChart(resource.getName(), statuses);
+    return new JChartStatusPieChart().createChart(resource.getName(), statuses);
   }
 
 

@@ -30,7 +30,7 @@ public class ResourceMonthDetailDAOTest {
   public void testResourceMonthDetailDAOCount() throws Exception {
     ResourceMonthDetailDAO monthDetailDAO = MongoConnector.getInstance().getMonthDetailDAO();
 
-    long statusCount = monthDetailDAO.getStatusCount("Local", "Google", Status.Unavailable, DataUtils.getYesterday(new Date()), new Date());
+    long statusCount = monthDetailDAO.getStatusCount("test", "mock", Status.Unavailable, DataUtils.getYesterday(new Date()), new Date());
     Assert.assertTrue(statusCount > 0);
 
   }
@@ -46,9 +46,15 @@ public class ResourceMonthDetailDAOTest {
     Date from = calendar.getTime();
 
     Map<String, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses("Local", from, new Date());
+    Map<String, Map<Status, Integer>> states1 = monthDetailDAO.getAggregatedStatuses("Local2", from, new Date());
+    Map<String, Map<Status, Integer>> states2 = monthDetailDAO.getAggregatedStatuses("Local3", from, new Date());
+
 
     Assert.assertNotNull(states);
+    Assert.assertNotEquals(states, states1);
+    Assert.assertNotEquals(states1, states2);
     Assert.assertTrue(states.size() > 0);
+
 
   }
 }
