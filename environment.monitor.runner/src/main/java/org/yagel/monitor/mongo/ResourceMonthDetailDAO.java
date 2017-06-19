@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.resource.Status;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ResourceMonthDetailDAO {
@@ -94,4 +96,18 @@ public class ResourceMonthDetailDAO {
   }
 
 
+  public List<ResourceStatus> getStatuses(String environmentName, String resourceId, Date from, Date to) {
+    switchCollection(from);
+
+    return thisCollection.find(Filters.and(
+        Filters.eq("environmentName", environmentName),
+        Filters.gte("updated", from),
+        Filters.lte("updated", to),
+        Filters.eq("resourceId", resourceId))
+    )
+        .sort(Sorts.ascending("updated"))
+        .map(DocumentMapper::resourceStatusFromDocument)
+        .into(new ArrayList<>());
+
+  }
 }

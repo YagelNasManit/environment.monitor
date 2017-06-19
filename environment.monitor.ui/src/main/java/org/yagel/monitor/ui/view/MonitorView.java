@@ -5,7 +5,8 @@ import com.vaadin.navigator.View;
 public enum MonitorView {
 
   ENVIRONMENTS_STATUS("envs_current_status", CurrentEnvironmentsStatusView.class),
-  ENVIRONMENT_DAYLY_STATUS("env_daily_status", EnvironmentDailyStatusView.class);
+  ENVIRONMENT_DAYLY_STATUS("env_daily_status", EnvironmentDailyStatusView.class),
+  RESOURCE_DETAILS_VIEW("resource_details", ResourceDetailsView.class);
 
   private final String viewName;
   private final Class<? extends View> viewClass;
