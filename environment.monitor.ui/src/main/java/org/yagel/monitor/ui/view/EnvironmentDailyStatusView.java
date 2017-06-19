@@ -49,6 +49,7 @@ public class EnvironmentDailyStatusView extends HorizontalLayout implements View
     // add and configure widgets
     horizontalLayout.addComponent(statusWidget.compose());
     horizontalLayout.addComponent(dailyStatsWidget.compose());
+
     horizontalLayout.setExpandRatio(statusWidget, 1);
     horizontalLayout.setExpandRatio(dailyStatsWidget, 4);
 

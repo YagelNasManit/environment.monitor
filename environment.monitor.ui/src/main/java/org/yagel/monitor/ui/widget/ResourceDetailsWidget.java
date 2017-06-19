@@ -63,8 +63,7 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
 
   private List<ResourceStatus> loadResourceDBStatuses(LocalDateTime forDay) {
 
-    // todo ger rid of  calculate midnight
-    Date dayStart = DataUtils.asDate(forDay.toLocalDate().atTime(LocalTime.MIN));//DataUtils.calculateMidnight(DataUtils.asDate(forDay), false);
+    Date dayStart = DataUtils.asDate(forDay.toLocalDate().atTime(LocalTime.MIN));
 
     Date currentDate;
     if (DataUtils.isToday(forDay))
