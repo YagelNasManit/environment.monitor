@@ -24,14 +24,12 @@ public class DataUtils {
     return calendar.get(Calendar.YEAR) * 100 + calendar.get(Calendar.MONTH);
   }
 
-
-
   public static Date getYesterday(Date currentDate) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(currentDate);
-    calendar.add(Calendar.DAY_OF_MONTH, -1);
-    return calendar.getTime();
+    return DateUtils.addDays(currentDate, -1);
+  }
 
+  public static boolean isToday(LocalDateTime localDateTime) {
+    return localDateTime.getDayOfYear() == LocalDateTime.now().getDayOfYear();
   }
 
   public static Date asDate(LocalDate localDate) {
@@ -48,10 +46,6 @@ public class DataUtils {
 
   public static LocalDateTime asLocalDateTime(Date date) {
     return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-  }
-
-  public static boolean isToday(LocalDateTime localDateTime) {
-    return localDateTime.getDayOfYear() == LocalDateTime.now().getDayOfYear();
   }
 
 
