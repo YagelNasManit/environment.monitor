@@ -8,10 +8,8 @@ import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
-import org.yagel.monitor.resource.ResourceStatusImpl;
 import org.yagel.monitor.resource.Status;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +28,9 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
   public void setUp() throws Exception {
     monthDetailDAO = MongoConnector.getInstance().getMonthDetailDAO();
 
+    String baseEnvName = this.getClass().getName();
+    environemntNames = new String[]{baseEnvName + "1", baseEnvName + "2"};
 
-    environemntNames = new String[]{"ResourceMonthDetailDAOTest1", "ResourceMonthDetailDAOTest2", "ResourceMonthDetailDAOTest3"};
     endDate = new Date();
     startDate = DateUtils.addDays(endDate, -1);
 
@@ -43,15 +42,9 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
 
     for (String environmentName : environemntNames) {
 
-      List<ResourceStatus> statusesOnline = new ArrayList<>();
-      List<ResourceStatus> statusesUnknown = new ArrayList<>();
-      List<ResourceStatus> statusesUnavailable = new ArrayList<>();
-
-      for (int i = 0; i < 100; i++) {
-        statusesOnline.add(new ResourceStatusImpl(resource.getId(), Status.Online, rndDate(startDate, endDate)));
-        statusesUnavailable.add(new ResourceStatusImpl(resource.getId(), Status.Unavailable, rndDate(startDate, endDate)));
-        statusesUnknown.add(new ResourceStatusImpl(resource.getId(), Status.Unknown, rndDate(startDate, endDate)));
-      }
+      List<ResourceStatus> statusesOnline = generateN(100, () -> rndResStatus(resource, Status.Online, rndDate(startDate, endDate)));
+      List<ResourceStatus> statusesUnknown = generateN(100, () -> rndResStatus(resource, Status.Unavailable, rndDate(startDate, endDate)));
+      List<ResourceStatus> statusesUnavailable = generateN(100, () -> rndResStatus(resource, Status.Unknown, rndDate(startDate, endDate)));
 
       monthDetailDAO.insert(environmentName, statusesOnline);
       monthDetailDAO.insert(environmentName, statusesUnavailable);
@@ -59,9 +52,9 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
     }
   }
 
-  @Test(dependsOnMethods = {"testResourceMonthDetailDAOCount", "testResourceMonthDetailDAOGetAggregatedStatuses"})
+  @Test
   public void testInsertFindSingle() throws Exception {
-    ResourceStatus resourceStatus = rndResStatus();
+    ResourceStatus resourceStatus = rndResStatus(rndResource());
     monthDetailDAO.insert(environemntNames[0], resourceStatus);
 
     List<ResourceStatus> statuses = monthDetailDAO.getStatuses(environemntNames[0], resourceStatus.getResourceId(), resourceStatus.getUpdated(), resourceStatus.getUpdated());
@@ -92,23 +85,20 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
   @Test
   public void testResourceMonthDetailDAOGetAggregatedStatuses() throws Exception {
 
-    Map<String, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses(environemntNames[0], startDate, endDate);
-    Map<String, Map<Status, Integer>> states1 = monthDetailDAO.getAggregatedStatuses(environemntNames[1], startDate, endDate);
-    Map<String, Map<Status, Integer>> states2 = monthDetailDAO.getAggregatedStatuses(environemntNames[2], startDate, endDate);
+    for (String env : environemntNames) {
+
+      Map<String, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses(env, startDate, endDate);
+
+      Assert.assertNotNull(states);
+      Assert.assertTrue(states.size() > 0);
+      Assert.assertTrue(states.size() > 0);
 
 
-    Assert.assertNotNull(states);
-    Assert.assertEquals(states, states1);
-    Assert.assertEquals(states1, states2);
-    Assert.assertTrue(states.size() > 0);
+      Map<Status, Integer> resourceStates = states.get(resource.getId());
 
-    Assert.assertEquals(states.keySet().size(), 1);
-    Assert.assertEquals(states1.keySet().size(), 1);
-    Assert.assertEquals(states2.keySet().size(), 1);
-
-    Assert.assertEquals(states.keySet().size(), 1);
-    Assert.assertEquals(states1.keySet().size(), 1);
-    Assert.assertEquals(states2.keySet().size(), 1);
+      Assert.assertEquals(resourceStates.keySet().size(), 3);
+      resourceStates.forEach((Status status, Integer value) -> Assert.assertEquals((int) value, 100));
+    }
 
 
 

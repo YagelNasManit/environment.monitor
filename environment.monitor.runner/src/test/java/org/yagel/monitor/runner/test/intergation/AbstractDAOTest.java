@@ -31,6 +31,10 @@ public class AbstractDAOTest {
     return new ResourceStatusImpl(resource.getId(), rndStatus(), new Date());
   }
 
+  protected ResourceStatus rndResStatus(Resource resource, Status status, Date updated) {
+    return new ResourceStatusImpl(resource.getId(), status, updated);
+  }
+
 
   protected Status rndStatus() {
     return Status.values()[RandomUtils.nextInt(0, Status.values().length)];
