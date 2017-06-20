@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor)
 # environment.monitor
 
 Is a tool for continuous gathering, aggregation and representation of environment health, that provides access to environment status information via both UI dashboards & REST API
