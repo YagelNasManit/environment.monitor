@@ -8,11 +8,11 @@ public enum Status {
   @XmlEnumValue("Online")
   Online(0), // s0
   @XmlEnumValue("BorderLine")
-  BorderLine(0),
+  BorderLine(1), // s1
   @XmlEnumValue("Unavailable")
-  Unavailable(1), // s1
+  Unavailable(2), // s2
   @XmlEnumValue("Unknown")
-  Unknown(2); // s2
+  Unknown(3); // s3
 
   int seriaNumber;
 

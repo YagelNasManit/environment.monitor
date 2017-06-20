@@ -1,5 +1,6 @@
 package org.yagel.monitor.resource;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.yagel.monitor.ResourceStatus;
 
 import java.util.Date;
@@ -67,4 +68,15 @@ public class ResourceStatusImpl implements ResourceStatus {
         getStatus() == that.getStatus() &&
         Objects.equals(getUpdated(), that.getUpdated());
   }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("resourceId", resourceId)
+        .append("status", status)
+        .append("updated", updated)
+        .toString();
+  }
+
+
 }

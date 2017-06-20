@@ -7,7 +7,6 @@ import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,8 +14,7 @@ import java.util.stream.Collectors;
 public class LastStatusDAOTest extends AbstractDAOTest {
 
   private ResourceLastStatusDAO lastStatusDAO;
-  private List<ResourceStatus> statusList;
-  private String environmentName = "LastStatusDAOTest";
+  private String environmentName = this.getClass().getSimpleName();
   private int resourcesCount = 5;
 
   @BeforeClass
@@ -24,21 +22,15 @@ public class LastStatusDAOTest extends AbstractDAOTest {
     lastStatusDAO = MongoConnector.getInstance().getLastStatusDAO();
   }
 
-  @BeforeClass
-  public void buildStatusList() {
-    statusList = Collections.nCopies(resourcesCount, rndResStatus());
-  }
-
   @Test
   public void testInsertFindMultiple() throws Exception {
-
+    List<ResourceStatus> statusList = generateN(resourcesCount, this::rndResStatus);
     lastStatusDAO.insert(environmentName, statusList);
-
     List<ResourceStatus> dbStatusList = lastStatusDAO.find(environmentName);
 
 
     Assert.assertTrue(dbStatusList.size() == resourcesCount);
-    Assert.assertTrue(statusList.containsAll(dbStatusList));
+    Assert.assertEquals(statusList, dbStatusList);
 
 
 
@@ -46,16 +38,14 @@ public class LastStatusDAOTest extends AbstractDAOTest {
 
   @Test(dependsOnMethods = "testInsertFindMultiple")
   public void testInsertFindMultipleWithIds() throws Exception {
-
-
+    List<ResourceStatus> statusList = generateN(resourcesCount, this::rndResStatus);
     lastStatusDAO.insert(environmentName, statusList);
 
     Set<String> resourceIds = statusList.stream().map(ResourceStatus::getResourceId).collect(Collectors.toSet());
-
     List<ResourceStatus> dbStatusList = lastStatusDAO.find(environmentName, resourceIds);
 
 
-    Assert.assertTrue(dbStatusList.size() == resourcesCount);
+    Assert.assertEquals(dbStatusList.size(), statusList.size());
     Assert.assertEquals(statusList, dbStatusList);
 
 

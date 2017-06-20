@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons-lang3.version>3.6</commons-lang3.version>
+
         <mongo.java.version>3.4.0</mongo.java.version>
         <root.dir>${project.parent.basedir}</root.dir>
     </properties>
@@ -40,9 +40,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.yagel</groupId>
             <artifactId>environment.monitor.plugins</artifactId>

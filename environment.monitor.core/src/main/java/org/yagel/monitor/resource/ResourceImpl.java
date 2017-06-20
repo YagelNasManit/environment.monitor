@@ -1,5 +1,6 @@
 package org.yagel.monitor.resource;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.yagel.monitor.Resource;
 
 import java.util.Objects;
@@ -42,5 +43,13 @@ public class ResourceImpl implements Resource {
     ResourceImpl resource = (ResourceImpl) o;
     return Objects.equals(getId(), resource.getId()) &&
         Objects.equals(getName(), resource.getName());
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("id", id)
+        .append("name", name)
+        .toString();
   }
 }
