@@ -25,47 +25,39 @@ public class ResourceDAOTest extends AbstractDAOTest {
 
   @Test
   public void testInsertFindSingle() throws Exception {
+    Resource resource = rndResource();
+    resourceDAO.insert(resource);
+    Resource dbResource = resourceDAO.find(resource.getId());
+
+    Assert.assertEquals(resource, dbResource);
+    Assert.assertNotNull(dbResource);
+    Assert.assertEquals(dbResource.getId(), resource.getId());
+    Assert.assertNotNull(dbResource.getName());
+
+  }
+
+  @Test
+  public void testResourceUpsert() {
     // check inserted
     Resource resource = rndResource();
     resourceDAO.insert(resource);
+    Resource resourceUpdated = new ResourceImpl(resource.getId(), "MOCK RESOURCE FOR TEST UPDATED");
+    resourceDAO.insert(resourceUpdated);
+    Resource dbResourceUpdated = resourceDAO.find(resource.getId());
 
-    Resource dbResource = resourceDAO.find(resource.getId());
-    Assert.assertEquals(resource, dbResource);
-
-    // check description changed
-    resource = new ResourceImpl(mockResoureId, "MOCK RESOURCE FOR TEST UPDATED");
-    resourceDAO.insert(resource);
-    Assert.assertNotEquals(resource, dbResource);
-
-    // check description changed properly
-    dbResource = resourceDAO.find(mockResoureId);
-    Assert.assertEquals(resource, dbResource);
-
-
+    Assert.assertNotEquals(resource, resourceUpdated);
+    Assert.assertEquals(resourceUpdated, dbResourceUpdated);
   }
+
 
   @Test(dependsOnMethods = "testInsertFindSingle")
   public void testInsertFindMultiple() {
+    Set<Resource> mockResources = new HashSet<>(generateN(5, this::rndResource));
+    Set<String> mockResourcesIds = mockResources.stream().map(Resource::getId).collect(Collectors.toSet());
 
-    // build resources to be inserted
-    Set<Resource> mockResourcesSet = new HashSet<>();
-    for (int i = 0; i < 5; i++)
-      mockResourcesSet.add(
-          rndResource()
-      );
+    resourceDAO.insert(mockResources);
+    Set<Resource> dbResourcesSet = resourceDAO.find(mockResourcesIds);
 
-    // check if inserted
-    resourceDAO.insert(mockResourcesSet);
-    Set<Resource> dbResourcesSet = resourceDAO.find(mockResourcesSet.stream().map(Resource::getId).collect(Collectors.toSet()));
-    Assert.assertEquals(mockResourcesSet, dbResourcesSet);
-  }
-
-  @Test(dependsOnMethods = "testInsertFindSingle")
-  public void testFindSingle() throws Exception {
-    Resource resource = resourceDAO.find(mockResoureId);
-
-    Assert.assertNotNull(resource);
-    Assert.assertEquals(resource.getId(), mockResoureId);
-    Assert.assertNotNull(resource.getName());
+    Assert.assertEquals(mockResources, dbResourcesSet);
   }
 }

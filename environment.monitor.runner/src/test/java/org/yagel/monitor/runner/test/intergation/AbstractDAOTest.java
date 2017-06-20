@@ -8,6 +8,10 @@ import org.yagel.monitor.resource.ResourceStatusImpl;
 import org.yagel.monitor.resource.Status;
 
 import java.util.Date;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AbstractDAOTest {
 
@@ -38,5 +42,11 @@ public class AbstractDAOTest {
 
     long diff = endTime - startTime + 1;
     return new Date(startTime + (long) (Math.random() * diff));
+  }
+
+
+  protected <T> List<T> generateN(int copies, Supplier<T> supplier) {
+    return Stream.generate(supplier).limit(copies).collect(Collectors.toList());
+
   }
 }
