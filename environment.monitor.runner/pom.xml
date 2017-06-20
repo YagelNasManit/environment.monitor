@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons-lang3.version>3.1</commons-lang3.version>
+        <commons-lang3.version>3.6</commons-lang3.version>
         <mongo.java.version>3.4.0</mongo.java.version>
         <root.dir>${project.parent.basedir}</root.dir>
     </properties>
@@ -76,6 +76,50 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <excludes>org.yagel.monitor.runner.test.unit.***</excludes>
+                </configuration>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <includes>org.yagel.monitor.runner.test.intergation.**</includes>
+                </configuration>
+            </plugin>
+
+            <!--TODO move mongo & pluin versions into properties-->
+            <plugin>
+                <groupId>com.github.joelittlejohn.embedmongo</groupId>
+                <artifactId>embedmongo-maven-plugin</artifactId>
+                <version>0.3.4</version>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <!--<port>${embedmongo.port}</port>-->
+                            <version>3.0.6</version>
+                            <databaseDirectory>${project.build.directory}/mongotest</databaseDirectory>
+                            <bindIp>localhost</bindIp>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

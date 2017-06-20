@@ -1,4 +1,4 @@
-package org.yagel;
+package org.yagel.monitor.runner.test.unit;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

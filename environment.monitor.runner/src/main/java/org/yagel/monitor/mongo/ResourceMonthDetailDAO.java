@@ -47,7 +47,6 @@ public class ResourceMonthDetailDAO {
   }
 
   public synchronized void insert(String environmentName, ResourceStatus resourceStatus) {
-    //ResourceMonthDetail r = new ResourceMonthDetail(environmentName, resource);
     switchCollection(resourceStatus.getUpdated());
     thisCollection.insertOne(DocumentMapper.resourceStatusToDocument(environmentName, resourceStatus));
   }
@@ -60,9 +59,7 @@ public class ResourceMonthDetailDAO {
   }
 
   public synchronized long getStatusCount(String environmentName, String resourceId, Status status, Date from, Date to) {
-    //int toDate = DataUtils.joinYearMonthValues(from);
     switchCollection(from);
-
 
     return thisCollection.count(Filters.and(
         Filters.eq("statusOrdinal", status.getSeriaNumber()),
@@ -88,7 +85,7 @@ public class ResourceMonthDetailDAO {
     Map<String, Map<Status, Integer>> aggStatuses = new HashMap<>();
 
     for (Document document : documents) {
-      aggStatuses.put(document.getString("_id").toString(), DocumentMapper.aggregatedResourceStatusFromDocument(document));
+      aggStatuses.put(document.getString("_id"), DocumentMapper.aggregatedResourceStatusFromDocument(document));
     }
 
     return aggStatuses;
