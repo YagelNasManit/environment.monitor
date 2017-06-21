@@ -20,7 +20,7 @@ Resource availability details | Resource Status Logs
 
 
 # Quickstart
-5 minutest quick start of environment monitor with test plugin[[Test Environment Monitor Setup | https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example ]]
+5 minutest quick start of environment monitor with test plugin [Test Environment Monitor Setup] (https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example)
 
 # Current Functionality (1.0-SNAPSHOT)
 - current environments status dashboard
