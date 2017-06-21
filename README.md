@@ -20,9 +20,10 @@ Resource availability details | Resource Status Logs
 
 
 # Quickstart
-5 minutest quick start of environment monitor with test plugin 
+5 minutest quick start of environment monitor with test plugin:
 [Test Environment Monitor Setup](https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example)
-
+Quick start with embedded jetty:
+[Start With Jetty](https://github.com/YagelNasManit/environment.monitor/wiki/Quick-Start-On-Embedded-Container)
 # Current Functionality (1.0-SNAPSHOT)
 - current environments status dashboard
 - environment last 24h status dashboard
