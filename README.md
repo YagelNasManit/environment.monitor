@@ -5,8 +5,15 @@
 
 Is a tool for continuous gathering, aggregation and representation of environment health, that provides access to environment status information via both UI dashboards & REST API
 
+
 For example this view and mutch more:
-![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png)
+
+Current Environment states | Environment daily stats  
+--- | --- 
+![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png)| ![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/env_daily_status_dashboard.png)
+STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard.png)|https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard_logs.png
+
+
 
 
 # Quickstart
