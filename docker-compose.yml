@@ -1,0 +1,17 @@
+version: '2.1'
+services:
+  env_monitor:
+    build:
+       context: .
+       dockerfile: Dockerfile
+    volumes:
+       - .:/app
+    # depends_on:
+      # - mongodb
+    # ports:
+    #   - "3000:3000"
+
+  # mongodb:
+  #   image: mongo:3.4
+  #   ports:
+  #       - "27017:27017"
