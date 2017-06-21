@@ -10,8 +10,11 @@ For example this view and mutch more:
 
 Current Environment states | Environment daily stats  
 --- | --- 
-![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png)| ![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/env_daily_status_dashboard.png)
-STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard.png)|https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard_logs.png
+![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png) | ![ENVIRONMENT DAILY STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/env_daily_status_dashboard.png)
+
+Resource availability details | Resource Status Logs  
+--- | --- 
+![RESOURCE DETAILS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard.png)| ![RESOURCE LOGS](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard_logs.png)
 
 
 
