@@ -1,12 +1,13 @@
 package org.yagel.monitor.ui.widget;
 
 import com.byteowls.vaadin.chartjs.ChartJs;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.ui.common.AbstractSingleResourceWidget;
 import org.yagel.monitor.ui.component.ResourceDetailsChart;
+import org.yagel.monitor.ui.component.ResourceDetailsTable;
 import org.yagel.monitor.utils.DataUtils;
 
 import java.time.LocalDateTime;
@@ -17,8 +18,9 @@ import java.util.List;
 public class ResourceDetailsWidget extends AbstractSingleResourceWidget implements SelectViewRangeWidget.SelectionChangedListener {
 
 
-  private VerticalLayout widgetLayout;
+  private HorizontalLayout widgetLayout;
   private ChartJs detailsChart;
+  private Grid detailsTable;
   private LocalDateTime displayDate;
 
   public ResourceDetailsWidget(String environmentName, String resourceToDisplayId, LocalDateTime displayDate) {
@@ -33,13 +35,17 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
 
     List<ResourceStatus> statusList = loadResourceDBStatuses(displayDate);
     detailsChart = new ResourceDetailsChart(statusList).initChart();
+    detailsTable = new ResourceDetailsTable().loadTable();
     detailsChart.setWidth(100, Unit.PERCENTAGE);
 
-    widgetLayout = new VerticalLayout();
+    widgetLayout = new HorizontalLayout();
     widgetLayout.setSizeFull();
+    widgetLayout.setSpacing(true);
+    widgetLayout.setMargin(true);
 
     widgetLayout.addComponent(detailsChart);
-    widgetLayout.setComponentAlignment(detailsChart, Alignment.MIDDLE_CENTER);
+    widgetLayout.addComponent(detailsTable);
+    widgetLayout.setExpandRatio(detailsChart, 1f);
 
 
     this.setContent(widgetLayout);
