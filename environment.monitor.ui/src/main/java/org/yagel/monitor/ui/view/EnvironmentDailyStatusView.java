@@ -14,6 +14,8 @@ public class EnvironmentDailyStatusView extends HorizontalLayout implements View
 
   public EnvironmentDailyStatusView() {
     this.setSizeFull();
+    this.setSpacing(true);
+    this.setMargin(true);
   }
 
   @Override
