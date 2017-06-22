@@ -31,7 +31,7 @@ public class JChartStatusPieChart {
         .responsive(true)
         .title()
         .display(true)
-        .text("Resource Availability for: " + resourceName + "  Time: XX:YY")
+        .text("Resource: " + resourceName + " Time: XX:YY")
         .and()
         .animation()
         //.animateScale(true)
