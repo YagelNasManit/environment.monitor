@@ -1,4 +1,4 @@
-package org.yagel.monitor.runner.test.intergation;
+package org.yagel.monitor.runner.test.intergation.dao;
 
 import org.testng.annotations.Test;
 import org.yagel.monitor.ScheduleRunner;

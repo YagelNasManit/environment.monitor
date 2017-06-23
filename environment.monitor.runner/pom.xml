@@ -18,7 +18,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <mongo.java.version>3.4.0</mongo.java.version>
         <root.dir>${project.parent.basedir}</root.dir>
     </properties>
@@ -94,6 +93,14 @@
                     <includes>
                         <include>org.yagel.monitor.runner.test.intergation.**</include>
                     </includes>
+                    <systemProperties>
+                        <property>
+                            <name>plugin.jar.location</name>
+                            <value>
+                                ${root.dir}/environment.monitor.test.extension/target/environment.monitor.test.extension-${project.version}.jar
+                            </value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
 

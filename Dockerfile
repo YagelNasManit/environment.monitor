@@ -19,4 +19,4 @@ VOLUME "$USER_HOME_DIR/.m2"
 
 WORKDIR app
 CMD mvn install -DskipTests=true -Dembedmongo.skip
-CMD java -version && java -Dmongo.connect.uri=$MONGO_URL -Dplugin.jar.location="environment.monitor.test.extension-1.0-SNAPSHOT.jar" -jar  "environment.monitor.ui/target/environment.monitor.ui-1.0-SNAPSHOT-jetty-console.war"  --headless
+CMD java -version && java -Dmongo.connect.uri=$MONGO_URL -Dplugin.jar.location="environment.monitor.test.extension/target/environment.monitor.test.extension-1.0-SNAPSHOT.jar" -jar  "environment.monitor.ui/target/environment.monitor.ui-1.0-SNAPSHOT-jetty-console.war"  --headless

@@ -1,4 +1,4 @@
-package org.yagel.monitor.runner.test.intergation;
+package org.yagel.monitor.runner.test.intergation.dao;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.testng.Assert;
