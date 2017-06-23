@@ -35,19 +35,3 @@ Eager to fix a bug or introduce a new feature? Clone the repository and issue a 
 
 ## License
 environment.monitor is licensed under the [Apache License 2.0](https://github.com/YagelNasManit/environment.monitor/blob/master/LICENSE)
-
-## Environment monitor artefacts repository with maven:
-```xml
-...
-<repositories>
-    <repository>
-        <id>Cybercat-mvn-repo</id>
-        <url>https://raw.github.com/YagelNasManit/environment.monitor/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-</repositories>
-...
-```
