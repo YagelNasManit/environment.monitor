@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 
 public class TestAddJarToClassPath {
 
-  @Test
+  @Test(enabled = false)
   public void testLoaderIsFound() throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JAXBException {
 
 
