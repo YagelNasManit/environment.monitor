@@ -1,7 +1,7 @@
 package org.yagel.monitor.ui.widget;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.CssLayout;
 import org.yagel.monitor.Resource;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.resource.Status;
@@ -16,17 +16,18 @@ import java.util.Set;
 public class EnvironmentDailyStatsWidget extends AbstractMultipleResourcesWidget {
 
   private static final String WIDGET_TITLE = "Environment <strong> %s</strong>";
-  private VerticalLayout widgetLayout;
+  private CssLayout widgetLayout;
 
   public EnvironmentDailyStatsWidget(String environmentName, Set<String> resourcesToDisplayId) {
     super(environmentName, resourcesToDisplayId);
     setSizeFull();
+    this.addStyleName("current-status-panel");
   }
 
   @Override
   public void loadWidget() {
 
-    this.widgetLayout = new VerticalLayout();
+    this.widgetLayout = new CssLayout();
     initWidgetHeader();
     initWidgetBody();
     setContent(widgetLayout);
