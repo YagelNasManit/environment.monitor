@@ -23,24 +23,24 @@ Particular component availability over time | Resource status checks logs
 [Start With Jetty](https://github.com/YagelNasManit/environment.monitor/wiki/Quick-Start-On-Embedded-Container)
 
 
-##Documentation
+## Documentation
 -------------
 See the [Wiki](https://github.com/YagelNasManit/environment.monitor/wiki) for the available documentation
 
-##Feature Requests & Bugs
+## Feature Requests & Bugs
 -----------------------
 Found a bug or would like to see a new feature implemented? Raise an issue in the [Issue Tracker](https://github.com/YagelNasManit/environment.monitor/issues)
 
-##Contributing
+## Contributing
 -------------
 Eager to fix a bug or introduce a new feature? Clone the repository and issue a pull request
 
 
-##License
+## License
 -------
 environment.monitor is licensed under the [Apache License 2.0](https://github.com/YagelNasManit/environment.monitor/blob/master/LICENSE)
 
-##Environment monitor artefacts repository with maven:
+## Environment monitor artefacts repository with maven:
 ```xml
 ...
 <repositories>
