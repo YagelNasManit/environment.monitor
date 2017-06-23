@@ -6,12 +6,15 @@ services:
        dockerfile: Dockerfile
     volumes:
        - .:/app
-    # depends_on:
-      # - mongodb
-    # ports:
-    #   - "3000:3000"
+    depends_on:
+       - mongodb
+    environment:
+       - MONGO_URL=mongodb://mongodb:27017
+       #-Dmongo.connect.uri=mongodb://localhost:27017
+    ports:
+       - "3000:8080"
 
-  # mongodb:
-  #   image: mongo:3.4
-  #   ports:
-  #       - "27017:27017"
+  mongodb:
+    image: mongo:3.4
+    ports:
+         - "27020:27017"
