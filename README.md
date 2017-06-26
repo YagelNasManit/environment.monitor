@@ -1,7 +1,7 @@
 
 # environment.monitor
 
-[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor)
+[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor) [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 
 Is a tool for continuous gathering, aggregation and representation of environment health, that provides access to environment status information via both UI dashboards & REST API
 
