@@ -1,0 +1,6 @@
+ratings:
+   paths:
+   - "environment.monitor.api/**/*"
+   - "environment.monitor.core/**/*"
+   - "environment.monitor.runner/**/*"
+   - "environment.monitor.plugins/**/*"
