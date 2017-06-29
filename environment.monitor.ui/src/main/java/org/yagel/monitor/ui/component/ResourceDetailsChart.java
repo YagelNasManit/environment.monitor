@@ -15,19 +15,18 @@ import org.yagel.monitor.resource.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ResourceDetailsChart {
 
 
   private final Map<String, List<ResourceStatus>> statusListGrouped;
-  List<ResourceStatus> statusList;
+  //List<ResourceStatus> statusList;
 
-  public ResourceDetailsChart(List<ResourceStatus> statusList) {
-    this.statusList = statusList;
+  public ResourceDetailsChart(Map<String, List<ResourceStatus>> statusListGrouped) {
+    //this.statusList = statusList;
 
-    statusListGrouped = groupStatuses(statusList);
+    this.statusListGrouped = statusListGrouped;
   }
 
 
@@ -103,11 +102,5 @@ public class ResourceDetailsChart {
         .collect(Collectors.toList());
   }
 
-  private TreeMap<String, List<ResourceStatus>> groupStatuses(List<ResourceStatus> statusList) {
-    return statusList.stream().collect(Collectors.groupingBy(
-        status -> status.getUpdated().getHours() + ":00",
-        TreeMap::new,
-        Collectors.toList()
-    ));
-  }
+
 }

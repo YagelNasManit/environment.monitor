@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class ResourceDetailsWidget extends AbstractSingleResourceWidget implements SelectViewRangeWidget.SelectionChangedListener {
 
@@ -34,8 +37,9 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
   public void loadWidget() {
 
     List<ResourceStatus> statusList = loadResourceDBStatuses(displayDate);
-    detailsChart = new ResourceDetailsChart(statusList).initChart();
-    detailsTable = new ResourceDetailsTable().loadTable();
+    Map<String, List<ResourceStatus>> statusListGroupped = this.groupStatuses(statusList);
+    detailsChart = new ResourceDetailsChart(statusListGroupped).initChart();
+    detailsTable = new ResourceDetailsTable(statusListGroupped).loadTable();
     detailsChart.setWidth(100, Unit.PERCENTAGE);
 
     widgetLayout = new HorizontalLayout();
@@ -45,7 +49,7 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
 
     widgetLayout.addComponent(detailsChart);
     widgetLayout.addComponent(detailsTable);
-    widgetLayout.setExpandRatio(detailsChart, 1f);
+    //widgetLayout.setExpandRatio(detailsChart, 1f);
 
 
     this.setContent(widgetLayout);
@@ -55,15 +59,19 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
   public void selectionChanged(LocalDateTime date, String resourceId) {
     // removing old chart
     widgetLayout.removeComponent(detailsChart);
+    widgetLayout.removeComponent(detailsTable);
     resourceToDisplayId = resourceId;
 
     //reload new statuses
     List<ResourceStatus> statusList = loadResourceDBStatuses(date);
+    Map<String, List<ResourceStatus>> grouppedStatuses = groupStatuses(statusList);
 
     // init and configure new chart
-    this.detailsChart = new ResourceDetailsChart(statusList).initChart();
+    this.detailsChart = new ResourceDetailsChart(grouppedStatuses).initChart();
+    detailsTable = new ResourceDetailsTable(grouppedStatuses).loadTable();
     detailsChart.setWidth(100, Unit.PERCENTAGE);
     widgetLayout.addComponent(detailsChart);
+    widgetLayout.addComponent(detailsTable);
 
   }
 
@@ -79,5 +87,13 @@ public class ResourceDetailsWidget extends AbstractSingleResourceWidget implemen
 
 
     return MongoConnector.getInstance().getMonthDetailDAO().getStatuses(environmentName, resourceToDisplayId, dayStart, currentDate);
+  }
+
+  private TreeMap<String, List<ResourceStatus>> groupStatuses(List<ResourceStatus> statusList) {
+    return statusList.stream().collect(Collectors.groupingBy(
+        status -> status.getUpdated().getHours() + ":00",
+        TreeMap::new,
+        Collectors.toList()
+    ));
   }
 }
