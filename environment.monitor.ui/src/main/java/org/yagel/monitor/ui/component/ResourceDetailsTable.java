@@ -38,9 +38,9 @@ public class ResourceDetailsTable {
     grid.addColumn(DTO::getUnavailableCount).setCaption("Unavailable");
     grid.addColumn(DTO::getUnknownCount).setCaption("Unknown");
     grid.addColumn(DTO::getBorderLineCount).setCaption("Border Line");
-    grid.appendFooterRow();
-    grid.appendHeaderRow();
+    grid.addColumn(dto -> dto.availableCount + dto.unavailableCount + dto.borderLineCount + dto.unknownCount).setCaption("Total");
 
+    grid.setSizeFull();
     return grid;
 
   }

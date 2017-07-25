@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.byteowls</groupId>
             <artifactId>vaadin-chartjs</artifactId>
-            <version>0.4.0</version>
+            <version>1.0.0</version>
         </dependency>
 
 
@@ -159,7 +159,9 @@
                             <goal>createconsole</goal>
                         </goals>
                         <configuration>
-                            <backgroundImage>${basedir}/src/main/resources/monitor_header_800.png</backgroundImage>
+                            <backgroundImage>
+                                ../../../../spring.test/environment.monitor.ui2/environment.monitor.ui.frontend/src/main/environment.monitor.frontend/src/assets/monitor_header_800.png
+                            </backgroundImage>
                         </configuration>
                     </execution>
                 </executions>
