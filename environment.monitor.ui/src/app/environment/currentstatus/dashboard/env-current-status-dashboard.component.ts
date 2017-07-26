@@ -13,6 +13,9 @@ export class EnvironmentCurrentStatusDashboardComponent {
 
 
   constructor(environmentsService: EnvironmentsService) {
-    this.environments = environmentsService.getEnvironments();
+    environmentsService.getEnvironments()
+      .subscribe(
+        d => this.environments = d
+      );
   }
 }

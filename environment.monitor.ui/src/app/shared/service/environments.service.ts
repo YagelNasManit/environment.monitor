@@ -1,11 +1,14 @@
 import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class EnvironmentsService {
 
-  getEnvironments() {
-    return [
-      "Prod", "Stg", "Test", "Dev1", "Dev1", "Dev2", "Dev3", "Dev4", "Dev5", "Dev6", "Dev7"
-    ];
+  constructor(private http: HttpClient) {
+  }
+
+  getEnvironments(): Observable<string[]> {
+    return this.http.get('http://localhost:8080/environments');
   }
 }
