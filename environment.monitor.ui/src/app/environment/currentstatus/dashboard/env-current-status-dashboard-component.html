@@ -1,0 +1,16 @@
+<section class="content-header">
+  <h1>
+    Current Status Dashboard
+    <small>View Current Statuses Of Environment Components</small>
+  </h1>
+</section>
+
+<div class="content container-fluid">
+  <div class="row">
+    <div class="col-lg-3 col-xs-12 col-md-6" *ngFor="let environment of environments">
+      <current-environment-status [environment]="environment"></current-environment-status>
+    </div>
+  </div>
+</div>
+
+

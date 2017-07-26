@@ -10,6 +10,10 @@ import {AppSideBarComponent} from "./sidebar/app-sidebar.component";
 import {AppContentComponent} from "./content/app-content.component";
 import {AppLayoutComponent} from "./layout/app-layout.component";
 import {AppSidebarMenuComponent} from "./sidebar/app-sidebar-menu.component";
+import {EnvironmentCurrentStatusComponent} from "./environment/currentstatus/panel/env-current-status.component";
+import {EnvironmentCurrentStatusDashboardComponent} from "./environment/currentstatus/dashboard/env-current-status-dashboard.component";
+import {EnvironmentsService} from "./shared/service/environments.service";
+import {EnvironmentStatusService} from "./shared/service/environment-status.service";
 
 
 @NgModule({
@@ -24,13 +28,17 @@ import {AppSidebarMenuComponent} from "./sidebar/app-sidebar-menu.component";
     AppContentComponent,
     AppLayoutComponent,
 
+    // current status
+    EnvironmentCurrentStatusDashboardComponent,
+    EnvironmentCurrentStatusComponent,
+
   ],
   imports: [
     BrowserModule,
     HttpModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [EnvironmentsService, EnvironmentStatusService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
