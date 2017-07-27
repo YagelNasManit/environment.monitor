@@ -41,7 +41,7 @@ public class LastStatusDAOTest extends AbstractDAOTest {
     List<ResourceStatus> statusList = generateN(resourcesCount, this::rndResStatus);
     lastStatusDAO.insert(environmentName, statusList);
 
-    Set<String> resourceIds = statusList.stream().map(ResourceStatus::getResourceId).collect(Collectors.toSet());
+    Set<String> resourceIds = statusList.stream().map(resourceStatus -> resourceStatus.getResource().getId()).collect(Collectors.toSet());
     List<ResourceStatus> dbStatusList = lastStatusDAO.find(environmentName, resourceIds);
 
 

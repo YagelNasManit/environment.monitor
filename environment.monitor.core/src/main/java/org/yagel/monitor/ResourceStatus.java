@@ -6,9 +6,9 @@ import java.util.Date;
 
 public interface ResourceStatus {
 
-  String getResourceId();
+  Resource getResource();
 
-  void setResourceId(String resourceId);
+  void setResource(Resource resource);
 
   Status getStatus();
 

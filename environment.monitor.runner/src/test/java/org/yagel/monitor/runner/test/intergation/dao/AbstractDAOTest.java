@@ -28,11 +28,11 @@ public class AbstractDAOTest {
   }
 
   protected ResourceStatus rndResStatus(Resource resource) {
-    return new ResourceStatusImpl(resource.getId(), rndStatus(), new Date());
+    return new ResourceStatusImpl(resource, rndStatus(), new Date());
   }
 
   protected ResourceStatus rndResStatus(Resource resource, Status status, Date updated) {
-    return new ResourceStatusImpl(resource.getId(), status, updated);
+    return new ResourceStatusImpl(resource, status, updated);
   }
 
 
