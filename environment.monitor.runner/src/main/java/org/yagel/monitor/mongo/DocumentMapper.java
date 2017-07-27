@@ -1,7 +1,9 @@
 package org.yagel.monitor.mongo;
 
 import org.bson.Document;
+import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
+import org.yagel.monitor.resource.ResourceImpl;
 import org.yagel.monitor.resource.ResourceStatusImpl;
 import org.yagel.monitor.resource.Status;
 
@@ -15,17 +17,20 @@ public class DocumentMapper {
   public static Document resourceStatusToDocument(String evnName, ResourceStatus resourceStatus) {
     return new Document()
         .append("environmentName", evnName)
-        .append("resourceId", resourceStatus.getResourceId())
+        .append("resource", resourceToStatusRef(resourceStatus.getResource()))
         .append("statusOrdinal", resourceStatus.getStatus().getSeriaNumber())
         .append("updated", resourceStatus.getUpdated());
   }
 
   public static ResourceStatus resourceStatusFromDocument(Document document) {
 
-    String resourceId = document.getString("resourceId");
+    Document resourceDoc = (Document) document.get("resource");
+    Resource resource = resourceFromStatusRef(resourceDoc);
+
+
     Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
     Date updated = document.getDate("updated");
-    return new ResourceStatusImpl(resourceId, status, updated);
+    return new ResourceStatusImpl(resource, status, updated);
 
   }
 
@@ -40,4 +45,14 @@ public class DocumentMapper {
 
     return statusMap;
   }
+
+
+  public static Resource resourceFromStatusRef(Document document) {
+    return new ResourceImpl(document.getString("resourceId"), document.getString("resourceName"));
+  }
+
+  public static Document resourceToStatusRef(Resource resource) {
+    return new Document("resourceId", resource.getId()).append("resourceName", resource.getName());
+  }
+
 }

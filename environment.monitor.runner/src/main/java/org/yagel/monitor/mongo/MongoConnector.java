@@ -8,7 +8,7 @@ import org.yagel.monitor.exception.DiagnosticException;
 
 public class MongoConnector {
 
-  private final static String MONITOR_DB = "monitor_tmp";
+  private final static String MONITOR_DB = "monitor_tmp_newDomain";
   private final static Logger log = Logger.getLogger(MongoConnector.class);
   private static MongoConnector connector;
 

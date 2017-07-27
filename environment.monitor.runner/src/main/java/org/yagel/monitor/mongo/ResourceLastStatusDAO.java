@@ -70,7 +70,7 @@ public class ResourceLastStatusDAO {
 
     BasicDBObject envDBNameClause = new BasicDBObject("environmentName", environmentName);
     BasicDBObject inDBClause = new BasicDBObject("$in", resourcesDBList);
-    BasicDBObject resourceDBClause = new BasicDBObject("resourceId", inDBClause);
+    BasicDBObject resourceDBClause = new BasicDBObject("resource.resourceId", inDBClause);
 
     BasicDBList andDBClause = new BasicDBList();
     andDBClause.add(envDBNameClause);

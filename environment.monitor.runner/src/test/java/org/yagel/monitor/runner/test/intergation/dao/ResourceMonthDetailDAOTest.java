@@ -57,7 +57,7 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
     ResourceStatus resourceStatus = rndResStatus(rndResource());
     monthDetailDAO.insert(environemntNames[0], resourceStatus);
 
-    List<ResourceStatus> statuses = monthDetailDAO.getStatuses(environemntNames[0], resourceStatus.getResourceId(), resourceStatus.getUpdated(), resourceStatus.getUpdated());
+    List<ResourceStatus> statuses = monthDetailDAO.getStatuses(environemntNames[0], resourceStatus.getResource().getId(), resourceStatus.getUpdated(), resourceStatus.getUpdated());
     Assert.assertEquals(statuses.size(), 1);
     Assert.assertEquals(statuses.get(0), resourceStatus);
   }
@@ -87,14 +87,14 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
 
     for (String env : environemntNames) {
 
-      Map<String, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses(env, startDate, endDate);
+      Map<Resource, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses(env, startDate, endDate);
 
       Assert.assertNotNull(states);
       Assert.assertTrue(states.size() > 0);
       Assert.assertTrue(states.size() > 0);
 
 
-      Map<Status, Integer> resourceStates = states.get(resource.getId());
+      Map<Status, Integer> resourceStates = states.get(resource);
 
       Assert.assertEquals(resourceStates.keySet().size(), 3);
       resourceStates.forEach((Status status, Integer value) -> Assert.assertEquals((int) value, 100));

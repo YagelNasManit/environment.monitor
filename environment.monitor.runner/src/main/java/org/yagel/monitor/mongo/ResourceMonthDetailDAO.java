@@ -7,7 +7,9 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
+import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
+import org.yagel.monitor.resource.ResourceImpl;
 import org.yagel.monitor.resource.Status;
 import org.yagel.monitor.utils.DataUtils;
 
@@ -63,7 +65,7 @@ public class ResourceMonthDetailDAO {
 
     return thisCollection.count(Filters.and(
         Filters.eq("statusOrdinal", status.getSeriaNumber()),
-        Filters.eq("resourceId", resourceId),
+        Filters.eq("resource.resourceId", resourceId),
         Filters.eq("environmentName", environmentName),
         Filters.gte("updated", from),
         Filters.lte("updated", to)));
@@ -71,22 +73,29 @@ public class ResourceMonthDetailDAO {
 
   }
 
-  public synchronized Map<String, Map<Status, Integer>> getAggregatedStatuses(String environmentName, Date from, Date to) {
+  public synchronized Map<Resource, Map<Status, Integer>> getAggregatedStatuses(String environmentName, Date from, Date to) {
     switchCollection(from);
     AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
         Aggregates.match(new Document("environmentName", environmentName).append("updated", new Document("$gte", from).append("$lte", to))),
-        Document.parse("{$group: {'_id':{ 'resId': '$resourceId','status':'$statusOrdinal'},'total':{ '$sum' :1}}}"),
+        Document.parse("{$group: {'_id':{ 'resId': '$resource','status':'$statusOrdinal'},'total':{ '$sum' :1}}}"),
         Document.parse("{$group: {'_id':'$_id.resId','statuses': {'$push': {'statusOrdinal':'$_id.status', 'total': '$total'}}}}")
 
     ));
 
 
+    Map<Resource, Map<Status, Integer>> aggStatuses = new HashMap<>();
 
-    Map<String, Map<Status, Integer>> aggStatuses = new HashMap<>();
+
 
     for (Document document : documents) {
-      aggStatuses.put(document.getString("_id"), DocumentMapper.aggregatedResourceStatusFromDocument(document));
+
+      // todo move resource creation to DocumentMapper
+      Document docResource = (Document) document.get("_id");
+      Resource resource = new ResourceImpl(docResource.getString("resourceId"), docResource.getString("resourceName"));
+
+      aggStatuses.put(resource, DocumentMapper.aggregatedResourceStatusFromDocument(document));
     }
+
 
     return aggStatuses;
 
@@ -100,7 +109,7 @@ public class ResourceMonthDetailDAO {
         Filters.eq("environmentName", environmentName),
         Filters.gte("updated", from),
         Filters.lte("updated", to),
-        Filters.eq("resourceId", resourceId))
+        Filters.eq("resource.resourceId", resourceId))
     )
         .sort(Sorts.ascending("updated"))
         .map(DocumentMapper::resourceStatusFromDocument)
