@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
-import {EnvironmentsService} from "../../../shared/service/environments.service";
+import {EnvironmentStatus} from "../../../shared/model/EnvironmentStatus";
+import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
 
 @Component({
   moduleId: module.id,
@@ -9,13 +10,13 @@ import {EnvironmentsService} from "../../../shared/service/environments.service"
 })
 export class EnvironmentCurrentStatusDashboardComponent {
 
-  environments: string[];
+  environments: EnvironmentStatus[];
 
 
-  constructor(environmentsService: EnvironmentsService) {
-    environmentsService.getEnvironments()
+  constructor(environmentStatusService: EnvironmentStatusService) {
+    environmentStatusService.getOverallStatusPoll()
       .subscribe(
-        d => this.environments = d
+        statuses => this.environments = statuses
       );
   }
 }

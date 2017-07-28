@@ -1,6 +1,6 @@
 <div class="box  box-default">
   <div class="box-header with-border">
-    <h3 class="box-title">{{environment}}</h3>
+    <h3 class="box-title">{{environmentStatus.name}}</h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
@@ -17,15 +17,18 @@
         <th>Resource</th>
         <th>Updated</th>
       </tr>
-      <tr *ngFor="let status of resourceStatuses">
+      <tr *ngFor="let status of environmentStatus.resourcesStatus">
         <td>
-      <span [ngSwitch]="status.status">
-      <i *ngSwitchCase="0" class="fa fa-check-square" style="color:#00a65a"></i>
-    <i *ngSwitchCase="1" class="fa fa-minus-square" style="color:#dd4b39"></i>
-    <i *ngSwitchCase="2" class="fa fa-square" style="color:#444444"></i>
-        <!--TODO fix for correct icon-->
-      <i *ngSwitchCase="3" class="fa fa-check-square" style="color:#f39c12"></i>
-    </span>
+          <span [ngSwitch]="status.status">
+            <!--Online-->
+            <i *ngSwitchCase="0" class="fa fa-check-square" style="color:#00a65a"></i>
+            <!--BorderLine-->
+            <i *ngSwitchCase="1" class="fa fa-check-square" style="color:#f39c12"></i>
+            <!--Unavailable-->
+            <i *ngSwitchCase="2" class="fa fa-minus-square" style="color:#dd4b39"></i>
+            <!--Unknown-->
+            <i *ngSwitchCase="3" class="fa fa-minus-square" style="color:#444444"></i>
+        </span>
         </td>
         <td><span><strong>{{status.resource.name}}</strong></span></td>
         <td>{{status.updated}}</td>

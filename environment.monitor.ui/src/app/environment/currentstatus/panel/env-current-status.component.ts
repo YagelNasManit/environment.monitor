@@ -1,6 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
-import {ResourceStatus} from "../../../shared/model/ResourceStatus";
+import {EnvironmentStatus} from "../../../shared/model/EnvironmentStatus";
 
 
 @Component({
@@ -12,12 +11,7 @@ import {ResourceStatus} from "../../../shared/model/ResourceStatus";
 })
 export class EnvironmentCurrentStatusComponent {
 
-  @Input() environment: string;
-  resourceStatuses: ResourceStatus[];
+  @Input() environmentStatus: EnvironmentStatus;
 
 
-  constructor(private environmentStatusService: EnvironmentStatusService) {
-    this.resourceStatuses = environmentStatusService.getLastResourceStatuses(this.environment)
-
-  }
 }

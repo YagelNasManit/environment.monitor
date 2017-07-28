@@ -1,7 +1,5 @@
 package org.yagel.monitor.logging;
 
-import org.apache.log4j.AppenderSkeleton;
-
 // todo uncomment when logging fixed
 public class ThreadFileAppender /*extends AppenderSkeleton*/ {
 

@@ -1,21 +1,58 @@
-import {ResourceStatus} from "../model/ResourceStatus";
-import {Resource} from "../model/Resource";
-import {Status} from "../model/Status";
 import {Injectable} from "@angular/core";
+import {Http, Response} from "@angular/http";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {EnvironmentStatus} from "../model/EnvironmentStatus";
+import {Status} from "../model/Status";
 
 @Injectable()
 export class EnvironmentStatusService {
 
+  private poling_interval: number = 20000;
 
-  getLastResourceStatuses(environment: string) {
+  constructor(private http: Http) {
+  }
+
+  getOverallStatus(): Observable<EnvironmentStatus[]> {
+    return this.http.get('http://localhost:8080/current')
+      .map((resp: Response) => {
+        return resp.json();
+      })
+      .map(envs => {
+        // TODO find better solution that recursive iterate
+        envs.forEach((env, index) => {
+          env.resourcesStatus.forEach((status, index) => {
+            status.updated = new Date(status.updated);
+            status.status = Status[status.status];
+          });
+        });
+        console.log("Mapped Response:" + JSON.stringify(envs));
+        return envs;
+      })
+      .catch(this.handleError);
+  }
+
+  private handleError(error: Response) {
+    console.error(error);
+    let msg = `Error status code ${error.status} at ${error.url}`;
+    return Observable.throw(msg);
+  }
+
+  getOverallStatusPoll(): Observable<EnvironmentStatus[]> {
+    console.log("starting poling");
+    return Observable.timer(0, this.poling_interval)
+      .switchMap(() => this.getOverallStatus());
+  }
+
+
+  /*getLastResourceStatuses(environment: string) {
 
     return [
       new ResourceStatus(Status.Online, new Resource("Mock1", "Mock1"), "2017-11-12:00:00"),
       new ResourceStatus(Status.BorderLine, new Resource("Mock2", "Mock2"), "2017-11-12:00:00"),
       new ResourceStatus(Status.Unknown, new Resource("Mock3", "Mock3"), "2017-11-12:00:00"),
     ];
-  }
+   }*/
 
   getAggregatedResourceStatuses(environment: string, startDate: Date, endDate: Date) {
 
@@ -97,4 +134,6 @@ export class EnvironmentStatusService {
     return dataSubject.asObservable();
     ;
   }
+
+
 }

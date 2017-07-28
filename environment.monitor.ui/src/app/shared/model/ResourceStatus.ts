@@ -3,6 +3,10 @@ import {Resource} from "./Resource";
 
 export class ResourceStatus {
 
-  constructor(public status: Status, public resource: Resource, public updated: string) {
+  status: Status;
+  updated: Date;
+
+  constructor(status: Status, public resource: Resource, updated: Date) {
+    this.updated = new Date(updated);
   }
 }

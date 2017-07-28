@@ -4,6 +4,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.yagel.monitor.ResourceStatus;
 
@@ -57,6 +58,15 @@ public class ResourceLastStatusDAO {
     List<ResourceStatus> resources;
 
     resources = thisCollection.find(new Document().append("environmentName", environmentName))
+        .map(DocumentMapper::resourceStatusFromDocument).into(new ArrayList<>());
+
+    return resources;
+  }
+
+  public List<ResourceStatus> find(Collection<String> environmentNames) {
+    List<ResourceStatus> resources;
+
+    resources = thisCollection.find(Filters.in("environmentName", environmentNames))
         .map(DocumentMapper::resourceStatusFromDocument).into(new ArrayList<>());
 
     return resources;
