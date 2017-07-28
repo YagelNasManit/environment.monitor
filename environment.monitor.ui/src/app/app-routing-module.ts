@@ -1,12 +1,13 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {EnvironmentCurrentStatusDashboardComponent} from "./environment/currentstatus/dashboard/env-current-status-dashboard.component";
+import {EnvironmentTimescaleDashboardComponent} from "./environment/timescale/dashboard/env-timescale-dashboard.component";
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'current-dashboard'},
   {path: 'current-dashboard', component: EnvironmentCurrentStatusDashboardComponent},
-  /*{path: 'period-dashboard', component: PeriodStatusDashboardComponent},
-   {path: 'resource-dashboard', component: ResourceStatusDashboardComponent}*/
+  {path: 'timescale-dashboard', component: EnvironmentTimescaleDashboardComponent},
+  /* {path: 'resource-dashboard', component: ResourceStatusDashboardComponent}*/
 ];
 
 @NgModule({
