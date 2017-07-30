@@ -20,6 +20,7 @@ import {EnvironmentTimescaleDashboardComponent} from "./environment/timescale/da
 import {EnvironmentTimescaleAggregatedChartComponent} from "./environment/timescale/aggregatedchart/env-timescale-aggregated-chart.component";
 import {PeriodDateRangePickerComponent} from "./shared/components/datepicker/period-daterange-picker.component";
 import {EnvPickerComponent} from "./shared/components/envpicker/env-picker.component";
+import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statusrange-picker.component";
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import {EnvPickerComponent} from "./shared/components/envpicker/env-picker.compo
 
     //shared
     PeriodDateRangePickerComponent,
-    EnvPickerComponent
+    EnvPickerComponent,
+    StatusTimeRangePicker
 
   ],
   imports: [

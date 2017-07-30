@@ -1,4 +1,5 @@
 import {Component} from "@angular/core";
+import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 
 @Component({
   moduleId: module.id,
@@ -8,24 +9,12 @@ import {Component} from "@angular/core";
 })
 export class EnvironmentTimescaleDashboardComponent {
 
-  startDate: Date;
-  endDate: Date;
-  environment: string;
 
-  onRangeSelected(daterange): void {
-    console.log("dashboard received date range event with following info:");
-    console.log(daterange.start);
-    console.log(daterange.end);
-    console.log(daterange.label);
+  public statusTimerange: StatusTimeRange;
 
-    this.startDate = daterange.start;
-    this.endDate = daterange.end;
 
-  }
-
-  onEnvSelected(env: string) {
-    console.log("dashboard received env change event with following info:");
-    console.log(env);
-    this.environment = env;
+  onStatusRangeChanged(statusTimerange: StatusTimeRange) {
+    console.log(statusTimerange);
+    this.statusTimerange = statusTimerange;
   }
 }
