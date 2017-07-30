@@ -55,12 +55,16 @@ $v-panel-border: 2px solid v-shade;
 @import "../valo/valo.scss";
 @import "common";
 @import "dashboards/currentstatusdashboard";
+@import "dashboards/resourcedetailsdashboard";
 @import "widgets/buttonstatus";
+@import "widgets/resourcedetails";
+@import "aspectratio";
 
 @mixin monitortheme {
   @include valo;
   @include dashboard-common;
   @include dashboards-current-status-dashboard;
+  @include dashboards-resource-details-dashboard;
   //@include widgets-button-status-widget;
 
   // Insert your own theme rules here

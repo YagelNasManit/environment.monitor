@@ -13,6 +13,7 @@
         <module>environment.monitor.ui</module>
         <module>environment.monitor.plugins</module>
         <module>environment.monitor.core</module>
+        <module>environment.monitor.test.extension</module>
     </modules>
 
     <properties>
