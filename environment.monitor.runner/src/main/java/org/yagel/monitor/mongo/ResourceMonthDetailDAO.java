@@ -73,6 +73,7 @@ public class ResourceMonthDetailDAO {
 
   }
 
+  // TODO AGREGATE FROM MULTIPLE MONTHES
   public synchronized Map<Resource, Map<Status, Integer>> getAggregatedStatuses(String environmentName, Date from, Date to) {
     switchCollection(from);
     AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
@@ -84,7 +85,6 @@ public class ResourceMonthDetailDAO {
 
 
     Map<Resource, Map<Status, Integer>> aggStatuses = new HashMap<>();
-
 
 
     for (Document document : documents) {

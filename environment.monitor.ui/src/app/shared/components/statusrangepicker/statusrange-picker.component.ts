@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ViewChild} from "@angular/core";
 import {StatusTimeRange} from "../../model/StatusTimeRange";
-import {EnvironmentsService} from "../../service/environments.service";
+import {DateRange} from "../../model/DateRange";
+import {DaterangePickerComponent} from "ng2-daterangepicker";
 
 
 @Component({
@@ -10,17 +11,29 @@ import {EnvironmentsService} from "../../service/environments.service";
 })
 export class StatusTimeRangePicker {
 
+  @ViewChild(DaterangePickerComponent)
+  private picker: DaterangePickerComponent;
+
   @Output() onStatusRangeChanged = new EventEmitter<StatusTimeRange>();
 
-  public daterange: any = {};
+  public daterange: DateRange;
   public environment: string;
 
-  private environments: string[];
+  /*@Input() _statusTimerange: StatusTimeRange;*/
+
+  @Input() public environments: string[];
 
 
-  constructor(envService: EnvironmentsService) {
-    // TODO mock
-    envService.getEnvironments().subscribe(envs => this.environments = envs);
+  @Input()
+  set statusTimerange(statusTimeRange: StatusTimeRange) {
+    if (statusTimeRange != null) {
+      this.daterange = statusTimeRange.daterange;
+      this.environment = statusTimeRange.environment;
+      console.log("status timerange set");
+
+      this.picker.datePicker.setStartDate(this.daterange.start);
+      this.picker.datePicker.setEndDate(this.daterange.end);
+    }
   }
 
 // see original project for full list of options
@@ -34,9 +47,7 @@ export class StatusTimeRangePicker {
 
 
   public onDateSelected(value: any) {
-    this.daterange.start = value.start;
-    this.daterange.end = value.end;
-    this.daterange.label = value.label;
+    this.daterange = new DateRange(value.start, value.end, value.label);
     console.log(`date selected from datepicker is: ${this.daterange.start} - ${this.daterange.end}`)
     this.onStatusRangeChanged.emit(this.buildStatusRange());
   }

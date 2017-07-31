@@ -27,7 +27,8 @@
         <!-- /.box-header -->
         <div class="box-body">
 
-          <status-range-picker (onStatusRangeChanged)="onStatusRangeChanged($event)"></status-range-picker>
+          <status-range-picker [statusTimerange]="statusTimerange" [environments]="environments"
+                               (onStatusRangeChanged)="onStatusRangeChanged($event)"></status-range-picker>
         </div>
         <!--/.box-body-->
       </div>
@@ -37,7 +38,7 @@
   </div>
 
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12" *ngIf="statusTimerange">
 
       <div class="box">
         <div class="box-header with-border">
@@ -54,9 +55,9 @@
         <!-- /.box-header -->
         <div class="box-body">
 
-          <environment-timescale-aggregated-chart [startDate]="startDate"
-                                                  [endDate]="endDate"
-                                                  [environment]="environment"
+
+          <environment-timescale-aggregated-chart
+            [statusTimerange]="statusTimerange"
           >
 
           </environment-timescale-aggregated-chart>

@@ -2,6 +2,8 @@ import {AfterViewInit, Component, ElementRef, Input, ViewChild} from "@angular/c
 
 import * as d3 from "d3";
 import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
+import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
+import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResourceStatus";
 
 @Component({
   selector: "environment-timescale-aggregated-chart",
@@ -15,17 +17,22 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
   private chart_m: any;
   private color: any;
 
-  @Input() startDate: any;
-  @Input() endDate: any;
-  @Input() environment: any;
+
+  data: AggregatedResourceStatus[];
 
   constructor(private dataService: EnvironmentStatusService) {
   }
 
   ngAfterViewInit() {
-    this.dataService.getAggregatedResourceStatuses("", null, null).subscribe(data => {
-      this.create(data);
+
+  }
+
+  @Input()
+  set statusTimerange(statusTimerange: StatusTimeRange) {
+    this.dataService.getAggregatedResourceStatuses(statusTimerange.environment, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
+      this.data = data;
     });
+    //this.create(data);
 
   }
 
