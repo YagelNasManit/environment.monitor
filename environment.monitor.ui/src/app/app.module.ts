@@ -18,8 +18,6 @@ import {EnvironmentsService} from "./shared/service/environments.service";
 import {EnvironmentStatusService} from "./shared/service/environment-status.service";
 import {EnvironmentTimescaleDashboardComponent} from "./environment/timescale/dashboard/env-timescale-dashboard.component";
 import {EnvironmentTimescaleAggregatedChartComponent} from "./environment/timescale/aggregatedchart/env-timescale-aggregated-chart.component";
-import {PeriodDateRangePickerComponent} from "./shared/components/datepicker/period-daterange-picker.component";
-import {EnvPickerComponent} from "./shared/components/envpicker/env-picker.component";
 import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statusrange-picker.component";
 
 
@@ -44,8 +42,6 @@ import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statu
     EnvironmentTimescaleAggregatedChartComponent,
 
     //shared
-    PeriodDateRangePickerComponent,
-    EnvPickerComponent,
     StatusTimeRangePicker
 
   ],
