@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 import {EnvironmentsService} from "../../../shared/service/environments.service";
 import {DateRange} from "../../../shared/model/DateRange";
+import * as moment from "moment";
 
 @Component({
   moduleId: module.id,
@@ -20,8 +21,8 @@ export class EnvironmentTimescaleDashboardComponent {
 
     envService.getEnvironments().subscribe(envs => {
         this.environments = envs;
-        // TODO hardcoded dates
-        this.statusTimerange = new StatusTimeRange(new DateRange(new Date(), new Date(), null), envs[0], null)
+      // TODO return start date instead of afternoon
+      this.statusTimerange = new StatusTimeRange(new DateRange(moment().startOf('day').toDate(), moment().toDate(), null), envs[0], null)
       }
     );
   }

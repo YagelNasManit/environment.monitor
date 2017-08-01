@@ -9,6 +9,8 @@ public class AggregatedResourceStatus {
   Resource resource;
   List<AggregatedStatus> resourceStatuses;
 
+  long count;
+
   public Resource getResource() {
     return resource;
   }
@@ -23,5 +25,13 @@ public class AggregatedResourceStatus {
 
   public void setResourceStatuses(List<AggregatedStatus> resourceStatuses) {
     this.resourceStatuses = resourceStatuses;
+  }
+
+  public long getCount() {
+    return count;
+  }
+
+  public void setCount(long count) {
+    this.count = count;
   }
 }

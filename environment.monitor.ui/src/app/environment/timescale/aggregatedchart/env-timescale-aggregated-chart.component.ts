@@ -31,8 +31,9 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
   set statusTimerange(statusTimerange: StatusTimeRange) {
     this.dataService.getAggregatedResourceStatuses(statusTimerange.environment, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
       this.data = data;
+      this.create(data);
     });
-    //this.create(data);
+
 
   }
 
@@ -105,7 +106,7 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
       .attr('y', this.chart_r * -0.16)
       .attr('text-anchor', 'middle')
       .style('font-weight', 'bold')
-      .text((d, i) => d.type);
+      .text((d, i) => d.resource.name);
     donuts.append('text')
       .attr('class', 'center-txt value')
       .attr('text-anchor', 'middle');
@@ -140,13 +141,15 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
   }
 
   private setCenterText(thisDonut) {
-    let sum = d3.sum(thisDonut.selectAll('.clicked').data(), (d) => d.data.val);
+    let sum = d3.sum(thisDonut.selectAll('.clicked').data(), (d) => d.resourceStatuses.count);
 
     thisDonut.select('.value')
-      .text((d) => (sum) ? sum.toFixed(1) + d.unit : d.total.toFixed(1) + d.unit);
+    // TODO units;
+      .text((d) => (sum) ? sum.toFixed(1) /*+ d.unit*/ : d.count.toFixed(1) /*+ d.unit*/);
+    // todo calc totals?
     thisDonut.select('.percentage')
       .text((d) => {
-        return (sum) ? (sum / d.total * 100).toFixed(2) + '%'
+        return (sum) ? (sum / d.count * 100).toFixed(2) + '%'
           : '';
       });
   }
@@ -154,7 +157,7 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
   private resetAllCenterText() {
     this.charts.selectAll('.value')
       .text((d) => {
-        return d.total.toFixed(1) + d.unit;
+        return d.count.toFixed(1) + d.unit;
       });
     this.charts.selectAll('.percentage')
       .text('');
@@ -165,7 +168,7 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
 
     let pie = d3.pie()
       .sort(null)
-      .value((d) => d.val);
+      .value((d) => d.count);
 
     let arc = d3.arc<d3.Arc<number>>()
       .outerRadius(this.chart_r * 0.7)
@@ -174,7 +177,7 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
     // Start joining data with paths
     let paths = this.charts.selectAll('.donut')
       .selectAll('path')
-      .data((d, i) => pie(d.data));
+      .data((d, i) => pie(d.resourceStatuses));
 
 
     paths
@@ -202,17 +205,16 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
 
   // event handlers
   private donutMouseOver = (d, i, j) => {
-
     this.pathAnim(d3.select(j[i]), 1);
 
     let thisDonut = d3.select(j[i].parentNode);
 
     thisDonut.select('.value').text(function (donut_d) {
-      return d.data.val.toFixed(1) + donut_d.unit;
+      return d.data.count.toFixed(1) + donut_d.unit;
     });
 
     thisDonut.select('.percentage').text(function (donut_d) {
-      return (d.data.val / donut_d.total * 100).toFixed(2) + '%';
+      return (d.data.count / donut_d.count * 100).toFixed(2) + '%';
     });
   };
 

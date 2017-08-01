@@ -76,14 +76,17 @@ public class EnvironmentStatusService {
       aggregatedResourceStatus.setResource(entry.getKey());
 
       List<AggregatedStatus> resourceStatuses = new ArrayList<>();
+      long count = 0;
 
       for (Map.Entry<Status, Integer> statusEntry : entry.getValue().entrySet()) {
         AggregatedStatus resourceStatus = new AggregatedStatus();
         resourceStatus.setStatus(statusEntry.getKey());
         resourceStatus.setCount(statusEntry.getValue());
         resourceStatuses.add(resourceStatus);
+        count += statusEntry.getValue();
       }
       aggregatedResourceStatus.setResourceStatuses(resourceStatuses);
+      aggregatedResourceStatus.setCount(count);
       statuses.add(aggregatedResourceStatus);
     }
 
