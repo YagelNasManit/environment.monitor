@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from "@angular/core";
+import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 
 import * as d3 from "d3";
 import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
@@ -9,7 +9,7 @@ import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResource
   selector: "environment-timescale-aggregated-chart",
   templateUrl: "./env-timescale-aggregated-chart.component.html"
 })
-export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewInit {
+export class EnvironmentTimescaleAggregatedChartComponent {
   @ViewChild("containerPieChart") element: ElementRef;
 
   private charts: any;
@@ -23,9 +23,6 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
   constructor(private dataService: EnvironmentStatusService) {
   }
 
-  ngAfterViewInit() {
-
-  }
 
   @Input()
   set statusTimerange(statusTimerange: StatusTimeRange) {
@@ -33,8 +30,6 @@ export class EnvironmentTimescaleAggregatedChartComponent implements AfterViewIn
       this.data = data;
       this.create(data);
     });
-
-
   }
 
   private create(dataset) {

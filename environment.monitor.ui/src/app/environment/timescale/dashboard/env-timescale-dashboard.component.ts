@@ -12,13 +12,11 @@ import * as moment from "moment";
 })
 export class EnvironmentTimescaleDashboardComponent {
 
-
   public statusTimerange: StatusTimeRange;
-
   public environments;
 
-  constructor(envService: EnvironmentsService) {
 
+  constructor(envService: EnvironmentsService) {
     envService.getEnvironments().subscribe(envs => {
         this.environments = envs;
       // TODO return start date instead of afternoon
@@ -27,8 +25,18 @@ export class EnvironmentTimescaleDashboardComponent {
     );
   }
 
+
+  /**
+   * Set new status range when status range picker selection updates
+   * @param statusTimerange
+   */
   onStatusRangeChanged(statusTimerange: StatusTimeRange) {
-    console.log(statusTimerange);
+
+    console.log(`dashboard status range updated:  
+          env: ${statusTimerange.environment}
+          DateRAnge: ${statusTimerange.daterange.start} - ${statusTimerange.daterange.end}`
+    );
+
     this.statusTimerange = statusTimerange;
   }
 }
