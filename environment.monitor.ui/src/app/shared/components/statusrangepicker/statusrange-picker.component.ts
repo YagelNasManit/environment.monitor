@@ -14,30 +14,33 @@ export class StatusTimeRangePicker {
   @ViewChild(DaterangePickerComponent)
   private picker: DaterangePickerComponent;
 
-  @Output() onStatusRangeChanged = new EventEmitter<StatusTimeRange>();
-
   public daterange: DateRange;
   public environment: string;
 
-  /*@Input() _statusTimerange: StatusTimeRange;*/
-
+  @Output() onStatusRangeChanged = new EventEmitter<StatusTimeRange>();
   @Input() public environments: string[];
 
 
+  /**
+   * Sets component state in accordance to data provided
+   * @param statusTimeRange
+   */
   @Input()
   set statusTimerange(statusTimeRange: StatusTimeRange) {
     if (statusTimeRange != null) {
       this.daterange = statusTimeRange.daterange;
       this.environment = statusTimeRange.environment;
-      console.log("status timerange set");
 
       this.picker.datePicker.setStartDate(this.daterange.start);
       this.picker.datePicker.setEndDate(this.daterange.end);
     }
   }
 
-// see original project for full list of options
-  // can also be setup using the config service to apply to multiple pickers
+
+  /**
+   * DateRange picker options
+   * @type {{locale: {format: string}; alwaysShowCalendars: boolean; timePicker: boolean; timePicker24Hour: boolean}}
+   */
   public options: any = {
     locale: {format: 'YYYY-MM-DD'},
     alwaysShowCalendars: false,
@@ -46,19 +49,29 @@ export class StatusTimeRangePicker {
   };
 
 
+  /**
+   * Send event to listening component once new DateRange selected from datepicker
+   * @param value
+   */
   public onDateSelected(value: any) {
     this.daterange = new DateRange(value.start, value.end, value.label);
-    console.log(`date selected from datepicker is: ${this.daterange.start} - ${this.daterange.end}`)
     this.onStatusRangeChanged.emit(this.buildStatusRange());
   }
 
+  /**
+   * Send event to listening component once new Environment selected from datepicker
+   * @param value
+   */
   onEnvChange(value) {
-    console.log(`env selection changed: ${value}`);
     this.environment = value;
     this.onStatusRangeChanged.emit(this.buildStatusRange());
   }
 
-  buildStatusRange(): StatusTimeRange {
+  /**
+   * Build new status time range DTO to be passed to parent component
+   * @returns {StatusTimeRange}
+   */
+  private buildStatusRange(): StatusTimeRange {
     return new StatusTimeRange(this.daterange, this.environment, null);
 
   }
