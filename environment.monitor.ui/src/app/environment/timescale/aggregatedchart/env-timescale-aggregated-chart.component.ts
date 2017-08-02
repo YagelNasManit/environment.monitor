@@ -10,6 +10,7 @@ import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResource
   templateUrl: "./env-timescale-aggregated-chart.component.html"
 })
 export class EnvironmentTimescaleAggregatedChartComponent {
+
   @ViewChild("containerPieChart") element: ElementRef;
 
   private charts: any;
@@ -28,7 +29,12 @@ export class EnvironmentTimescaleAggregatedChartComponent {
   set statusTimerange(statusTimerange: StatusTimeRange) {
     this.dataService.getAggregatedResourceStatuses(statusTimerange.environment, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
       this.data = data;
-      this.create(data);
+
+      if (this.charts == null)
+        this.create(data);
+      else
+        this.update(data);
+
     });
   }
 
@@ -141,7 +147,6 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     thisDonut.select('.value')
     // TODO units;
       .text((d) => (sum) ? sum.toFixed(1) /*+ d.unit*/ : d.count.toFixed(1) /*+ d.unit*/);
-    // todo calc totals?
     thisDonut.select('.percentage')
       .text((d) => {
         return (sum) ? (sum / d.count * 100).toFixed(2) + '%'
@@ -197,6 +202,13 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 
   }
 
+  update(dataset) {
+    // Assume no new categ of data enter
+    let donut = this.charts.selectAll(".donut")
+      .data(dataset);
+
+    this.updateDonuts();
+  }
 
   // event handlers
   private donutMouseOver = (d, i, j) => {

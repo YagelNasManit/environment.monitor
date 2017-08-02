@@ -7,8 +7,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DataUtils {
 
@@ -21,7 +23,11 @@ public class DataUtils {
    */
   public static int joinYearMonthValues(Date date) {
     Calendar calendar = DateUtils.toCalendar(date);
-    return calendar.get(Calendar.YEAR) * 100 + calendar.get(Calendar.MONTH);
+    return joinYearMonthValues(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
+  }
+
+  public static int joinYearMonthValues(int year, int month) {
+    return year * 100 + month;
   }
 
   public static Date getYesterday(Date currentDate) {
@@ -46,6 +52,21 @@ public class DataUtils {
 
   public static LocalDateTime asLocalDateTime(Date date) {
     return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+  }
+
+  public static List<Integer> getMonthNumbersInDateFrame(Date startDate, Date endDate) {
+    List<Integer> dates = new ArrayList<>();
+
+    LocalDateTime start = asLocalDateTime(startDate);
+    LocalDateTime end = asLocalDateTime(endDate);
+
+
+    while (start.isBefore(end) || start.equals(end)) {
+      dates.add(start.getMonthValue());
+      start = start.plusMonths(1);
+    }
+    return dates;
+
   }
 
 

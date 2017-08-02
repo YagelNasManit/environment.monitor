@@ -8,11 +8,12 @@ import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
+import org.yagel.monitor.resource.AggregatedResourceStatus;
 import org.yagel.monitor.resource.Status;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
 
@@ -29,7 +30,7 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
     monthDetailDAO = MongoConnector.getInstance().getMonthDetailDAO();
 
     String baseEnvName = this.getClass().getName();
-    environemntNames = new String[]{baseEnvName + "1", baseEnvName + "2"};
+    environemntNames = new String[]{baseEnvName + UUID.randomUUID(), baseEnvName + UUID.randomUUID()};
 
     endDate = new Date();
     startDate = DateUtils.addDays(endDate, -1);
@@ -87,17 +88,19 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
 
     for (String env : environemntNames) {
 
-      Map<Resource, Map<Status, Integer>> states = monthDetailDAO.getAggregatedStatuses(env, startDate, endDate);
+      List<AggregatedResourceStatus> states = monthDetailDAO.getAggregatedStatuses(env, startDate, endDate);
 
       Assert.assertNotNull(states);
       Assert.assertTrue(states.size() > 0);
       Assert.assertTrue(states.size() > 0);
 
 
-      Map<Status, Integer> resourceStates = states.get(resource);
+      AggregatedResourceStatus status = states.get(0);
 
-      Assert.assertEquals(resourceStates.keySet().size(), 3);
-      resourceStates.forEach((Status status, Integer value) -> Assert.assertEquals((int) value, 100));
+      Assert.assertEquals(status.getResourceStatuses().size(), 3);
+
+      Assert.assertEquals(status.getCount(), 300);
+      status.getResourceStatuses().forEach(value -> Assert.assertEquals(value.getCount(), 100));
     }
 
 

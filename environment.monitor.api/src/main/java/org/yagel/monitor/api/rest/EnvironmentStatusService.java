@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.yagel.monitor.EnvironmentConfig;
-import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.ScheduleRunnerImpl;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
-import org.yagel.monitor.resource.Status;
+import org.yagel.monitor.resource.AggregatedResourceStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -58,40 +56,18 @@ public class EnvironmentStatusService {
     return ResponseEntity.ok(statusList);
   }
 
-  // TODO fix return
+
   @RequestMapping(value = "aggregated/{environmentName}", method = RequestMethod.GET)
-  public Object getStatus(
+  public ResponseEntity<List<AggregatedResourceStatus>> getStatus(
       @PathVariable("environmentName") String environmentName,
-      @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd-hh-mm-ss") Date startDate,
-      @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd-hh-mm-ss") Date endDate) {
+      @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
+      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+
     ResourceMonthDetailDAO detailDAO = MongoConnector.getInstance().getMonthDetailDAO();
 
-    Map<Resource, Map<Status, Integer>> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
+    List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
 
-    List<AggregatedResourceStatus> statuses = new ArrayList<>();
-
-    // todo move to DAO
-    for (Map.Entry<Resource, Map<Status, Integer>> entry : aggStatusses.entrySet()) {
-      AggregatedResourceStatus aggregatedResourceStatus = new AggregatedResourceStatus();
-      aggregatedResourceStatus.setResource(entry.getKey());
-
-      List<AggregatedStatus> resourceStatuses = new ArrayList<>();
-      long count = 0;
-
-      for (Map.Entry<Status, Integer> statusEntry : entry.getValue().entrySet()) {
-        AggregatedStatus resourceStatus = new AggregatedStatus();
-        resourceStatus.setStatus(statusEntry.getKey());
-        resourceStatus.setCount(statusEntry.getValue());
-        resourceStatuses.add(resourceStatus);
-        count += statusEntry.getValue();
-      }
-      aggregatedResourceStatus.setResourceStatuses(resourceStatuses);
-      aggregatedResourceStatus.setCount(count);
-      statuses.add(aggregatedResourceStatus);
-    }
-
-    //return aggStatusses;
-    return ResponseEntity.ok(statuses);
+    return ResponseEntity.ok(aggStatusses);
   }
 
  /* @RequestMapping(value = "period/{environmentName}", method = RequestMethod.GET)

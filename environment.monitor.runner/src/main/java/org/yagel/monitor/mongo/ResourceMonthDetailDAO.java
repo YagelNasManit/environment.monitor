@@ -7,19 +7,18 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
-import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
-import org.yagel.monitor.resource.ResourceImpl;
+import org.yagel.monitor.resource.AggregatedResourceStatus;
 import org.yagel.monitor.resource.Status;
 import org.yagel.monitor.utils.DataUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class ResourceMonthDetailDAO {
 
@@ -60,6 +59,7 @@ public class ResourceMonthDetailDAO {
 
   }
 
+  // todo consider month switch during data extraction
   public synchronized long getStatusCount(String environmentName, String resourceId, Status status, Date from, Date to) {
     switchCollection(from);
 
@@ -73,35 +73,41 @@ public class ResourceMonthDetailDAO {
 
   }
 
-  // TODO AGREGATE FROM MULTIPLE MONTHES
-  public synchronized Map<Resource, Map<Status, Integer>> getAggregatedStatuses(String environmentName, Date from, Date to) {
-    switchCollection(from);
-    AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
-        Aggregates.match(new Document("environmentName", environmentName).append("updated", new Document("$gte", from).append("$lte", to))),
-        Document.parse("{$group: {'_id':{ 'resId': '$resource','status':'$statusOrdinal'},'total':{ '$sum' :1}}}"),
-        Document.parse("{$group: {'_id':'$_id.resId','statuses': {'$push': {'statusOrdinal':'$_id.status', 'total': '$total'}}}}")
+  public synchronized List<AggregatedResourceStatus> getAggregatedStatuses(String environmentName, Date from, Date to) {
 
-    ));
+    LocalDateTime fromDateTime = DataUtils.asLocalDateTime(from);
+    LocalDateTime toDateTime = DataUtils.asLocalDateTime(from);
 
 
-    Map<Resource, Map<Status, Integer>> aggStatuses = new HashMap<>();
+    List<AggregatedResourceStatus> aggStatuses = new ArrayList<>();
 
+    while (fromDateTime.isBefore(toDateTime) || fromDateTime.isEqual(toDateTime)) {
 
-    for (Document document : documents) {
+      switchCollection(DataUtils.asDate(fromDateTime));
 
-      // todo move resource creation to DocumentMapper
-      Document docResource = (Document) document.get("_id");
-      Resource resource = new ResourceImpl(docResource.getString("resourceId"), docResource.getString("resourceName"));
+      AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
+          Aggregates.match(new Document("environmentName", environmentName).append("updated", new Document("$gte", from).append("$lte", to))),
+          Document.parse("{$group: {'_id':{ 'res': '$resource','status':'$statusOrdinal'},'count':{ '$sum' :1}}}"),
+          Document.parse("{$group: {'_id':{ 'resource': '$_id.res'},'statuses': {'$push': {'statusOrdinal':'$_id.status', 'count': '$count'}}, 'count':{'$sum':'$count'}}}")
 
-      aggStatuses.put(resource, DocumentMapper.aggregatedResourceStatusFromDocument(document));
+      ));
+
+      // TODO serialise statuses with zero value also!
+      List<AggregatedResourceStatus> monthAggStatuses = documents
+          .map(DocumentMapper::aggregatedResourceStatusFromDocument)
+          .into(new ArrayList<>());
+
+      aggStatuses.addAll(monthAggStatuses);
+
+      fromDateTime = fromDateTime.plusMonths(1);
+
     }
-
 
     return aggStatuses;
 
   }
 
-
+  // todo consider month switch during data extraction
   public List<ResourceStatus> getStatuses(String environmentName, String resourceId, Date from, Date to) {
     switchCollection(from);
 

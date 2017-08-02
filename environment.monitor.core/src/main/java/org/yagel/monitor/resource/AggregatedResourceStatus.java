@@ -1,4 +1,4 @@
-package org.yagel.monitor.api.rest;
+package org.yagel.monitor.resource;
 
 import org.yagel.monitor.Resource;
 

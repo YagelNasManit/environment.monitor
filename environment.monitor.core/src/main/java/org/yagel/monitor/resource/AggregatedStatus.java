@@ -1,6 +1,4 @@
-package org.yagel.monitor.api.rest;
-
-import org.yagel.monitor.resource.Status;
+package org.yagel.monitor.resource;
 
 public class AggregatedStatus {
 
