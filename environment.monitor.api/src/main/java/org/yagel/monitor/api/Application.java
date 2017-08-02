@@ -11,19 +11,14 @@ import org.yagel.monitor.ScheduleRunnerImpl;
 public class Application {
 
   public static void main(String[] args) {
-
-
     SpringApplication.run(Application.class, args);
-
   }
 
   @Bean
   public CommandLineRunner schedulingRunner() {
-    return new CommandLineRunner() {
-      public void run(String... args) throws Exception {
-        ScheduleRunner scheduleRunner = ScheduleRunnerImpl.newInstance(ClassLoader.getSystemClassLoader());
-        scheduleRunner.runTasks();
-      }
+    return args -> {
+      ScheduleRunner scheduleRunner = ScheduleRunnerImpl.newInstance(ClassLoader.getSystemClassLoader());
+      scheduleRunner.runTasks();
     };
 
   }

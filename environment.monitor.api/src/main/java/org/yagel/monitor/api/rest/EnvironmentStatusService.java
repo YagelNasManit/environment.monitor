@@ -17,7 +17,6 @@ import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +31,7 @@ public class EnvironmentStatusService {
   @RequestMapping(value = "current/{environmentName}", method = RequestMethod.GET)
   public ResponseEntity<EnvironmentStatus> getEnvironmentStatus(@PathVariable("environmentName") String environmentName) {
     List<ResourceStatus> resourceStatuses = MongoConnector.getInstance().getLastStatusDAO().find(environmentName);
+
     EnvironmentStatus environmentStatus = new EnvironmentStatus(environmentName, resourceStatuses);
     return ResponseEntity.ok(environmentStatus);
   }
@@ -45,13 +45,13 @@ public class EnvironmentStatusService {
         .map(EnvironmentConfig::getEnvName)
         .collect(Collectors.toList());
 
-    ResourceLastStatusDAO statusDAO = MongoConnector.getInstance().getLastStatusDAO();
+    final ResourceLastStatusDAO statusDAO = MongoConnector.getInstance().getLastStatusDAO();
 
-    List<EnvironmentStatus> statusList = new ArrayList<>();
 
-    for (String env : envs) {
-      statusList.add(new EnvironmentStatus(env, statusDAO.find(env)));
-    }
+    List<EnvironmentStatus> statusList = envs
+        .stream()
+        .map(env -> new EnvironmentStatus(env, statusDAO.find(env)))
+        .collect(Collectors.toList());
 
     return ResponseEntity.ok(statusList);
   }
@@ -64,18 +64,8 @@ public class EnvironmentStatusService {
       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
     ResourceMonthDetailDAO detailDAO = MongoConnector.getInstance().getMonthDetailDAO();
-
     List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
 
     return ResponseEntity.ok(aggStatusses);
   }
-
- /* @RequestMapping(value = "period/{environmentName}", method = RequestMethod.GET)
-  public ResponseEntity<EnvironmentStatus> getPeriodStatus(
-      @PathVariable("environmentName") String environmentName,
-      @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd-hh-ss") Date startDate,
-      @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd-hh-ss") Date endDate) {
-    ResourceMonthDetailDAO detailDAO = MongoConnector.getInstance().getMonthDetailDAO();
-
-  }*/
 }
