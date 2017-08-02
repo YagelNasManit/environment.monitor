@@ -1,17 +1,17 @@
 package org.yagel.monitor.mongo;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.yagel.monitor.ResourceStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ResourceLastStatusDAO {
 
@@ -38,13 +38,12 @@ public class ResourceLastStatusDAO {
    * @param environmentName parameter for database object insertion / deletion
    * @param resources       parameter for database object insertion
    */
-  public synchronized void insert(String environmentName, Collection<ResourceStatus> resources) {
+  public synchronized void insert(final String environmentName, final Collection<ResourceStatus> resources) {
     delete(environmentName);
-    List<Document> dbResources = new ArrayList<>();
-    for (ResourceStatus resource : resources) {
-      Document ls = DocumentMapper.resourceStatusToDocument(environmentName, resource);
-      dbResources.add(ls);
-    }
+
+    List<Document> dbResources = resources.stream()
+        .map(rs -> DocumentMapper.resourceStatusToDocument(environmentName, rs))
+        .collect(Collectors.toList());
 
     thisCollection.insertMany(dbResources);
   }
@@ -55,42 +54,30 @@ public class ResourceLastStatusDAO {
    * @param environmentName parameter for database object deletion
    */
   public List<ResourceStatus> find(String environmentName) {
-    List<ResourceStatus> resources;
-
-    resources = thisCollection.find(new Document().append("environmentName", environmentName))
-        .map(DocumentMapper::resourceStatusFromDocument).into(new ArrayList<>());
+    List<ResourceStatus> resources = thisCollection.find(new Document().append("environmentName", environmentName))
+        .map(DocumentMapper::resourceStatusFromDocument)
+        .into(new ArrayList<>());
 
     return resources;
   }
 
   public List<ResourceStatus> find(Collection<String> environmentNames) {
-    List<ResourceStatus> resources;
-
-    resources = thisCollection.find(Filters.in("environmentName", environmentNames))
-        .map(DocumentMapper::resourceStatusFromDocument).into(new ArrayList<>());
+    List<ResourceStatus> resources = thisCollection.find(Filters.in("environmentName", environmentNames))
+        .map(DocumentMapper::resourceStatusFromDocument)
+        .into(new ArrayList<>());
 
     return resources;
   }
 
   public List<ResourceStatus> find(String environmentName, Set<String> resourceIds) {
-    List<ResourceStatus> resources;
+    Bson query = Filters.and(
+        Filters.eq("environmentName", environmentName),
+        Filters.in("resource.resourceId", resourceIds)
+    );
 
-    BasicDBList resourcesDBList = new BasicDBList();
-    resourcesDBList.addAll(resourceIds);
-
-    BasicDBObject envDBNameClause = new BasicDBObject("environmentName", environmentName);
-    BasicDBObject inDBClause = new BasicDBObject("$in", resourcesDBList);
-    BasicDBObject resourceDBClause = new BasicDBObject("resource.resourceId", inDBClause);
-
-    BasicDBList andDBClause = new BasicDBList();
-    andDBClause.add(envDBNameClause);
-    andDBClause.add(resourceDBClause);
-
-    BasicDBObject root = new BasicDBObject("$and", andDBClause);
-
-    resources = thisCollection.find(root)
-        .map(DocumentMapper::resourceStatusFromDocument).into(new ArrayList<>());
-
+    List<ResourceStatus> resources = thisCollection.find(query)
+        .map(DocumentMapper::resourceStatusFromDocument)
+        .into(new ArrayList<>());
 
     return resources;
   }

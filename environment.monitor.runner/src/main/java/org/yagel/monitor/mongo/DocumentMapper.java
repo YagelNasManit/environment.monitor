@@ -24,10 +24,8 @@ public class DocumentMapper {
   }
 
   public static ResourceStatus resourceStatusFromDocument(Document document) {
-
     Document resourceDoc = (Document) document.get("resource");
     Resource resource = resourceFromStatusRef(resourceDoc);
-
 
     Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
     Date updated = document.getDate("updated");
@@ -35,15 +33,18 @@ public class DocumentMapper {
 
   }
 
-
   public static AggregatedResourceStatus aggregatedResourceStatusFromDocument(Document document) {
     Document id = (Document) document.get("_id");
     Resource resource = resourceFromStatusRef((Document) id.get("resource"));
+
     long totalCount = document.getInteger("count");
 
     List<Document> statuses = (List<Document>) document.get("statuses");
 
-    List<AggregatedStatus> aggregatedStatuses = statuses.stream().map(DocumentMapper::aggregatedStatusFromDocument).collect(Collectors.toList());
+    List<AggregatedStatus> aggregatedStatuses = statuses
+        .stream()
+        .map(DocumentMapper::aggregatedStatusFromDocument)
+        .collect(Collectors.toList());
 
     AggregatedResourceStatus status = new AggregatedResourceStatus();
     status.setCount(totalCount);
@@ -54,13 +55,20 @@ public class DocumentMapper {
     return status;
   }
 
-
   public static Resource resourceFromStatusRef(Document document) {
     return new ResourceImpl(document.getString("resourceId"), document.getString("resourceName"));
   }
 
   public static Document resourceToStatusRef(Resource resource) {
     return new Document("resourceId", resource.getId()).append("resourceName", resource.getName());
+  }
+
+  public static Document resourceToDocument(Resource resource) {
+    return new Document("_id", resource.getId()).append("name", resource.getName());
+  }
+
+  public static Resource resourceFromDocument(Document document) {
+    return new ResourceImpl(document.getString("_id"), document.getString("name"));
   }
 
   private static AggregatedStatus aggregatedStatusFromDocument(Document document) {
@@ -74,5 +82,6 @@ public class DocumentMapper {
 
     return aggregatedStatus;
   }
+
 
 }

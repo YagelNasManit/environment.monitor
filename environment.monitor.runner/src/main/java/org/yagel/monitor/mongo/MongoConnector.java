@@ -34,12 +34,10 @@ public class MongoConnector {
     if (connector == null) {
       try {
         String mongoConnectURI = System.getProperty("mongo.connect.uri", null);
-
         if (mongoConnectURI == null)
           connector = new MongoConnector();
         else
           connector = new MongoConnector(mongoConnectURI);
-
       } catch (Exception e) {
         log.error("Exception on mongoDB connection creation. ", e);
         throw new RuntimeException(e);
