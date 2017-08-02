@@ -2,8 +2,8 @@ package org.yagel.monitor.resource;
 
 public class AggregatedStatus {
 
-  Status status;
-  long count;
+  private Status status;
+  private long count;
 
   public Status getStatus() {
     return status;

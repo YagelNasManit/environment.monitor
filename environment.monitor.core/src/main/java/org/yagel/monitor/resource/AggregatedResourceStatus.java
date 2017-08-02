@@ -6,10 +6,10 @@ import java.util.List;
 
 public class AggregatedResourceStatus {
 
-  Resource resource;
-  List<AggregatedStatus> resourceStatuses;
+  private Resource resource;
+  private List<AggregatedStatus> resourceStatuses;
 
-  long count;
+  private long count;
 
   public Resource getResource() {
     return resource;
