@@ -45,6 +45,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     this.chart_r = this.element.nativeElement.offsetWidth / dataset.length / 2 * 0.85;
 
     this.color = d3.scaleOrdinal()
+      .domain(["Online", "Unavailable", "Unknown", "BorderLine"])
       .range(["#00a65a", "#dd4b39", "#444444", "#f39c12"]);
 
     console.log("chart m ->  " + this.chart_m);
@@ -53,7 +54,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 // todo hardcoded
     this.createLegend(["Online", "Unavailable", "Unknown", "BorderLine"]);
 
-    let donut = this.charts.selectAll('.donut')
+    this.charts.selectAll('.donut')
       .data(dataset)
       .enter().append('svg:svg')
       .attr('width', (this.chart_r + this.chart_m) * 2)
@@ -146,7 +147,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 
     thisDonut.select('.value')
     // TODO units;
-      .text((d) => (sum) ? sum.toFixed(1) /*+ d.unit*/ : d.count.toFixed(1) /*+ d.unit*/);
+      .text((d) => (sum) ? sum.toFixed(0) /*+ d.unit*/ : d.count.toFixed(0) /*+ d.unit*/);
     thisDonut.select('.percentage')
       .text((d) => {
         return (sum) ? (sum / d.count * 100).toFixed(2) + '%'
@@ -155,10 +156,8 @@ export class EnvironmentTimescaleAggregatedChartComponent {
   }
 
   private resetAllCenterText() {
-    this.charts.selectAll('.value')
-      .text((d) => {
-        return d.count.toFixed(1) + d.unit;
-      });
+    this.charts.selectAll('.donut').select('.value')
+      .text((d) => d.count.toFixed(1) /*+ d.unit*/);
     this.charts.selectAll('.percentage')
       .text('');
   }
@@ -189,7 +188,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
       .enter()
       .append('svg:path')
       .attr('d', arc)
-      .style('fill', (d, i) => this.color(i))
+      .style('fill', (d, i) => this.color(d.data.status))
       .style('stroke', '#FFFFFF')
       .on('click', this.donutMouseClick)
       .on('mouseover', this.donutMouseOver)
