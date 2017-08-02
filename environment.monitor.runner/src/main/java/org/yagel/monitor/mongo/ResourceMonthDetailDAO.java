@@ -32,31 +32,13 @@ public class ResourceMonthDetailDAO {
     switchCollection(new Date());
   }
 
-  private void switchCollection(Date date) {
-    int toDate = DataUtils.joinYearMonthValues(date);
-    if (toDate == thisDate)
-      return;
-
-    String collectionName = String.format(COLLECTION_NAME, toDate);
-
-    boolean collectionExists = mongoDatabase.listCollectionNames().into(new ArrayList<>()).contains(collectionName);
-
-    thisCollection = mongoDatabase.getCollection(collectionName);
-
-    /*if(collectionExists)
-      thisCollection.ensureIndex("{environmentName: 1, resourceOrdinal:1, updated:1}");*/
-  }
-
   public synchronized void insert(String environmentName, ResourceStatus resourceStatus) {
     switchCollection(resourceStatus.getUpdated());
     thisCollection.insertOne(DocumentMapper.resourceStatusToDocument(environmentName, resourceStatus));
   }
 
-  public synchronized void insert(String environmentName, Collection<ResourceStatus> resourcesStatus) {
-    for (ResourceStatus status : resourcesStatus) {
-      insert(environmentName, status);
-    }
-
+  public synchronized void insert(final String environmentName, final Collection<ResourceStatus> resourcesStatus) {
+    resourcesStatus.forEach(rs -> insert(environmentName, rs));
   }
 
   // todo consider month switch during data extraction
@@ -121,5 +103,15 @@ public class ResourceMonthDetailDAO {
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
 
+  }
+
+
+  private void switchCollection(Date date) {
+    int toDate = DataUtils.joinYearMonthValues(date);
+    if (toDate == thisDate)
+      return;
+
+    String collectionName = String.format(COLLECTION_NAME, toDate);
+    thisCollection = mongoDatabase.getCollection(collectionName);
   }
 }
