@@ -1,2 +1,8 @@
-<div #containerPieChart></div>
+<div #chartContainer>
+  <div [hidden]="(data?.length>0)">
+    No Data
+  </div>
+  <div #containerPieChart [hidden]="!(data?.length>0)"></div>
+</div>
+
 {{data | json}}

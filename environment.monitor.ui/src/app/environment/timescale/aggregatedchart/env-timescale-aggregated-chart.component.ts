@@ -12,6 +12,8 @@ import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResource
 export class EnvironmentTimescaleAggregatedChartComponent {
 
   @ViewChild("containerPieChart") element: ElementRef;
+  @ViewChild("chartContainer") elementContainer: ElementRef;
+
 
   private charts: any;
   private chart_r: any;
@@ -41,8 +43,9 @@ export class EnvironmentTimescaleAggregatedChartComponent {
   private create(dataset) {
     this.charts = d3.select(this.element.nativeElement);
 
-    this.chart_m = this.element.nativeElement.offsetWidth / dataset.length / 2 * 0.14;
-    this.chart_r = this.element.nativeElement.offsetWidth / dataset.length / 2 * 0.85;
+    console.log(this.elementContainer.nativeElement.offsetWidth);
+    this.chart_m = this.elementContainer.nativeElement.offsetWidth / dataset.length / 2 * 0.14;
+    this.chart_r = this.elementContainer.nativeElement.offsetWidth / dataset.length / 2 * 0.85;
 
     this.color = d3.scaleOrdinal()
       .domain(["Online", "Unavailable", "Unknown", "BorderLine"])
@@ -178,7 +181,6 @@ export class EnvironmentTimescaleAggregatedChartComponent {
       .selectAll('path')
       .data((d, i) => pie(d.resourceStatuses));
 
-
     paths
       .transition()
       .duration(1000)
@@ -251,9 +253,4 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     this.setCenterText(thisDonut);
 
   };
-
-
-  onDateRangeChange(startDate: Date, endDate: Date) {
-    console.log(startDate + " " + endDate)
-  }
 }
