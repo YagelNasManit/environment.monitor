@@ -12,12 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ResourceDAO {
+public class ResourceDAO extends AbstractDAO {
 
   private final static String COLLECTION_NAME = "Resources";
   private MongoCollection<Document> thisCollection;
 
   public ResourceDAO(MongoDatabase db) {
+    super(db);
     thisCollection = db.getCollection(COLLECTION_NAME);
   }
 

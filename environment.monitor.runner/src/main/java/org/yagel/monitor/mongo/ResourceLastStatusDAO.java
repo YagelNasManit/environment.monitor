@@ -13,13 +13,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ResourceLastStatusDAO {
+public class ResourceLastStatusDAO extends AbstractDAO {
 
   private final static String COLLECTION_NAME = "ResourceLastStatus";
   private MongoCollection<Document> thisCollection;
 
 
   public ResourceLastStatusDAO(MongoDatabase db) {
+    super(db);
     thisCollection = db.getCollection(COLLECTION_NAME);
   }
 

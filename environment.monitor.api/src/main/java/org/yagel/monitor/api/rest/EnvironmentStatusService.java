@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yagel.monitor.EnvironmentConfig;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.ScheduleRunnerImpl;
+import org.yagel.monitor.mongo.AggregatedStatusDAO;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
-import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 
 import java.util.Date;
@@ -63,7 +63,7 @@ public class EnvironmentStatusService {
       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
-    ResourceMonthDetailDAO detailDAO = MongoConnector.getInstance().getMonthDetailDAO();
+    AggregatedStatusDAO detailDAO = MongoConnector.getInstance().getAggregatedStatusDAO();
     List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
 
     return ResponseEntity.ok(aggStatusses);
