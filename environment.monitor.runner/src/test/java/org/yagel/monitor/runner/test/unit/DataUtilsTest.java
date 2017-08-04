@@ -64,6 +64,7 @@ public class DataUtilsTest {
 
 
   @Test
+  @Deprecated
   public void testMonthEnumeration() {
     LocalDateTime end = LocalDateTime.of(2017, 12, 1, 3, 1);
     LocalDateTime start = LocalDateTime.of(2017, 1, 1, 3, 1);
@@ -74,4 +75,19 @@ public class DataUtilsTest {
     Assert.assertEquals(monthNumbers.size(), 12);
     Assert.assertEquals(monthNumbers, Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
   }
+
+  @Test
+  public void testSplitDatesIntoMonthes() {
+    LocalDateTime end = LocalDateTime.of(2017, 12, 3, 3, 1);
+    LocalDateTime start = LocalDateTime.of(2017, 1, 23, 6, 5);
+
+
+    List<Date[]> monthFrames = DataUtils.splitDatesIntoMonths(DataUtils.asDate(start), DataUtils.asDate(end));
+
+    monthFrames.forEach(dateRange -> System.out.println(dateRange[0] + " - " + dateRange[1]));
+
+    Assert.assertEquals(monthFrames.get(0)[0], DataUtils.asDate(start));
+    Assert.assertEquals(monthFrames.get(monthFrames.size() - 1)[1], DataUtils.asDate(end));
+  }
+
 }

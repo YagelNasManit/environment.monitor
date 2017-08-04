@@ -35,7 +35,7 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
     endDate = new Date();
     startDate = DateUtils.addDays(endDate, -1);
 
-    populateDB();
+    // populateDB();
   }
 
   private void populateDB() {
@@ -102,7 +102,28 @@ public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
       Assert.assertEquals(status.getCount(), 300);
       status.getResourceStatuses().forEach(value -> Assert.assertEquals(value.getCount(), 100));
     }
+  }
 
+  @Test
+  public void testResourceMonthDetailDAOGetAggregatedStatusesMonthIterate() throws Exception {
+    String environmentName = this.getClass().getName() + UUID.randomUUID();
+
+    final Date endDate = new Date();
+    final Date startDate = DateUtils.addDays(endDate, -35);
+
+    final Resource resource = rndResource();
+
+    List<ResourceStatus> statusesOnline = generateN(500, () -> rndResStatus(resource, Status.Online, rndDate(startDate, endDate)));
+    List<ResourceStatus> statusesUnknown = generateN(500, () -> rndResStatus(resource, Status.Unavailable, rndDate(startDate, endDate)));
+    List<ResourceStatus> statusesUnavailable = generateN(500, () -> rndResStatus(resource, Status.Unknown, rndDate(startDate, endDate)));
+
+    monthDetailDAO.insert(environmentName, statusesOnline);
+    monthDetailDAO.insert(environmentName, statusesUnavailable);
+    monthDetailDAO.insert(environmentName, statusesUnknown);
+
+    List<AggregatedResourceStatus> statusList = monthDetailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
+
+    Assert.assertEquals(statusList.stream().mapToLong(AggregatedResourceStatus::getCount).sum(), 1500);
 
 
   }
