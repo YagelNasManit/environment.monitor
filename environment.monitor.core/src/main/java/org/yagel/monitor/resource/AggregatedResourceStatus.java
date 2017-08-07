@@ -34,4 +34,14 @@ public class AggregatedResourceStatus {
   public void setCount(long count) {
     this.count = count;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("AggregatedResourceStatus{");
+    sb.append("resource=").append(resource);
+    sb.append(", resourceStatuses=").append(resourceStatuses);
+    sb.append(", count=").append(count);
+    sb.append('}');
+    return sb.toString();
+  }
 }

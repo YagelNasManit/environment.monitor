@@ -20,4 +20,13 @@ public class AggregatedStatus {
   public void setCount(long count) {
     this.count = count;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("AggregatedStatus{");
+    sb.append("status=").append(status);
+    sb.append(", count=").append(count);
+    sb.append('}');
+    return sb.toString();
+  }
 }
