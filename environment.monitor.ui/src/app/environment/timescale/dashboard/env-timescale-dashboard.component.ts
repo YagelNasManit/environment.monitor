@@ -3,6 +3,7 @@ import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 import {EnvironmentsService} from "../../../shared/service/environments.service";
 import {DateRange} from "../../../shared/model/DateRange";
 import * as moment from "moment";
+import {Environment} from "../../../shared/model/Environment";
 
 @Component({
   moduleId: module.id,
@@ -13,7 +14,7 @@ import * as moment from "moment";
 export class EnvironmentTimescaleDashboardComponent {
 
   public statusTimerange: StatusTimeRange;
-  public environments;
+  public environments: Environment[];
 
 
   constructor(envService: EnvironmentsService) {

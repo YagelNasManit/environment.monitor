@@ -1,16 +1,16 @@
-package org.yagel.monitor.api.rest;
+package org.yagel.monitor.api.rest.dto;
 
 import org.yagel.monitor.ResourceStatus;
 
 import java.util.List;
 
-public class EnvironmentStatus {
+public class EnvironmentStatusDTO {
 
   private String name;
 
   private List<ResourceStatus> resourcesStatus;
 
-  public EnvironmentStatus(String name, List<ResourceStatus> resourcesStatus) {
+  public EnvironmentStatusDTO(String name, List<ResourceStatus> resourcesStatus) {
     this.name = name;
     this.resourcesStatus = resourcesStatus;
   }

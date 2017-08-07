@@ -26,7 +26,12 @@
         <!-- /.box-header -->
         <div class="box-body">
 
-          <status-range-picker></status-range-picker>
+          <status-range-picker [statusTimerange]="statusTimerange"
+                               (onStatusRangeChanged)="onStatusRangeChanged($event)"
+                               [environments]="environments"
+                               [showResPicker]="true">
+
+          </status-range-picker>
         </div>
         <!--/.box-body-->
       </div>

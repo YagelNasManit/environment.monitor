@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yagel.monitor.EnvironmentConfig;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.ScheduleRunnerImpl;
+import org.yagel.monitor.api.rest.dto.EnvironmentStatusDTO;
 import org.yagel.monitor.mongo.AggregatedStatusDAO;
 import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
@@ -29,16 +30,16 @@ public class EnvironmentStatusService {
 
 
   @RequestMapping(value = "current/{environmentName}", method = RequestMethod.GET)
-  public ResponseEntity<EnvironmentStatus> getEnvironmentStatus(@PathVariable("environmentName") String environmentName) {
+  public ResponseEntity<EnvironmentStatusDTO> getEnvironmentStatus(@PathVariable("environmentName") String environmentName) {
     List<ResourceStatus> resourceStatuses = MongoConnector.getInstance().getLastStatusDAO().find(environmentName);
 
-    EnvironmentStatus environmentStatus = new EnvironmentStatus(environmentName, resourceStatuses);
+    EnvironmentStatusDTO environmentStatus = new EnvironmentStatusDTO(environmentName, resourceStatuses);
     return ResponseEntity.ok(environmentStatus);
   }
 
 
   @RequestMapping(value = "current", method = RequestMethod.GET)
-  public ResponseEntity<List<EnvironmentStatus>> getOverallStatus() {
+  public ResponseEntity<List<EnvironmentStatusDTO>> getOverallStatus() {
 
     List<String> envs = ScheduleRunnerImpl.getInstance().getConfig().getEnvironments()
         .stream()
@@ -48,9 +49,9 @@ public class EnvironmentStatusService {
     final ResourceLastStatusDAO statusDAO = MongoConnector.getInstance().getLastStatusDAO();
 
 
-    List<EnvironmentStatus> statusList = envs
+    List<EnvironmentStatusDTO> statusList = envs
         .stream()
-        .map(env -> new EnvironmentStatus(env, statusDAO.find(env)))
+        .map(env -> new EnvironmentStatusDTO(env, statusDAO.find(env)))
         .collect(Collectors.toList());
 
     return ResponseEntity.ok(statusList);

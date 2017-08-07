@@ -29,7 +29,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 
   @Input()
   set statusTimerange(statusTimerange: StatusTimeRange) {
-    this.dataService.getAggregatedResourceStatuses(statusTimerange.environment, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
+    this.dataService.getAggregatedResourceStatuses(statusTimerange.environment.environmentName, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
       this.data = data;
 
       if (this.charts == null)
