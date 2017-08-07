@@ -19,7 +19,6 @@ export class EnvironmentTimescaleDashboardComponent {
   constructor(envService: EnvironmentsService) {
     envService.getEnvironments().subscribe(envs => {
         this.environments = envs;
-      // TODO return start date instead of afternoon
       this.statusTimerange = new StatusTimeRange(new DateRange(moment().startOf('day').toDate(), moment().toDate(), null), envs[0], null)
       }
     );

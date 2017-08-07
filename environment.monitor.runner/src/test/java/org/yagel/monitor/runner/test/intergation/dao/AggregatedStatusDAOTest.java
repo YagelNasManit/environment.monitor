@@ -117,6 +117,12 @@ public class AggregatedStatusDAOTest extends AbstractDAOTest {
     List<AggregatedResourceStatus> statusList = aggregatedStatusDAO.getAggregatedStatuses(environmentName, startDate, endDate);
 
     Assert.assertEquals(statusList.stream().mapToLong(AggregatedResourceStatus::getCount).sum(), 1500);
+    Assert.assertEquals(statusList.size(), 1);
+    Assert.assertEquals(statusList.get(0).getCount(), 1500);
+    Assert.assertEquals(statusList.get(0).getResourceStatuses().size(), 3);
+    Assert.assertEquals(statusList.get(0).getResourceStatuses().get(0).getCount(), 500);
+    Assert.assertEquals(statusList.get(0).getResourceStatuses().get(1).getCount(), 500);
+    Assert.assertEquals(statusList.get(0).getResourceStatuses().get(2).getCount(), 500);
 
 
   }

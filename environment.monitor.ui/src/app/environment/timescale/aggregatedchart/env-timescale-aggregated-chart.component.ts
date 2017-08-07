@@ -54,7 +54,6 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     console.log("chart m ->  " + this.chart_m);
     console.log("chart r -> " + this.chart_r);
 
-// todo hardcoded
     this.createLegend(["Online", "Unavailable", "Unknown", "BorderLine"]);
 
     this.charts.selectAll('.donut')
@@ -149,7 +148,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     let sum = d3.sum(thisDonut.selectAll('.clicked').data(), (d) => d.resourceStatuses.count);
 
     thisDonut.select('.value')
-    // TODO units;
+    // TODO consider adding units for future;
       .text((d) => (sum) ? sum.toFixed(0) /*+ d.unit*/ : d.count.toFixed(0) /*+ d.unit*/);
     thisDonut.select('.percentage')
       .text((d) => {
@@ -218,7 +217,7 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     let thisDonut = d3.select(j[i].parentNode);
 
     thisDonut.select('.value').text(function (donut_d) {
-      return d.data.count.toFixed(1) + donut_d.unit;
+      return d.data.count.toFixed(1) /*+ donut_d.unit*/;
     });
 
     thisDonut.select('.percentage').text(function (donut_d) {
