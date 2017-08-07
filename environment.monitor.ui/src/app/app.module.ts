@@ -19,6 +19,7 @@ import {EnvironmentStatusService} from "./shared/service/environment-status.serv
 import {EnvironmentTimescaleDashboardComponent} from "./environment/timescale/dashboard/env-timescale-dashboard.component";
 import {EnvironmentTimescaleAggregatedChartComponent} from "./environment/timescale/aggregatedchart/env-timescale-aggregated-chart.component";
 import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statusrange-picker.component";
+import {ResourceTimescaleDashboardComponent} from "./resource/timescale/dashboard/resource-timescale-dashboard.component";
 
 
 @NgModule({
@@ -40,6 +41,9 @@ import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statu
     //timescale
     EnvironmentTimescaleDashboardComponent,
     EnvironmentTimescaleAggregatedChartComponent,
+
+    // resource
+    ResourceTimescaleDashboardComponent,
 
     //shared
     StatusTimeRangePicker
