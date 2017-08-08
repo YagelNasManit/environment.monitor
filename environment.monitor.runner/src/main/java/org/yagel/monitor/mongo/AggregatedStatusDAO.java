@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,8 +40,8 @@ public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
 
   }
 
-
-  public synchronized List<AggregatedResourceStatus> getAggregatedStatuses(String environmentName, Date from, Date to) {
+  public synchronized List<AggregatedResourceStatus> getAggregatedStatuses(String environmentName, Set<String> resourceIds,
+      Date from, Date to) {
     List<AggregatedResourceStatus> aggStatusesResulting = new ArrayList<>();
 
     List<Date[]> dateFrames = DataUtils.splitDatesIntoMonths(from, to);
@@ -48,8 +49,12 @@ public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
     for (Date[] dates : dateFrames) {
       switchCollection(dates[0]);
 
+      Document searchQuery = new Document("environmentName", environmentName).append("updated", new Document("$gte", dates[0]).append("$lte", dates[1]));
+      if (resourceIds != null)
+        searchQuery.append("resource.resourceId", new Document("$in", resourceIds));
+
       AggregateIterable<Document> documents = thisCollection.aggregate(Arrays.asList(
-          Aggregates.match(new Document("environmentName", environmentName).append("updated", new Document("$gte", dates[0]).append("$lte", dates[1]))),
+          Aggregates.match(searchQuery),
           Document.parse("{$group: {'_id':{ 'res': '$resource','status':'$statusOrdinal'},'count':{ '$sum' :1}}}"),
           Document.parse("{$group: {'_id':{ 'resource': '$_id.res'},'statuses': {'$push': {'statusOrdinal':'$_id.status', 'count': '$count'}}, 'count':{'$sum':'$count'}}}")
 
@@ -60,7 +65,10 @@ public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
     }
 
     return buildAggregatedList(aggStatusesResulting);
+  }
 
+  public synchronized List<AggregatedResourceStatus> getAggregatedStatuses(String environmentName, Date from, Date to) {
+    return getAggregatedStatuses(environmentName, null, from, to);
   }
 
   private List<AggregatedResourceStatus> buildAggregatedList(List<AggregatedResourceStatus> aggStatuses) {

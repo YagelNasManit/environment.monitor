@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {EnvironmentStatus} from "../model/EnvironmentStatus";
 import {Status} from "../model/Status";
 import * as moment from "moment";
+import {AggregatedResourceStatus} from "../model/AggregatedResourceStatus";
 
 @Injectable()
 export class EnvironmentStatusService {
@@ -47,13 +48,29 @@ export class EnvironmentStatusService {
 
   getAggregatedResourceStatuses(environment: string, startDate: Date, endDate: Date) {
 
-
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
     return this.http.get(`http://localhost:8080/aggregated/${environment}?startDate=${start}&endDate=${end}`)
       .map((resp: Response) => {
         return resp.json();
+      });
+  }
+
+  getAggregatedResourceStatusesResource(environment: string, resourceId: string, startDate: Date, endDate: Date): Observable<AggregatedResourceStatus> {
+
+    let start = moment(startDate).toISOString();
+    let end = moment(endDate).toISOString();
+
+    return this.http.get(`http://localhost:8080/aggregated/${environment}?startDate=${start}&endDate=${end}&resources=${resourceId}`)
+      .map((resp: Response) => {
+        return resp.json()[0];
+      })
+      .map(aggStatus => {
+        aggStatus.resourceStatuses.forEach(resStatus => {
+          resStatus.status = Status[resStatus.status]
+        });
+        return aggStatus;
       });
   }
 

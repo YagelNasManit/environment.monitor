@@ -20,6 +20,7 @@ import org.yagel.monitor.resource.AggregatedResourceStatus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -61,11 +62,12 @@ public class EnvironmentStatusService {
   @RequestMapping(value = "aggregated/{environmentName}", method = RequestMethod.GET)
   public ResponseEntity<List<AggregatedResourceStatus>> getStatus(
       @PathVariable("environmentName") String environmentName,
+      @RequestParam(value = "resources", required = false) Set<String> resources,
       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
     AggregatedStatusDAO detailDAO = MongoConnector.getInstance().getAggregatedStatusDAO();
-    List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, startDate, endDate);
+    List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, resources, startDate, endDate);
 
     return ResponseEntity.ok(aggStatusses);
   }

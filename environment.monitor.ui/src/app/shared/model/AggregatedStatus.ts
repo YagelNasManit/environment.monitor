@@ -1,6 +1,6 @@
 import {Status} from "./Status";
 export class AggregatedStatus {
 
-  constructor(status: Status, count: number) {
+  constructor(public status: Status, public count: number) {
   }
 }
