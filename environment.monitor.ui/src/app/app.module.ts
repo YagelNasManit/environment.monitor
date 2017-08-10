@@ -21,6 +21,7 @@ import {EnvironmentTimescaleAggregatedChartComponent} from "./environment/timesc
 import {StatusTimeRangePicker} from "./shared/components/statusrangepicker/statusrange-picker.component";
 import {ResourceTimescaleDashboardComponent} from "./resource/timescale/dashboard/resource-timescale-dashboard.component";
 import {ResourceTimescaleTableComponent} from "./resource/timescale/table/resource-timescale-table.component";
+import {ResourceTimescaleChartComponent} from "./resource/timescale/chart/resource-timescale-chart.component";
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import {ResourceTimescaleTableComponent} from "./resource/timescale/table/resour
     // resource
     ResourceTimescaleDashboardComponent,
     ResourceTimescaleTableComponent,
+    ResourceTimescaleChartComponent,
 
     //shared
     StatusTimeRangePicker
