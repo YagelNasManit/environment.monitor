@@ -88,7 +88,7 @@
         <div class="box-body">
 
 
-          <resource-timescale-chart></resource-timescale-chart>
+          <resource-timescale-chart *ngIf="statusTimerange" [statusTimerange]="statusTimerange"></resource-timescale-chart>
 
           <!-- /.box-body -->
         </div>

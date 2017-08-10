@@ -5,6 +5,7 @@ import {EnvironmentStatus} from "../model/EnvironmentStatus";
 import {Status} from "../model/Status";
 import * as moment from "moment";
 import {AggregatedResourceStatus} from "../model/AggregatedResourceStatus";
+import {ResourceStatus} from "../model/ResourceStatus";
 
 @Injectable()
 export class EnvironmentStatusService {
@@ -71,6 +72,23 @@ export class EnvironmentStatusService {
           resStatus.status = Status[resStatus.status]
         });
         return aggStatus;
+      });
+  }
+
+  getResourceStatuses(environment: string, resourceId: string, startDate: Date, endDate: Date): Observable<ResourceStatus[]> {
+    let start = moment(startDate).toISOString();
+    let end = moment(endDate).toISOString();
+
+    return this.http.get(`http://localhost:8080/resource/status/${environment}/${resourceId}?startDate=${start}&endDate=${end}`)
+      .map((resp: Response) => {
+        return resp.json();
+      })
+      .map(statuses => {
+        statuses.forEach(resStatus => {
+          resStatus.status = Status[resStatus.status];
+          resStatus.updated = new Date(resStatus.updated)
+        });
+        return statuses;
       });
   }
 

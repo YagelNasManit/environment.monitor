@@ -2,8 +2,13 @@ package org.yagel.monitor.mongo;
 
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
+import org.bson.conversions.Bson;
 import org.yagel.monitor.ResourceStatus;
+import org.yagel.monitor.StatusUpdate;
+import org.yagel.monitor.resource.Status;
+import org.yagel.monitor.resource.StatusUpdateImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +49,30 @@ public class ResourceMonthDetailDAO extends AbstractTimeRangeDAO {
         .sort(Sorts.ascending("updated"))
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
+
+  }
+
+  public List<StatusUpdate> getStatusUpdates(String environmentName, String resourceId, Date from, Date to) {
+
+    switchCollection(from);
+
+    Bson filter = Filters.and(
+        Filters.eq("environmentName", environmentName),
+        Filters.eq("resource.resourceId", resourceId),
+        Filters.gte("updated", from),
+        Filters.lte("updated", to)
+    );
+
+    Bson project = Projections.fields(Projections.include("updated", "statusOrdinal"), Projections.excludeId());
+
+    return this.thisCollection
+        .find(filter)
+        .projection(project)
+        .map(
+            doc -> new StatusUpdateImpl(Status.fromSerialNumber(doc.getInteger("statusOrdinal")), doc.getDate("updated"))
+        )
+        .into(new ArrayList<>());
+
 
   }
 }
