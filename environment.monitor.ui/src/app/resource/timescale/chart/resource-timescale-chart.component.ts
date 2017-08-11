@@ -52,7 +52,7 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
 
   /** main chart container */
   private svg: any;
-  private data: any;
+  //private data: any;
 
 
   constructor(public statusService: EnvironmentStatusService) {
@@ -69,12 +69,15 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     )
       .subscribe(statuses => {
         this.statuses = statuses;
-        console.log(statuses)
+        console.log(statuses);
+        this.buildChart(statuses);
       });
   }
 
   ngAfterViewInit(): void {
+  }
 
+  buildChart(data: ResourceStatus[]) {
     this.configureSize();
 
     this.parseDate = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
@@ -86,14 +89,11 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     // mathematical scales for the x and y axes
     this.x = d3.scaleTime()
       .range([0, this.width]);
-    this.y = d3.scaleLinear()
-      .range([this.height, 0]);
 
-    this.data = this.dataMock.map(dta => {
-      return this.parse(dta);
-    });
+    this.y = d3.scaleOrdinal()
+      .domain(["Online", "Unavailable", "Unknown", "BorderLine"])
+      .range(["#00a65a", "#dd4b39", "#444444", "#f39c12"]);
 
-    this.colour.domain(d3.keys(this.data[0]));
 
     this.svg = d3.select(this.element.nativeElement)
       .append("svg") // the overall space
@@ -105,26 +105,23 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .extent([[0, 0], [this.width, this.heightOverview]])
       .on("brush", this.brushed);
 
-    this.buildMainChart();
-    this.buildOverviewChart();
-
+    this.buildMainChart(data);
+    this.buildOverviewChart(data);
   }
 
-  buildMainChart() {
+  buildMainChart(data: ResourceStatus[]) {
     this.xAxis = d3.axisBottom(this.x);
-    this.yAxis = d3.axisLeft(this.y);
+    /*this.yAxis = d3.axisLeft(this.y);*/
 
     this.main = this.svg.append("g")
       .attr("class", "main")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
+
     // data ranges for the x and y axes
-    this.x.domain(d3.extent(this.data, function (d) {
-      return d.date;
+    this.x.domain(d3.extent(data, function (d) {
+      return d.updated;
     }));
-    this.y.domain([0, d3.max(this.data, function (d) {
-      return d.total;
-    })]);
 
     // draw the axes now that they are fully set up
     this.main.append("g")
@@ -132,37 +129,31 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .attr("transform", "translate(0," + this.height + ")")
       .call(this.xAxis);
     this.main.append("g")
-      .attr("class", "y axis")
-      .call(this.yAxis);
+      .attr("class", "y axis");
+    /* .call(this.yAxis);*/
 
-    // draw the bars
-    this.main.append("g")
-      .attr("class", "bars")
-      // a group for each stack of bars, positioned in the correct x position
-      .selectAll(".bar.stack")
-      .data(this.data)
-      .enter().append("g")
-      .attr("class", "bar stack")
-      .attr("transform", (d) => "translate(" + this.x(d.date) + ",0)")
-      // a bar for each value in the stack, positioned in the correct y positions
-      .selectAll("rect")
-      .data((d) => d.counts)
+    // appended basrs
+    let bars = this.main.append("g")
+      .attr("class", "bars");
+
+
+    bars.selectAll(".bar")
+      .data(data)
       .enter().append("rect")
+      .attr("transform", (d) => "translate(" + this.x(d.updated) + ",0)")
       .attr("class", "bar")
       .attr("width", 6)
-      .attr("y", (d) => this.y(d.y1))
-      .attr("height", (d) => this.y(d.y0) - this.y(d.y1))
-      .style("fill", (d) => this.colour(d.name));
-
+      .attr("y", 0)
+      .attr("height", this.height)
+      .style("fill", d => this.y(d.status));
   }
 
 
-  buildOverviewChart() {
+  buildOverviewChart(data: ResourceStatus[]) {
 
     this.xOverview = d3.scaleTime()
       .range([0, this.width]);
-    this.yOverview = d3.scaleLinear()
-      .range([this.heightOverview, 0]);
+    this.yOverview = this.y;
 
     this.xAxisOverview = d3.axisBottom(this.xOverview);
 
@@ -176,18 +167,19 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .call(this.xAxisOverview);
 
     this.xOverview.domain(this.x.domain());
-    this.yOverview.domain(this.y.domain());
+    /* this.yOverview.domain(this.y.domain());*/
 
     this.overview.append("g")
       .attr("class", "bars")
       .selectAll(".bar")
-      .data(this.data)
+      .data(data)
       .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", (d) => this.xOverview(d.date) - 3)
+      .attr("x", (d) => this.xOverview(d.updated) - 3)
       .attr("width", 6)
-      .attr("y", (d) => this.yOverview(d.total))
-      .attr("height", (d) => this.heightOverview - this.yOverview(d.total));
+      .attr("y", 0)
+      .attr("height", this.heightOverview)
+      .style("fill", d => this.yOverview(d.status));
 
     // add the brush target area on the overview chart
     this.overview.append("g")
@@ -221,135 +213,7 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     let s = d3.event.selection || this.xOverview.range();
     this.x.domain(s.map(this.xOverview.invert, this.xOverview));
 
-    this.main.selectAll(".bar.stack").attr("transform", (d) => "translate(" + this.x(d.date) + ",0)");
+    this.main.selectAll(".bar").attr("transform", (d) => "translate(" + this.x(d.updated) + ",0)");
     this.main.select(".x.axis").call(this.xAxis)
   };
-
-  // by habit, cleaning/parsing the data and return a new object to ensure/clarify data object structure
-  private parse(d) {
-
-    let value = {
-      date: null,
-      total: 0,
-      counts: null
-    };
-
-    value.date = this.parseDate(d.date);
-    //let value = { date: this.parseDate(d.date) }; // turn the date string into a date object
-
-    // adding calculated data to each count in preparation for stacking
-    let y0 = 0; // keeps track of where the "previous" value "ended"
-    value.counts = ["count", "count2", "count3"].map(function (name) {
-      return {
-        name: name,
-        y0: y0,
-        // add this count on to the previous "end" to create a range, and update the "previous end" for the next iteration
-        y1: y0 += +d[name]
-      };
-    });
-    // quick way to get the total from the previous calculations
-    value.total = value.counts[value.counts.length - 1].y1;
-    return value;
-  }
-
-  private dataMock = [{"date": "2017-08-13T17:59:08Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-10T04:08:01Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-16T19:03:53Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T08:56:05Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T13:12:10Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-10T17:36:50Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T09:54:54Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-11T09:41:40Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T20:38:06Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T21:16:44Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T13:01:53Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-15T18:34:15Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-11T03:38:14Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-13T20:05:46Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T00:07:19Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-11T15:40:29Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-13T07:46:09Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T20:09:41Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T08:50:15Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-10T06:12:52Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-10T06:05:18Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T19:57:01Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T02:13:14Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-10T15:50:09Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-16T11:47:28Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T06:39:33Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T18:04:32Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T15:02:49Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-13T19:49:38Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T15:10:58Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-11T16:37:06Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T17:47:49Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T06:54:29Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T20:35:42Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T09:27:47Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T13:36:02Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T17:49:57Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-12T00:32:44Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-13T16:00:53Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T08:56:01Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T04:15:32Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-11T21:46:05Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-09T15:30:26Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T20:22:09Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-15T17:32:48Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-15T17:35:38Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-15T01:08:39Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-08T12:57:22Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T07:12:00Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T02:19:48Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T09:59:11Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T01:13:58Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T20:54:40Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T01:34:20Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T05:47:03Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-15T20:44:12Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-14T12:19:21Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-10T16:51:56Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-09T07:40:54Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-13T17:46:15Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T16:28:46Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-13T21:06:04Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-11T04:37:33Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-08T21:10:07Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-08T12:57:44Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T02:44:15Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T02:01:47Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-10T14:00:33Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-15T11:36:58Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-10T14:52:05Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-08T23:52:42Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-15T17:19:35Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-11T21:56:46Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T05:16:42Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-13T22:09:57Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T18:58:09Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-12T17:05:14Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-09T13:20:50Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-09T03:17:59Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-16T06:10:30Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-10T14:33:51Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T12:29:56Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-09T02:52:34Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-09T17:49:45Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T16:42:01Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T06:42:30Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-14T00:47:33Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-15T12:23:36Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-13T04:47:19Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T22:40:03Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T01:14:50Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-12T01:12:51Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-09T01:10:22Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-08T09:44:01Z", "count": 0, "count2": 0, "count3": 1},
-    {"date": "2017-08-11T23:56:10Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T23:11:46Z", "count": 1, "count2": 0, "count3": 0},
-    {"date": "2017-08-14T08:21:56Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-10T00:16:01Z", "count": 0, "count2": 0, "count3": 0},
-    {"date": "2017-08-13T19:11:42Z", "count": 0, "count2": 1, "count3": 0},
-    {"date": "2017-08-11T08:54:57Z", "count": 1, "count2": 0, "count3": 0}];
 }
