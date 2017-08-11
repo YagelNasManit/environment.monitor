@@ -52,6 +52,7 @@ export class ResourceTimescaleChartComponent {
   /** overview chart selection*/
   private overview: any;
   private brush: any;
+  private brushMain: any;
 
   /** main chart container */
   private svg: any;
@@ -111,6 +112,10 @@ export class ResourceTimescaleChartComponent {
       .extent([[0, 0], [this.width, this.heightOverview]])
       .on("brush", this.brushed);
 
+    this.brushMain = d3.brushX()
+      .extent([[0, 0], [this.width, this.height]])
+      .on("brush", this.brushedMain);
+
     // build charts
     this.buildMainChart(data);
     this.buildOverviewChart(data);
@@ -150,6 +155,10 @@ export class ResourceTimescaleChartComponent {
       .call(this.xAxis);
     this.main.append("g")
       .attr("class", "y axis");
+
+    this.main.append("g")
+      .attr("class", "x brush")
+      .call(this.brushMain);
 
     // appended bars section
     this.bars = this.main.append("g")
@@ -242,6 +251,13 @@ export class ResourceTimescaleChartComponent {
 
     this.main.selectAll(".bar").attr("transform", (d) => "translate(" + this.x(d.updated) + ",0)");
     this.main.select(".x.axis").call(this.xAxis)
+  };
+
+  private brushedMain = () => {
+    console.log("brushed");
+    let selection = d3.event.selection;
+    console.log(this.x.invert(selection[0]) + " -" + this.x.invert(selection[1]))
+    // TODO having this dates we can query for exact statuses in future
   };
 
 
