@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from "@angular/core";
+import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 import * as d3 from "d3";
 import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
 import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
@@ -8,13 +8,13 @@ import {ResourceStatus} from "../../../shared/model/ResourceStatus";
   selector: "resource-timescale-chart",
   templateUrl: "./resource-timescale-chart.component.html"
 })
-export class ResourceTimescaleChartComponent implements AfterViewInit {
+export class ResourceTimescaleChartComponent {
   @ViewChild("containerBarChart") element: ElementRef;
 
   statuses: ResourceStatus[];
 
   /** charts margin */
-  private margin;
+  private margin: any;
 
   /** main chart width */
   private width: number;
@@ -22,14 +22,17 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
   /** main chart height */
   private height: number;
 
+  /** overview chart margin*/
+  private marginOverview: any;
+
+  /** overview chart height*/
+  private heightOverview: number;
+
   /** X scale of main chart */
   private x: any;
 
   /** Y scale of main chart */
   private y: any;
-
-  /** color scheme for main chart*/
-  private colour: any;
 
   /** x scale of overview chart */
   private xOverview: any;
@@ -37,22 +40,26 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
   /** y scale of overview chart */
   private yOverview: any;
 
-
+  /** bottom data axis for main chart */
   private xAxis: any;
-  private yAxis: any;
+
+  /** bottom data axis for overview chart */
   private xAxisOverview: any;
 
+  /** main chart selection*/
   private main: any;
+
+  /** overview chart selection*/
   private overview: any;
   private brush: any;
 
-  private marginOverview;
-  private heightOverview: number;
-  private parseDate: any;
-
   /** main chart container */
   private svg: any;
-  //private data: any;
+
+
+  private bars: any;
+  private barsOverview: any;
+
 
 
   constructor(public statusService: EnvironmentStatusService) {
@@ -69,32 +76,31 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     )
       .subscribe(statuses => {
         this.statuses = statuses;
-        console.log(statuses);
-        this.buildChart(statuses);
+        if (this.main) {
+          console.log("update chart");
+          this.updateChart(statuses);
+        }
+        else {
+          console.log("draw chart");
+          this.buildChart(statuses);
+        }
       });
   }
 
-  ngAfterViewInit(): void {
-  }
 
-  buildChart(data: ResourceStatus[]) {
+  private buildChart(data: ResourceStatus[]) {
     this.configureSize();
 
-    this.parseDate = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
-
-    // some colours to use for the bars
-    this.colour = d3.scaleOrdinal()
-      .range(["#00a65a", "#dd4b39", "#444444", "#f39c12"]);
-
-    // mathematical scales for the x and y axes
+    // scales for the x and y axes
     this.x = d3.scaleTime()
       .range([0, this.width]);
 
+    // scales for color definition for particular state
     this.y = d3.scaleOrdinal()
       .domain(["Online", "Unavailable", "Unknown", "BorderLine"])
       .range(["#00a65a", "#dd4b39", "#444444", "#f39c12"]);
 
-
+    // configure chart viewport
     this.svg = d3.select(this.element.nativeElement)
       .append("svg") // the overall space
       .attr("width", this.width + this.margin.left + this.margin.right)
@@ -105,13 +111,27 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .extent([[0, 0], [this.width, this.heightOverview]])
       .on("brush", this.brushed);
 
+    // build charts
     this.buildMainChart(data);
     this.buildOverviewChart(data);
   }
 
-  buildMainChart(data: ResourceStatus[]) {
+  private updateChart(data: ResourceStatus[]) {
+    // data ranges for the x and y axes
+    this.x.domain(d3.extent(data, function (d) {
+      return d.updated;
+    }));
+
+    this.xOverview.domain(this.x.domain());
+
+    // update charts
+    this.updateBars(data);
+    this.updateBarsOverview(data);
+
+  }
+
+  private buildMainChart(data: ResourceStatus[]) {
     this.xAxis = d3.axisBottom(this.x);
-    /*this.yAxis = d3.axisLeft(this.y);*/
 
     this.main = this.svg.append("g")
       .attr("class", "main")
@@ -130,14 +150,20 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .call(this.xAxis);
     this.main.append("g")
       .attr("class", "y axis");
-    /* .call(this.yAxis);*/
 
-    // appended basrs
-    let bars = this.main.append("g")
+    // appended bars section
+    this.bars = this.main.append("g")
       .attr("class", "bars");
 
+    this.updateBars(data);
 
-    bars.selectAll(".bar")
+  }
+
+  private updateBars(data: ResourceStatus[]) {
+
+    this.bars.selectAll(".bar").remove().exit();
+
+    this.bars.selectAll(".bar")
       .data(data)
       .enter().append("rect")
       .attr("transform", (d) => "translate(" + this.x(d.updated) + ",0)")
@@ -148,9 +174,21 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .style("fill", d => this.y(d.status));
   }
 
+  private updateBarsOverview(data: ResourceStatus[]) {
+    this.barsOverview.selectAll(".bar").remove().exit();
 
-  buildOverviewChart(data: ResourceStatus[]) {
+    this.barsOverview.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", (d) => this.xOverview(d.updated) - 3)
+      .attr("width", 6)
+      .attr("y", 0)
+      .attr("height", this.heightOverview)
+      .style("fill", d => this.yOverview(d.status));
+  }
 
+  private buildOverviewChart(data: ResourceStatus[]) {
     this.xOverview = d3.scaleTime()
       .range([0, this.width]);
     this.yOverview = this.y;
@@ -167,19 +205,11 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       .call(this.xAxisOverview);
 
     this.xOverview.domain(this.x.domain());
-    /* this.yOverview.domain(this.y.domain());*/
 
-    this.overview.append("g")
-      .attr("class", "bars")
-      .selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", (d) => this.xOverview(d.updated) - 3)
-      .attr("width", 6)
-      .attr("y", 0)
-      .attr("height", this.heightOverview)
-      .style("fill", d => this.yOverview(d.status));
+    this.barsOverview = this.overview.append("g")
+      .attr("class", "bars");
+
+    this.updateBarsOverview(data);
 
     // add the brush target area on the overview chart
     this.overview.append("g")
@@ -192,7 +222,6 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
       // no y scale, i.e. we should see the extent being marked
       // over the full height of the overview chart
       .attr("height", this.heightOverview + 7);  // +7 is magic number for styling
-
   }
 
   private configureSize() {
@@ -207,8 +236,6 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     this.heightOverview = 500 - this.marginOverview.top - this.marginOverview.bottom;
   }
 
-
-
   private brushed = () => {
     let s = d3.event.selection || this.xOverview.range();
     this.x.domain(s.map(this.xOverview.invert, this.xOverview));
@@ -216,4 +243,6 @@ export class ResourceTimescaleChartComponent implements AfterViewInit {
     this.main.selectAll(".bar").attr("transform", (d) => "translate(" + this.x(d.updated) + ",0)");
     this.main.select(".x.axis").call(this.xAxis)
   };
+
+
 }
