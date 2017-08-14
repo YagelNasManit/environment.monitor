@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class LastStatusDAOTest extends AbstractDAOTest {
+public class ResourceLastStatusDAOTest extends AbstractDAOTest {
 
   private ResourceLastStatusDAO lastStatusDAO;
   private String environmentName = this.getClass().getSimpleName();

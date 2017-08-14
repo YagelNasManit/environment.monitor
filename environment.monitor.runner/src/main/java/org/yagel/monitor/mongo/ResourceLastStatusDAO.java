@@ -1,8 +1,11 @@
 package org.yagel.monitor.mongo;
 
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.yagel.monitor.ResourceStatus;
@@ -24,20 +27,20 @@ public class ResourceLastStatusDAO extends AbstractDAO {
     thisCollection = db.getCollection(COLLECTION_NAME);
   }
 
-  /**
-   * remove database object from collection
-   *
-   * @param environmentName parameter for database object deletion
-   */
-  public void delete(String environmentName) {
-    thisCollection.deleteMany(new Document().append("environmentName", environmentName));
-  }
 
   /**
-   * insert into ResourceLastStatus collection new information. But firstly delete previous db object
-   *
-   * @param environmentName parameter for database object insertion / deletion
-   * @param resources       parameter for database object insertion
+   * Remove all last statuses for particular environment
+   * @param environmentName name of environment to remove statuses for
+   */
+  public void delete(String environmentName) {
+    thisCollection.deleteMany(eq("environmentName", environmentName));
+  }
+
+
+  /**
+   * Replace existing last statuses for environment by new ones
+   * @param environmentName environment to update statuses
+   * @param resources       new statuses to be set up
    */
   public synchronized void insert(final String environmentName, final Collection<ResourceStatus> resources) {
     delete(environmentName);
@@ -49,10 +52,10 @@ public class ResourceLastStatusDAO extends AbstractDAO {
     thisCollection.insertMany(dbResources);
   }
 
+
   /**
-   * remove database object from collection
-   *
-   * @param environmentName parameter for database object deletion
+   * Get last statuses for environment resources
+   * @param environmentName environment to fetch statuses for
    */
   public List<ResourceStatus> find(String environmentName) {
     List<ResourceStatus> resources = thisCollection.find(new Document().append("environmentName", environmentName))
@@ -62,18 +65,32 @@ public class ResourceLastStatusDAO extends AbstractDAO {
     return resources;
   }
 
+
+  /**
+   * Get last statuses for multiple environments
+   *
+   * @param environmentNames environments to fetch statuses for
+   * @return
+   */
   public List<ResourceStatus> find(Collection<String> environmentNames) {
-    List<ResourceStatus> resources = thisCollection.find(Filters.in("environmentName", environmentNames))
+    List<ResourceStatus> resources = thisCollection.find(in("environmentName", environmentNames))
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
 
     return resources;
   }
 
+
+  /**
+   * Get last statuses for particular environment and defined resources
+   * @param environmentName environment to fetch statuses for
+   * @param resourceIds resources to fetch statuses for
+   * @return
+   */
   public List<ResourceStatus> find(String environmentName, Set<String> resourceIds) {
-    Bson query = Filters.and(
-        Filters.eq("environmentName", environmentName),
-        Filters.in("resource.resourceId", resourceIds)
+    Bson query = and(
+        eq("environmentName", environmentName),
+        in("resource.resourceId", resourceIds)
     );
 
     List<ResourceStatus> resources = thisCollection.find(query)
