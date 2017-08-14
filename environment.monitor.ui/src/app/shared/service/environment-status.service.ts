@@ -6,6 +6,7 @@ import {Status} from "../model/Status";
 import * as moment from "moment";
 import {AggregatedResourceStatus} from "../model/AggregatedResourceStatus";
 import {ResourceStatus} from "../model/ResourceStatus";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class EnvironmentStatusService {
@@ -16,7 +17,7 @@ export class EnvironmentStatusService {
   }
 
   getOverallStatus(): Observable<EnvironmentStatus[]> {
-    return this.http.get('http://localhost:8080/environment/status/current')
+    return this.http.get(`${environment.apiBaseUrl}/environment/status/current`)
       .map((resp: Response) => {
         return resp.json();
       })
@@ -47,23 +48,23 @@ export class EnvironmentStatusService {
   }
 
 
-  getAggregatedResourceStatuses(environment: string, startDate: Date, endDate: Date) {
+  getAggregatedResourceStatuses(env: string, startDate: Date, endDate: Date) {
 
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`http://localhost:8080/environment/status/aggregated/${environment}?startDate=${start}&endDate=${end}`)
+    return this.http.get(`${environment.apiBaseUrl}/environment/status/aggregated/${env}?startDate=${start}&endDate=${end}`)
       .map((resp: Response) => {
         return resp.json();
       });
   }
 
-  getAggregatedResourceStatusesResource(environment: string, resourceId: string, startDate: Date, endDate: Date): Observable<AggregatedResourceStatus> {
+  getAggregatedResourceStatusesResource(env: string, resourceId: string, startDate: Date, endDate: Date): Observable<AggregatedResourceStatus> {
 
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`http://localhost:8080/environment/status/aggregated/${environment}?startDate=${start}&endDate=${end}&resources=${resourceId}`)
+    return this.http.get(`${environment.apiBaseUrl}/environment/status/aggregated/${env}?startDate=${start}&endDate=${end}&resources=${resourceId}`)
       .map((resp: Response) => {
         return resp.json()[0];
       })
@@ -75,11 +76,11 @@ export class EnvironmentStatusService {
       });
   }
 
-  getResourceStatuses(environment: string, resourceId: string, startDate: Date, endDate: Date): Observable<ResourceStatus[]> {
+  getResourceStatuses(env: string, resourceId: string, startDate: Date, endDate: Date): Observable<ResourceStatus[]> {
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`http://localhost:8080/resource/status/${environment}/${resourceId}?startDate=${start}&endDate=${end}`)
+    return this.http.get(`${environment.apiBaseUrl}/resource/status/${env}/${resourceId}?startDate=${start}&endDate=${end}`)
       .map((resp: Response) => {
         return resp.json();
       })

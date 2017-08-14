@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {Environment} from "../model/Environment";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class EnvironmentsService {
@@ -10,7 +11,7 @@ export class EnvironmentsService {
   }
 
   getEnvironments(): Observable<Environment[]> {
-    return this.http.get('http://localhost:8080/config/environments')
+    return this.http.get(`${environment.apiBaseUrl}/config/environments`)
       .map((resp: Response) => {
         return resp.json();
       });
