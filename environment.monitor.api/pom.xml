@@ -52,11 +52,6 @@
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.yagel</groupId>
-            <artifactId>environment.monitor.ui.frontend</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
 
         <!-- Module Dependencies -->
