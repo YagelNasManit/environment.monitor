@@ -5,14 +5,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.MongoConnector;
-import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
+import org.yagel.monitor.mongo.ResourceStatusDetailDAO;
 
 import java.util.List;
 import java.util.UUID;
 
-public class ResourceMonthDetailDAOTest extends AbstractDAOTest {
+public class ResourceStatusDetailDAOTest extends AbstractDAOTest {
 
-  private ResourceMonthDetailDAO monthDetailDAO;
+  private ResourceStatusDetailDAO monthDetailDAO;
 
   private String environemntName;
 

@@ -8,7 +8,7 @@ import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.AggregatedStatusDAO;
 import org.yagel.monitor.mongo.MongoConnector;
-import org.yagel.monitor.mongo.ResourceMonthDetailDAO;
+import org.yagel.monitor.mongo.ResourceStatusDetailDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 import org.yagel.monitor.resource.Status;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class AggregatedStatusDAOTest extends AbstractDAOTest {
 
   private AggregatedStatusDAO aggregatedStatusDAO;
-  private ResourceMonthDetailDAO monthDetailDAO;
+  private ResourceStatusDetailDAO monthDetailDAO;
 
   private String[] environemntNames;
   private Date startDate;
