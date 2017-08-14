@@ -51,8 +51,8 @@ public class MongoConnector {
     return new ResourceLastStatusDAO(db);
   }
 
-  public ResourceMonthDetailDAO getMonthDetailDAO() {
-    return new ResourceMonthDetailDAO(db);
+  public ResourceStatusDetailDAO getMonthDetailDAO() {
+    return new ResourceStatusDetailDAO(db);
   }
 
   public AggregatedStatusDAO getAggregatedStatusDAO() {
