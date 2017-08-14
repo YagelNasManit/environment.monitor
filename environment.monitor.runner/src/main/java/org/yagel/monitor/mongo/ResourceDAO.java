@@ -1,8 +1,12 @@
 package org.yagel.monitor.mongo;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
+import static org.yagel.monitor.mongo.DocumentMapper.resourceToDocument;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOneModel;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.yagel.monitor.Resource;
@@ -11,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ResourceDAO extends AbstractDAO {
 
@@ -29,23 +34,41 @@ public class ResourceDAO extends AbstractDAO {
    * @param resource resource to be upserted
    */
   public synchronized void insert(Resource resource) {
-    Document dbResource = DocumentMapper.resourceToDocument(resource);
-
-    this.thisCollection.updateOne(
-        new Document("_id", resource.getId()),
-        new Document("$set", dbResource), new UpdateOptions().upsert(true));
+    this.thisCollection.replaceOne(
+        eq("_id", resource.getId()),
+        resourceToDocument(resource),
+        new UpdateOptions().upsert(true));
   }
 
+
+  /**
+   * Inserts new resources to DB, or else updates existing ones descriptions if existing ID`s was used
+   *
+   * @param resource resources to be upserted
+   */
   public synchronized void insert(Set<Resource> resource) {
-    // TODO replace with Bulk write
-    resource.forEach(this::insert);
+    List<ReplaceOneModel<Document>> upserts =
+        resource.stream()
+            .map(
+                res -> new ReplaceOneModel<Document>(
+                    eq("_id", res.getId()),
+                    resourceToDocument(res),
+                    new UpdateOptions().upsert(true)
+                )
+            ).collect(Collectors.toList());
 
+    this.thisCollection.bulkWrite(upserts);
   }
 
-  public synchronized Resource find(String resourceId) {
-    Document dbResource = new Document("_id", resourceId);
 
-    List<Resource> resources = thisCollection.find(dbResource)
+  /**
+   * Finds single resource by id provided
+   *
+   * @param resourceId to be fetched
+   * @return matched by id resource
+   */
+  public synchronized Resource find(String resourceId) {
+    List<Resource> resources = thisCollection.find(eq("_id", resourceId))
         .limit(1)
         .map(DocumentMapper::resourceFromDocument)
         .into(new ArrayList<>());
@@ -53,8 +76,15 @@ public class ResourceDAO extends AbstractDAO {
     return resources.get(0);
   }
 
+
+  /**
+   * Finds multiple resources by id`s provided
+   *
+   * @param resourceIds to be fetched
+   * @return matched by id`s resources
+   */
   public synchronized Set<Resource> find(Set<String> resourceIds) {
-    return thisCollection.find(Filters.in("_id", resourceIds))
+    return thisCollection.find(in("_id", resourceIds))
         .map(DocumentMapper::resourceFromDocument)
         .into(new HashSet<>());
   }

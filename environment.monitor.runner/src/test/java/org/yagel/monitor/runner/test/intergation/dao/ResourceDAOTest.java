@@ -53,11 +53,12 @@ public class ResourceDAOTest extends AbstractDAOTest {
   @Test(dependsOnMethods = "testInsertFindSingle")
   public void testInsertFindMultiple() {
     Set<Resource> mockResources = new HashSet<>(generateN(5, this::rndResource));
+
     Set<String> mockResourcesIds = mockResources.stream().map(Resource::getId).collect(Collectors.toSet());
-
     resourceDAO.insert(mockResources);
-    Set<Resource> dbResourcesSet = resourceDAO.find(mockResourcesIds);
 
-    Assert.assertEquals(mockResources, dbResourcesSet);
+    Set<Resource> dbResources = resourceDAO.find(mockResourcesIds);
+
+    Assert.assertEquals(mockResources, dbResources);
   }
 }
