@@ -16,6 +16,7 @@ import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.StatusUpdate;
 import org.yagel.monitor.resource.Status;
 import org.yagel.monitor.resource.StatusUpdateImpl;
+import org.yagel.monitor.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,29 +83,35 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
    * @return
    */
   public List<StatusUpdate> getStatusUpdates(String environmentName, String resourceId, Date from, Date to) {
-    // todo definitelly need months iteration
-    switchCollection(from);
+    List<Date[]> dateFrames = DataUtils.splitDatesIntoMonths(from, to);
+    List<StatusUpdate> updates = new ArrayList<>();
 
-    Bson filter = and(
-        eq("environmentName", environmentName),
-        eq("resource.resourceId", resourceId),
-        gte("updated", from),
-        lte("updated", to)
-    );
+    for (Date[] dates : dateFrames) {
+      switchCollection(dates[0]);
 
-    Bson project = fields(include("updated", "statusOrdinal"), excludeId());
+      Bson filter = and(
+          eq("environmentName", environmentName),
+          eq("resource.resourceId", resourceId),
+          gte("updated", dates[0]),
+          lte("updated", dates[1])
+      );
 
-    return this.thisCollection
-        .find(filter)
-        .projection(project)
-        .map(
-            doc -> new StatusUpdateImpl(
-                Status.fromSerialNumber(doc.getInteger("statusOrdinal")),
-                doc.getDate("updated")
-            )
-        )
-        .into(new ArrayList<>());
+      Bson project = fields(include("updated", "statusOrdinal"), excludeId());
 
+      List<StatusUpdate> monthlyUpdates = this.thisCollection
+          .find(filter)
+          .projection(project)
+          .map(
+              doc -> new StatusUpdateImpl(
+                  Status.fromSerialNumber(doc.getInteger("statusOrdinal")),
+                  doc.getDate("updated")
+              )
+          )
+          .into(new ArrayList<>());
+
+      updates.addAll(monthlyUpdates);
+    }
+    return updates;
 
   }
 }
