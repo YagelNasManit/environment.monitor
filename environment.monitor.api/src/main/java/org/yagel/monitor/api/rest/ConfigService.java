@@ -1,5 +1,6 @@
 package org.yagel.monitor.api.rest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ public class ConfigService extends AbstractService {
 
 
   @RequestMapping(value = "/environments", method = RequestMethod.GET)
-  public List<EnvironmentConfigDTO> getEnvironments() {
+  public ResponseEntity<List<EnvironmentConfigDTO>> getEnvironments() {
 
     ResourceDAO resDAO = MongoConnector.getInstance().getResourceDAO();
 
@@ -29,7 +30,7 @@ public class ConfigService extends AbstractService {
         .map(config -> new EnvironmentConfigDTO(config.getEnvName(), resDAO.find(config.getCheckResources())))
         .collect(Collectors.toList());
 
-    return envConfigs;
+    return ResponseEntity.ok(envConfigs);
 
   }
 
