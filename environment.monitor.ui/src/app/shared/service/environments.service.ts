@@ -10,7 +10,7 @@ export class EnvironmentsService {
   }
 
   getEnvironments(): Observable<Environment[]> {
-    return this.http.get('http://localhost:8080/environments')
+    return this.http.get('http://localhost:8080/config/environments')
       .map((resp: Response) => {
         return resp.json();
       });

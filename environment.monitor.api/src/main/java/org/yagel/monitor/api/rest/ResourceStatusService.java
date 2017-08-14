@@ -2,7 +2,6 @@ package org.yagel.monitor.api.rest;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,19 +14,17 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
-@RequestMapping("/resource")
-public class ResourceStatusService {
+@RequestMapping("/resource/status/")
+public class ResourceStatusService extends AbstractService {
 
 
-  @RequestMapping(value = "status/{environmentName}/{resourceId}", method = RequestMethod.GET)
+  @RequestMapping(value = "{environmentName}/{resourceId}", method = RequestMethod.GET)
   public ResponseEntity<List<StatusUpdate>> getResourceStatuses(
       @PathVariable("environmentName") String environmentName,
       @PathVariable(value = "resourceId") String resourceId,
       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
-    // add extraction of resource statuses
     List<StatusUpdate> updateList = MongoConnector.getInstance().getMonthDetailDAO().getStatusUpdates(environmentName, resourceId, startDate, endDate);
 
     return ResponseEntity.ok(updateList);

@@ -3,7 +3,6 @@ package org.yagel.monitor.api.rest;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,9 +24,8 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@CrossOrigin(origins = "*")
-@RequestMapping("/")
-public class EnvironmentStatusService {
+@RequestMapping("/environment/status/")
+public class EnvironmentStatusService extends AbstractService {
 
 
   @RequestMapping(value = "current/{environmentName}", method = RequestMethod.GET)

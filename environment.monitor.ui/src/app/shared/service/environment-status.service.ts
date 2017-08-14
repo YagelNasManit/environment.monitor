@@ -16,7 +16,7 @@ export class EnvironmentStatusService {
   }
 
   getOverallStatus(): Observable<EnvironmentStatus[]> {
-    return this.http.get('http://localhost:8080/current')
+    return this.http.get('http://localhost:8080/environment/status/current')
       .map((resp: Response) => {
         return resp.json();
       })
@@ -52,7 +52,7 @@ export class EnvironmentStatusService {
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`http://localhost:8080/aggregated/${environment}?startDate=${start}&endDate=${end}`)
+    return this.http.get(`http://localhost:8080/environment/status/aggregated/${environment}?startDate=${start}&endDate=${end}`)
       .map((resp: Response) => {
         return resp.json();
       });
@@ -63,7 +63,7 @@ export class EnvironmentStatusService {
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`http://localhost:8080/aggregated/${environment}?startDate=${start}&endDate=${end}&resources=${resourceId}`)
+    return this.http.get(`http://localhost:8080/environment/status/aggregated/${environment}?startDate=${start}&endDate=${end}&resources=${resourceId}`)
       .map((resp: Response) => {
         return resp.json()[0];
       })
