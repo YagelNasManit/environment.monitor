@@ -104,8 +104,10 @@ export class ResourceTimescaleChartComponent {
     // configure chart viewport
     this.svg = d3.select(this.element.nativeElement)
       .append("svg") // the overall space
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom);
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", `0 0 ${this.width + this.margin.left + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`)
+    //.attr("width", this.width + this.margin.left + this.margin.right)
+    //.attr("height", this.height + this.margin.top + this.margin.bottom);
 
     // configure brush
     this.brush = d3.brushX()
