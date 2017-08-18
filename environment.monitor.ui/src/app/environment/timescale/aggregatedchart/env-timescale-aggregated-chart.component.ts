@@ -59,13 +59,15 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     this.charts.selectAll('.donut')
       .data(dataset)
       .enter().append('svg:svg')
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${(this.chart_r + this.chart_m) * 2} ${(this.chart_r + this.chart_m) * 2}`)
-      .classed('col-lg-4', true)
+      .attr('width', (this.chart_r + this.chart_m) * 2)
+      .attr('height', (this.chart_r + this.chart_m) * 2)
+      /* .attr("preserveAspectRatio", "xMinYMin meet")
+       .attr("viewBox", `0 0 ${(this.chart_r + this.chart_m) * 2} ${(this.chart_r + this.chart_m) * 2}`)*/
+      .classed('col-lg-4 col-xs-12 col-md-6', true)
       //.attr('width', (this.chart_r + this.chart_m) * 2)
       //.attr('height', (this.chart_r + this.chart_m) * 2)
       .append('svg:g')
-      .attr('class', (d, i) => `donut type + ${i}`)
+      .attr('class', (d, i) => `donut type${i}`)
       .attr('transform', 'translate(' + (this.chart_r + this.chart_m) + ',' + (this.chart_r + this.chart_m) + ')');
 
 
