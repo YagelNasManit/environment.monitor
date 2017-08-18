@@ -1,9 +1,2 @@
-<div #chartContainer>
-  <div [hidden]="(data?.length>0)" class="text-center text-muted">
-    <div><i class="fa fa-pie-chart fa-5x align-middle"></i></div>
-    <div><h3>No Data Available For Selected Time Frame</h3></div>
-  </div>
-  <div #containerPieChart [hidden]="!(data?.length>0)"></div>
+<div #chartContainer class="col-lg-3 col-md-6 col-xs-12">
 </div>
-<!-- todo remove when merging to develop -->
-{{data | json}}

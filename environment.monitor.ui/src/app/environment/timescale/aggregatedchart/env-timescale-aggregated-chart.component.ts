@@ -1,8 +1,6 @@
 import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 
 import * as d3 from "d3";
-import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
-import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResourceStatus";
 
 @Component({
@@ -11,7 +9,6 @@ import {AggregatedResourceStatus} from "../../../shared/model/AggregatedResource
 })
 export class EnvironmentTimescaleAggregatedChartComponent {
 
-  @ViewChild("containerPieChart") element: ElementRef;
   @ViewChild("chartContainer") elementContainer: ElementRef;
 
 
@@ -23,25 +20,20 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 
   data: AggregatedResourceStatus[];
 
-  constructor(private dataService: EnvironmentStatusService) {
-  }
-
 
   @Input()
-  set statusTimerange(statusTimerange: StatusTimeRange) {
-    this.dataService.getAggregatedResourceStatuses(statusTimerange.environment.environmentName, statusTimerange.daterange.start, statusTimerange.daterange.end).subscribe(data => {
-      this.data = data;
+  set aggregatedStatus(aggregatedStatus: AggregatedResourceStatus) {
+    // todo remove array in furutre as here is only single chart now
+    this.data = [aggregatedStatus];
+    if (this.charts == null)
+      this.create(this.data);
+    else
+      this.update(this.data);
 
-      if (this.charts == null)
-        this.create(data);
-      else
-        this.update(data);
-
-    });
   }
 
   private create(dataset) {
-    this.charts = d3.select(this.element.nativeElement);
+    this.charts = d3.select(this.elementContainer.nativeElement);
 
     console.log(this.elementContainer.nativeElement.offsetWidth);
     this.chart_m = this.elementContainer.nativeElement.offsetWidth / dataset.length / 2 * 0.14;
@@ -54,18 +46,12 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     console.log("chart m ->  " + this.chart_m);
     console.log("chart r -> " + this.chart_r);
 
-    this.createLegend(["Online", "Unavailable", "Unknown", "BorderLine"]);
 
     this.charts.selectAll('.donut')
       .data(dataset)
       .enter().append('svg:svg')
       .attr('width', (this.chart_r + this.chart_m) * 2)
       .attr('height', (this.chart_r + this.chart_m) * 2)
-      /* .attr("preserveAspectRatio", "xMinYMin meet")
-       .attr("viewBox", `0 0 ${(this.chart_r + this.chart_m) * 2} ${(this.chart_r + this.chart_m) * 2}`)*/
-      .classed('col-lg-4 col-xs-12 col-md-6', true)
-      //.attr('width', (this.chart_r + this.chart_m) * 2)
-      //.attr('height', (this.chart_r + this.chart_m) * 2)
       .append('svg:g')
       .attr('class', (d, i) => `donut type${i}`)
       .attr('transform', 'translate(' + (this.chart_r + this.chart_m) + ',' + (this.chart_r + this.chart_m) + ')');
@@ -76,34 +62,9 @@ export class EnvironmentTimescaleAggregatedChartComponent {
     this.updateDonuts();
   }
 
-  private createLegend(catNames) {
-
-    this.charts.append('svg')
-      .attr('class', 'legend')
-      .attr('width', '100%')
-      .attr('height', 50)
-      .attr('transform', 'translate(0, 25)');
-
-    let legends = this.charts.select('.legend')
-      .selectAll('g')
-      .data(catNames)
-      .enter().append('g')
-      .attr('transform', (d, i) => 'translate(' + (i * 150 + 50) + ', 0)');
-
-    legends.append('circle')
-      .attr('class', 'legend-icon')
-      .attr('r', 6)
-      .style('fill', (d, i) => this.color(i));
-
-    legends.append('text')
-      .attr('dx', '1em')
-      .attr('dy', '.3em')
-      .text((d) => d);
-  }
-
   private createCenter() {
 
-    let donuts = d3.selectAll('.donut');
+    let donuts = this.charts.selectAll('.donut');
 
     // The circle displaying total data.
     donuts.append("svg:circle")
@@ -163,8 +124,10 @@ export class EnvironmentTimescaleAggregatedChartComponent {
   }
 
   private resetAllCenterText() {
+    console.log(this.charts.selectAll('.donut').select('.value'));
+
     this.charts.selectAll('.donut').select('.value')
-      .text((d) => d.count.toFixed(1) /*+ d.unit*/);
+      .text((d) => d.count.toFixed(1)/*+ d.unit*/);
     this.charts.selectAll('.percentage')
       .text('');
   }
@@ -221,9 +184,13 @@ export class EnvironmentTimescaleAggregatedChartComponent {
 
     let thisDonut = d3.select(j[i].parentNode);
 
+    console.log(thisDonut.select('.value'));
+
     thisDonut.select('.value').text(function (donut_d) {
+      console.log(d.data.count);
       return d.data.count.toFixed(1) /*+ donut_d.unit*/;
     });
+
 
     thisDonut.select('.percentage').text(function (donut_d) {
       return (d.data.count / donut_d.count * 100).toFixed(2) + '%';
