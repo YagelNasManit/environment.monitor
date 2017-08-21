@@ -69,9 +69,11 @@ export class EnvironmentStatusService {
         return resp.json()[0];
       })
       .map(aggStatus => {
-        aggStatus.resourceStatuses.forEach(resStatus => {
-          resStatus.status = Status[resStatus.status]
-        });
+        if (aggStatus) {
+          aggStatus.resourceStatuses.forEach(resStatus => {
+            resStatus.status = Status[resStatus.status]
+          });
+        }
         return aggStatus;
       });
   }

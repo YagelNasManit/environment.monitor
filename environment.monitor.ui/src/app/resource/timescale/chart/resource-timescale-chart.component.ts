@@ -1,7 +1,5 @@
 import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 import * as d3 from "d3";
-import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
-import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 import {ResourceStatus} from "../../../shared/model/ResourceStatus";
 
 @Component({
@@ -11,7 +9,7 @@ import {ResourceStatus} from "../../../shared/model/ResourceStatus";
 export class ResourceTimescaleChartComponent {
   @ViewChild("containerBarChart") element: ElementRef;
 
-  statuses: ResourceStatus[];
+  //private statuses: ResourceStatus[];
 
   /** charts margin */
   private margin: any;
@@ -63,29 +61,12 @@ export class ResourceTimescaleChartComponent {
 
 
 
-  constructor(public statusService: EnvironmentStatusService) {
-  }
-
-
   @Input()
-  set statusTimerange(statusTimerange: StatusTimeRange) {
-    this.statusService.getResourceStatuses(
-      statusTimerange.environment.environmentName,
-      statusTimerange.resource.id,
-      statusTimerange.daterange.start,
-      statusTimerange.daterange.end
-    )
-      .subscribe(statuses => {
-        this.statuses = statuses;
-        if (this.main) {
-          console.log("update chart");
-          this.updateChart(statuses);
-        }
-        else {
-          console.log("draw chart");
-          this.buildChart(statuses);
-        }
-      });
+  set statuses(statuses: ResourceStatus[]) {
+    if (this.main == null)
+      this.buildChart(statuses);
+    else
+      this.updateChart(statuses);
   }
 
 

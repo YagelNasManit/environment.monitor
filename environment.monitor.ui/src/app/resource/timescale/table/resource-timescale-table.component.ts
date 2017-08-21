@@ -7,6 +7,7 @@ import {Status} from "../../../shared/model/Status";
 @Component({
   moduleId: module.id,
   selector: 'resource-timescale-table',
+  styleUrls: ['./resource-timescale-table.component.css'],
   templateUrl: './resource-timescale-table.component.html',
 
 })
