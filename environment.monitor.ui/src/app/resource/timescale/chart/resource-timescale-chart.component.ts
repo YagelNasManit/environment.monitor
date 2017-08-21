@@ -110,8 +110,11 @@ export class ResourceTimescaleChartComponent {
       return d.updated;
     }));
 
+    this.main.select(".x.axis").call(this.xAxis);
+
     this.xOverview.domain(this.x.domain());
 
+    this.overview.select(".x.axis").call(this.xAxisOverview);
     // update charts
     this.updateBars(data);
     this.updateBarsOverview(data);
@@ -183,6 +186,9 @@ export class ResourceTimescaleChartComponent {
   private buildOverviewChart(data: ResourceStatus[]) {
     this.xOverview = d3.scaleTime()
       .range([0, this.width]);
+
+    this.xOverview.domain(this.x.domain());
+
     this.yOverview = this.y;
 
     this.xAxisOverview = d3.axisBottom(this.xOverview);
@@ -195,8 +201,6 @@ export class ResourceTimescaleChartComponent {
       .attr("class", "x axis")
       .attr("transform", "translate(0," + this.heightOverview + ")")
       .call(this.xAxisOverview);
-
-    this.xOverview.domain(this.x.domain());
 
     this.barsOverview = this.overview.append("g")
       .attr("class", "bars");
