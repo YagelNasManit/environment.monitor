@@ -4,6 +4,6 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: true,
-  apiBaseUrl: "/api"
+  production: false,
+  apiBaseUrl: "http://ololo.local:8080"
 };

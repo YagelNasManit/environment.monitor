@@ -16,8 +16,20 @@
         <root.dir>${project.parent.basedir}</root.dir>
     </properties>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
+    <profiles>
+        <profile>
+            <id>embed-angular</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.yagel</groupId>
+                    <artifactId>environment.monitor.ui</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <dependencies>
 
@@ -85,6 +97,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <layout>ZIP</layout>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

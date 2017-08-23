@@ -6,7 +6,7 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "target/dist",
       "assets": [
         "assets",
         "favicon.ico"
@@ -33,6 +33,8 @@
 
       "environmentSource": "environments/environment.ts",
       "environments": {
+        "embedded": "environments/environment.embedded.ts",
+        "local": "environments/environment.local.ts",
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }

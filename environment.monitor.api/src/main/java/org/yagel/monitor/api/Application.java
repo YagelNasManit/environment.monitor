@@ -17,7 +17,7 @@ public class Application {
   @Bean
   public CommandLineRunner schedulingRunner() {
     return args -> {
-      ScheduleRunner scheduleRunner = ScheduleRunnerImpl.newInstance(ClassLoader.getSystemClassLoader());
+      ScheduleRunner scheduleRunner = ScheduleRunnerImpl.newInstance(Thread.currentThread().getContextClassLoader());
       scheduleRunner.runTasks();
     };
 
