@@ -1,0 +1,40 @@
+<!-- Sidebar Menu -->
+<ul class="sidebar-menu tree" data-widget="tree">
+  <li class="header">HEADER</li>
+  <li [routerLinkActive]="['active']">
+    <a href="" [routerLink]="['/current-dashboard']">
+      <i class="fa fa-refresh"></i>
+      <span>Current Status</span>
+    </a>
+  </li>
+
+
+  <li [routerLinkActive]="['active']">
+    <a href="" [routerLink]="['/timescale-dashboard']">
+      <i class="fa  fa-sitemap"></i> <!-- fa-sitemap -->
+      <span>Environment Availability </span>
+    </a>
+  </li>
+
+  <li [routerLinkActive]="['active']">
+     <a href="" [routerLink]="['/resource-dashboard']">
+       <i class="fa  fa-history"></i>
+       <span>Resource Availability</span>
+     </a>
+  </li>
+
+
+  <!--<li class="treeview">
+    <a href="#">
+      <i class="fa fa-link"></i>
+      <span>Multilevel</span>
+      <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="#">Link in level 2</a></li>
+      <li><a href="#">Link in level 2</a></li>
+    </ul>
+  </li>-->
+</ul>

@@ -1,49 +1,41 @@
 package org.yagel.monitor.logging;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
-import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.spi.LoggingEvent;
+// todo uncomment when logging fixed
+public class ThreadFileAppender /*extends AppenderSkeleton*/ {
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-public class ThreadFileAppender extends AppenderSkeleton {
-
-  private static ThreadLocal<RollingFileAppender> threadBuffer = new ThreadLocal<>();
+  /*private static ThreadLocal<RollingFileAppender> threadBuffer = new ThreadLocal<>();
   private static List<RollingFileAppender> appenders = new ArrayList<>();
 
-  /**
+  *//**
    * Controls file truncatation. The default value for this variable is <code>true</code>, meaning that by default a
    * <code>FileAppender</code> will append to an existing file and not truncate it.
    * <p>
    * <p>
    * This option is meaningful only if the FileAppender opens the file.
-   */
+   *//*
   protected boolean fileAppend = true;
 
-  /**
+  *//**
    * The name of the log file.
-   */
+   *//*
   protected String fileName = null;
 
-  /**
+  *//**
    * Do we do bufferedIO?
-   */
+   *//*
   protected boolean bufferedIO = false;
 
-  /**
+  *//**
    * Determines the size of IO buffer be. Default is 8K.
-   */
+   *//*
   protected int bufferSize = 8 * 1024;
-  /**
+  *//**
    * The default maximum file size is 10MB.
-   */
+   *//*
   protected String maxFileSize = String.valueOf(10 * 1024 * 1024);
-  /**
+  *//**
    * There is one backup file by default.
-   */
+   *//*
   protected int maxBackupIndex = 1;
   private boolean append;
 
@@ -154,6 +146,6 @@ public class ThreadFileAppender extends AppenderSkeleton {
 
   public void setMaxBackupIndex(int maxBackupIndex) {
     this.maxBackupIndex = maxBackupIndex;
-  }
+  }*/
 
 }

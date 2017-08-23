@@ -1,13 +1,13 @@
 package org.yagel.monitor;
 
 
-import java.util.Map;
+import java.util.Set;
 
 public interface UpdateStatusListener {
 
   String getEnvName();
 
-  void update(Map<Resource, ResourceStatus> lastChangedStatus);
+  void update(Set<ResourceStatus> lastChangedStatus);
 
   boolean isActive();
 }

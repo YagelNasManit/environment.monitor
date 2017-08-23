@@ -1,0 +1,67 @@
+<section class="content-header">
+  <h1>
+    Timescale Status Dashboard
+    <small>Environment Components Status Over Time</small>
+  </h1>
+</section>
+
+<div class="content container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Select View time Frame</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button class="btn btn-box-tool" data-widget="collapse" type="button">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+          <status-range-picker [statusTimerange]="statusTimerange" [environments]="environments"
+                               (onStatusRangeChanged)="onStatusRangeChanged($event)"></status-range-picker>
+        </div>
+        <!--/.box-body-->
+      </div>
+      <!-- /.box -->
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12" *ngIf="statusTimerange">
+
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Aggregated Statuses</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button class="btn btn-box-tool" data-widget="collapse" type="button">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+
+          <environment-timescale-aggregated-panel [statusTimerange]="statusTimerange">
+          </environment-timescale-aggregated-panel>
+
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+      </div>
+    </div>
+
+  </div>
+</div>

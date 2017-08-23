@@ -1,10 +1,10 @@
 package org.yagel.monitor;
 
-import java.util.Map;
+import java.util.Set;
 
 
 public interface MonitorStatusCollector {
 
   // synchronise?
-  Map<Resource, ResourceStatus> updateStatus();
+  Set<ResourceStatus> updateStatus();
 }

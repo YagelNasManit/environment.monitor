@@ -2,6 +2,10 @@
 ### Java template
 # Compiled class file
 *.class
+*/dist/**
+
+# dependencies
+*/node_modules/**
 
 # Log file
 *.log
