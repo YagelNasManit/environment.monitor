@@ -222,14 +222,14 @@ export class ResourceTimescaleChartComponent {
 
   private configureSize() {
     let containerWidth = this.element.nativeElement.offsetWidth;
-    let containerHeight = 500;//this.element.nativeElement.offsetHeight;
+    let containerHeight = 400;//this.element.nativeElement.offsetHeight;
 
     this.margin = {top: 20, right: 20, bottom: 100, left: 20};
     this.width = containerWidth - this.margin.left - this.margin.right;
     this.height = containerHeight - this.margin.top - this.margin.bottom;
 
-    this.marginOverview = {top: 430, right: this.margin.right, bottom: 20, left: this.margin.left};
-    this.heightOverview = 500 - this.marginOverview.top - this.marginOverview.bottom;
+    this.marginOverview = {top: 330, right: this.margin.right, bottom: 20, left: this.margin.left};
+    this.heightOverview = 400 - this.marginOverview.top - this.marginOverview.bottom;
   }
 
   private brushed = () => {
