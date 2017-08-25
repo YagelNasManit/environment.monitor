@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>environment.monitor.api</artifactId>
+    <artifactId>environment.monitor.server</artifactId>
 
     <properties>
         <cxf.version>3.1.11</cxf.version>
