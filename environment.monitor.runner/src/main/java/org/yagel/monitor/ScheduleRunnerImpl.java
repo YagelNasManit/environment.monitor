@@ -18,6 +18,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ScheduleRunnerImpl implements ScheduleRunner {
 
@@ -163,11 +164,11 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
         ScheduleRunnerImpl.this.selfDiagnostic();
         log.info("\n====>Updating status for " + config.getEnvName() + " environment.");
 
-        Map<Resource, ResourceStatus> status = collector.updateStatus();
+        Set<ResourceStatus> status = collector.updateStatus();
 
-        MongoConnector.getInstance().getLastStatusDAO().insert(config.getEnvName(), status.values());
-        MongoConnector.getInstance().getMonthDetailDAO().insert(config.getEnvName(), status.values());
-        MongoConnector.getInstance().getResourceDAO().insert(status.keySet());
+        MongoConnector.getInstance().getLastStatusDAO().insert(config.getEnvName(), status);
+        MongoConnector.getInstance().getMonthDetailDAO().insert(config.getEnvName(), status);
+        MongoConnector.getInstance().getResourceDAO().insert(status.stream().map(ResourceStatus::getResource).collect(Collectors.toSet()));
         this.updateListeners(status);
 
       } catch (Exception e1) {
@@ -175,7 +176,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
       }
     }
 
-    private void updateListeners(Map<Resource, ResourceStatus> status) {
+    private void updateListeners(Set<ResourceStatus> status) {
       Iterator<UpdateStatusListener> iListeners = listeners.iterator();
       while (iListeners.hasNext()) {
         UpdateStatusListener listener = iListeners.next();

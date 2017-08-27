@@ -9,6 +9,7 @@ import org.yagel.monitor.resource.Status;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,7 +21,7 @@ public class AbstractDAOTest {
 
 
   protected Resource rndResource() {
-    return new ResourceImpl(mockResoureId + System.currentTimeMillis(), mockResoureName + System.currentTimeMillis());
+    return new ResourceImpl(mockResoureId + UUID.randomUUID(), mockResoureName + UUID.randomUUID());
   }
 
   protected ResourceStatus rndResStatus() {
@@ -28,11 +29,11 @@ public class AbstractDAOTest {
   }
 
   protected ResourceStatus rndResStatus(Resource resource) {
-    return new ResourceStatusImpl(resource.getId(), rndStatus(), new Date());
+    return new ResourceStatusImpl(resource, rndStatus(), new Date());
   }
 
   protected ResourceStatus rndResStatus(Resource resource, Status status, Date updated) {
-    return new ResourceStatusImpl(resource.getId(), status, updated);
+    return new ResourceStatusImpl(resource, status, updated);
   }
 
 

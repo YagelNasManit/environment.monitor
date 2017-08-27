@@ -1,0 +1,45 @@
+<!-- //TODO Remove hardconde-->
+
+<div *ngIf="aggStatus">
+  <table class="table table-hover" *ngIf="aggStatus?.resourceStatuses">
+  <tbody>
+  <tr>
+    <th>Status</th>
+    <th>Count</th>
+    <th>Percentage</th>
+    <th>Graph</th>
+  </tr>
+  <tr *ngFor="let status of aggStatus?.resourceStatuses">
+    <td><strong>{{statusEnum[status.status]}}</strong></td>
+    <td>{{status.count}}</td>
+    <td>{{(status.count / aggStatus.count)*100 | number:'1.0-0' }} %</td>
+    <td>
+
+      <div class="progress progress-xs" [ngSwitch]="status.status">
+
+        <!-- TODO Define component for progress bar-->
+        <!--Online-->
+        <div *ngSwitchCase="statusEnum.Online" class="progress-bar progress-bar-success"
+             [style.width.%]="(status.count / aggStatus.count)*100"></div>
+        <!--BorderLine-->
+        <div *ngSwitchCase="statusEnum.BorderLine" class="progress-bar progress-bar-warning"
+             [style.width.%]="(status.count / aggStatus.count)*100"></div>
+        <!--Unavailable-->
+        <div *ngSwitchCase="statusEnum.Unavailable" class="progress-bar progress-bar-danger"
+             [style.width.%]="(status.count / aggStatus.count)*100"></div>
+        <!--Unknown-->
+        <div *ngSwitchCase="statusEnum.Unknown" class="progress-bar progress-bar-default"
+             [style.width.%]="(status.count / aggStatus.count)*100"></div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<div *ngIf="! aggStatus">
+  <div class="text-center text-muted">
+    <div><i class="fa  fa-table fa-5x align-middle"></i></div>
+    <div><h3>No Data Available For Selected Time Frame</h3></div>
+  </div>
+</div>

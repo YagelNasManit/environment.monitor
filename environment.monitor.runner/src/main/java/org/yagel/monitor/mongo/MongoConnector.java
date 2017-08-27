@@ -8,7 +8,7 @@ import org.yagel.monitor.exception.DiagnosticException;
 
 public class MongoConnector {
 
-  private final static String MONITOR_DB = "monitor_tmp";
+  private final static String MONITOR_DB = "monitor_tmp_newDomain";
   private final static Logger log = Logger.getLogger(MongoConnector.class);
   private static MongoConnector connector;
 
@@ -34,12 +34,10 @@ public class MongoConnector {
     if (connector == null) {
       try {
         String mongoConnectURI = System.getProperty("mongo.connect.uri", null);
-
         if (mongoConnectURI == null)
           connector = new MongoConnector();
         else
           connector = new MongoConnector(mongoConnectURI);
-
       } catch (Exception e) {
         log.error("Exception on mongoDB connection creation. ", e);
         throw new RuntimeException(e);
@@ -53,8 +51,12 @@ public class MongoConnector {
     return new ResourceLastStatusDAO(db);
   }
 
-  public ResourceMonthDetailDAO getMonthDetailDAO() {
-    return new ResourceMonthDetailDAO(db);
+  public ResourceStatusDetailDAO getMonthDetailDAO() {
+    return new ResourceStatusDetailDAO(db);
+  }
+
+  public AggregatedStatusDAO getAggregatedStatusDAO() {
+    return new AggregatedStatusDAO(db);
   }
 
   public ResourceDAO getResourceDAO() {

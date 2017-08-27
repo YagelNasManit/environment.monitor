@@ -1,0 +1,13 @@
+<status-legend *ngIf="aggregatedStatuses.length > 0"></status-legend>
+
+<div *ngFor="let aggregatedStatus of aggregatedStatuses">
+  <environment-timescale-aggregated-chart [aggregatedStatus]="aggregatedStatus">
+  </environment-timescale-aggregated-chart>
+</div>
+
+<div *ngIf="aggregatedStatuses.length === 0">
+  <div class="text-center text-muted">
+    <div><i class="fa fa-pie-chart fa-5x align-middle"></i></div>
+    <div><h3>No Data Available For Selected Time Frame</h3></div>
+  </div>
+</div>

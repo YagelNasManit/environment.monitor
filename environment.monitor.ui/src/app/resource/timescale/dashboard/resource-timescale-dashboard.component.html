@@ -1,0 +1,102 @@
+<section class="content-header">
+  <h1>
+    Resource Timescale Dashboard
+    <small>Resource Details Over Time</small>
+  </h1>
+</section>
+
+
+<div class="content container-fluid">
+
+  <div class="row">
+    <div class="col-lg-3">
+
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Select View time Frame</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button class="btn btn-box-tool" data-widget="collapse" type="button">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+          <status-range-picker [statusTimerange]="statusTimerange"
+                               (onStatusRangeChanged)="onStatusRangeChanged($event)"
+                               [environments]="environments"
+                               [showResPicker]="true">
+
+          </status-range-picker>
+        </div>
+        <!--/.box-body-->
+      </div>
+      <!-- /.box -->
+
+    </div>
+
+
+    <div class="col-lg-9">
+
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Aggregated Resource Statuses</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button class="btn btn-box-tool" data-widget="collapse" type="button">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+
+          <resource-timescale-table *ngIf="statusTimerange" [statusTimerange]="statusTimerange"></resource-timescale-table>
+
+        </div>
+        <!--/.box-body-->
+      </div>
+      <!-- /.box -->
+
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Resource Status Details Over Time </h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button class="btn btn-box-tool" data-widget="collapse" type="button">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+
+          <div *ngIf="statusTimerange">
+            <resource-timescale-details-panel [statusTimerange]="statusTimerange"></resource-timescale-details-panel>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+      </div>
+    </div>
+
+  </div>
+</div>

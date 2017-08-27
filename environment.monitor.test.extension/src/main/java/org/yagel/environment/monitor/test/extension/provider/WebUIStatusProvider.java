@@ -25,6 +25,6 @@ public class WebUIStatusProvider extends AbstractResourceStatusProvider {
 
   @Override
   public Resource getResource() {
-    return new ResourceImpl("WebUI", "Web Site Web UI ");
+    return new ResourceImpl("WebUI", "Web Site Web UI");
   }
 }

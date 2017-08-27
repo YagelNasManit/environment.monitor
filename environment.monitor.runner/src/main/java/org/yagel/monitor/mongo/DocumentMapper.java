@@ -1,43 +1,87 @@
 package org.yagel.monitor.mongo;
 
 import org.bson.Document;
+import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
+import org.yagel.monitor.resource.AggregatedResourceStatus;
+import org.yagel.monitor.resource.AggregatedStatus;
+import org.yagel.monitor.resource.ResourceImpl;
 import org.yagel.monitor.resource.ResourceStatusImpl;
 import org.yagel.monitor.resource.Status;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DocumentMapper {
 
   public static Document resourceStatusToDocument(String evnName, ResourceStatus resourceStatus) {
     return new Document()
         .append("environmentName", evnName)
-        .append("resourceId", resourceStatus.getResourceId())
+        .append("resource", resourceToStatusRef(resourceStatus.getResource()))
         .append("statusOrdinal", resourceStatus.getStatus().getSeriaNumber())
         .append("updated", resourceStatus.getUpdated());
   }
 
   public static ResourceStatus resourceStatusFromDocument(Document document) {
+    Document resourceDoc = (Document) document.get("resource");
+    Resource resource = resourceFromStatusRef(resourceDoc);
 
-    String resourceId = document.getString("resourceId");
     Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
     Date updated = document.getDate("updated");
-    return new ResourceStatusImpl(resourceId, status, updated);
+    return new ResourceStatusImpl(resource, status, updated);
 
   }
 
+  public static AggregatedResourceStatus aggregatedResourceStatusFromDocument(Document document) {
+    Document id = (Document) document.get("_id");
+    Resource resource = resourceFromStatusRef((Document) id.get("resource"));
 
-  public static Map<Status, Integer> aggregatedResourceStatusFromDocument(Document document) {
-    Map<Status, Integer> statusMap = new HashMap<>();
+    long totalCount = document.getInteger("count");
 
-    List<Document> list = (List<Document>) document.get("statuses");
-    for (Document status : list) {
-      statusMap.put(Status.fromSerialNumber((status.getInteger("statusOrdinal"))), status.getInteger("total"));
-    }
+    List<Document> statuses = (List<Document>) document.get("statuses");
 
-    return statusMap;
+    List<AggregatedStatus> aggregatedStatuses = statuses
+        .stream()
+        .map(DocumentMapper::aggregatedStatusFromDocument)
+        .collect(Collectors.toList());
+
+    AggregatedResourceStatus status = new AggregatedResourceStatus();
+    status.setCount(totalCount);
+    status.setResource(resource);
+    status.setResourceStatuses(aggregatedStatuses);
+
+
+    return status;
   }
+
+  public static Resource resourceFromStatusRef(Document document) {
+    return new ResourceImpl(document.getString("resourceId"), document.getString("resourceName"));
+  }
+
+  public static Document resourceToStatusRef(Resource resource) {
+    return new Document("resourceId", resource.getId()).append("resourceName", resource.getName());
+  }
+
+  public static Document resourceToDocument(Resource resource) {
+    return new Document("_id", resource.getId()).append("name", resource.getName());
+  }
+
+  public static Resource resourceFromDocument(Document document) {
+    return new ResourceImpl(document.getString("_id"), document.getString("name"));
+  }
+
+  private static AggregatedStatus aggregatedStatusFromDocument(Document document) {
+
+    Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
+    long count = document.getInteger("count");
+
+    AggregatedStatus aggregatedStatus = new AggregatedStatus();
+    aggregatedStatus.setStatus(status);
+    aggregatedStatus.setCount(count);
+
+    return aggregatedStatus;
+  }
+
+
 }

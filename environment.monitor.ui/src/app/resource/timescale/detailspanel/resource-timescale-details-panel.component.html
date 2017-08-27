@@ -1,0 +1,10 @@
+<div *ngIf="statuses?.length >0">
+  <status-legend></status-legend>
+  <resource-timescale-chart [statuses]="statuses"></resource-timescale-chart>
+</div>
+<div *ngIf="statuses?.length  === 0">
+  <div class="text-center text-muted">
+    <div><i class="fa  fa-bar-chart fa-5x align-middle"></i></div>
+    <div><h3>No Data Available For Selected Time Frame</h3></div>
+  </div>
+</div>
