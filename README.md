@@ -7,21 +7,17 @@ Is a tool for continuous gathering, aggregation and representation of environmen
 
 Current environment components states | Environment components daily statistics  
 --- | --- 
-![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png) | ![ENVIRONMENT DAILY STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/env_daily_status_dashboard.png)
+![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/current_env_status_dashboard.png) | ![ENVIRONMENT DAILY STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/env_daily_status_dashboard.png)
 
-Particular component availability over time | Resource status checks logs  
---- | --- 
-![RESOURCE DETAILS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard.png)| ![RESOURCE LOGS](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/resource_details_dashboard_logs.png)
+Particular component availability over time |   
+--- |
+![RESOURCE DETAILS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/resource_details_dashboard.png)| 
 
 
 
 
 ## Quickstart
-- 5 minutest quick start of environment monitor with test plugin:
-[Test Environment Monitor Setup](https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example)
-- Quick start with embedded jetty:
-[Start With Jetty](https://github.com/YagelNasManit/environment.monitor/wiki/Quick-Start-On-Embedded-Container)
-
+- In progress for Release 2.0.0
 
 ## Documentation
 See the [Wiki](https://github.com/YagelNasManit/environment.monitor/wiki) for the available documentation
