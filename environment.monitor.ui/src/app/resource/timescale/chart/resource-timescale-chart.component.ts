@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 import * as d3 from "d3";
 import {ResourceStatus} from "../../../shared/model/ResourceStatus";
+import {Status} from "../../../shared/model/Status";
 
 @Component({
   selector: "resource-timescale-chart",
@@ -166,7 +167,7 @@ export class ResourceTimescaleChartComponent {
       .attr("width", 6)
       .attr("y", 0)
       .attr("height", this.height)
-      .style("fill", d => this.y(d.status));
+      .style("fill", d => this.y(Status[d.status]));
   }
 
   private updateBarsOverview(data: ResourceStatus[]) {
@@ -180,7 +181,7 @@ export class ResourceTimescaleChartComponent {
       .attr("width", 6)
       .attr("y", 0)
       .attr("height", this.heightOverview)
-      .style("fill", d => this.yOverview(d.status));
+      .style("fill", d => this.yOverview(Status[d.status]));
   }
 
   private buildOverviewChart(data: ResourceStatus[]) {
