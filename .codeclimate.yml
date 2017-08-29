@@ -1,10 +1,20 @@
 engines:
      fixme:
        enabled: true
+    pmd:
+       enabled: true
+       channel: beta
+    tslint:
+       enabled: true
+       channel: beta
+       config:  environment.monitor.ui/tslint.json
 
 ratings:
    paths:
-   - "environment.monitor.api/**/*"
+   - "environment.monitor.server/**/*"
    - "environment.monitor.core/**/*"
    - "environment.monitor.runner/**/*"
    - "environment.monitor.plugins/**/*"
+
+
+
