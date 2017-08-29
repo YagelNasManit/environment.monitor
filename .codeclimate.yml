@@ -15,6 +15,7 @@ ratings:
    - "environment.monitor.core/**/*"
    - "environment.monitor.runner/**/*"
    - "environment.monitor.plugins/**/*"
+   - "environment.monitor.ui/**/*"
 
 
 
