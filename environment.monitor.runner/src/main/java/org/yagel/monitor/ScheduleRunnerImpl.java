@@ -79,6 +79,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
       this.executor.awaitTermination(40, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       this.executor.shutdownNow();
+
     }
   }
 
@@ -113,6 +114,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
           log.error("\n\n Schedule service going to restart! \n\n");
           executor.shutdown();
           scheduleRunnerImpl = new ScheduleRunnerImpl(scheduleRunnerImpl.classLoader);
+          scheduleRunnerImpl.runTasks();
           throw new Exception("The " + task.getKey() + " task does not respond too long time.");
         }
       }
@@ -159,6 +161,12 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
 
     @Override
     public void run() {
+
+      if (Thread.interrupted()) {
+        log.info("Monitor Job: " + config.getEnvName() + " is interrupted. No new verifications will be done");
+        return;
+      }
+
       try {
         this.lastUpdate = new Date();
         ScheduleRunnerImpl.this.selfDiagnostic();
@@ -192,6 +200,8 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
         }
       }
     }
+
+
   }
 
 }

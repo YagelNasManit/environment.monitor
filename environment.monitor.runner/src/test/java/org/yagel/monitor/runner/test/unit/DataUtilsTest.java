@@ -33,14 +33,15 @@ public class DataUtilsTest {
   @Test
   public void testYesterdayCalculation() throws Exception {
 
-    Date currentDate = new Date();
-    Date date = DataUtils.getYesterday(currentDate);
+    Date currentDate = DataUtils.asDate(LocalDateTime.of(2017,10,10,10,10));
 
+    Date date = DataUtils.getYesterday(currentDate);
 
     Assert.assertTrue(date.before(currentDate));
 
     LocalDateTime currentDateTime = DataUtils.asLocalDateTime(currentDate);
     LocalDateTime dateTime = DataUtils.asLocalDateTime(date);
+
 
     Assert.assertEquals(currentDateTime.getYear(), dateTime.getYear());
     Assert.assertEquals(currentDateTime.getMonth(), dateTime.getMonth());
