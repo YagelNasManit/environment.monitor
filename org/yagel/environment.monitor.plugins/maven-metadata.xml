@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>org.yagel</groupId>
-  <artifactId>environment.monitor.core</artifactId>
+  <artifactId>environment.monitor.plugins</artifactId>
   <versioning>
     <release>2.0.0</release>
     <versions>

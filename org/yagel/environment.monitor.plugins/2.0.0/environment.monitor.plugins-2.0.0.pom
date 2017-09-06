@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>environment.monitor.core</artifactId>
+    <artifactId>environment.monitor.plugins</artifactId>
     <packaging>jar</packaging>
 
-    <name>environment.monitor.core</name>
+    <name>environment.monitor.plugins</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -20,8 +20,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.yagel</groupId>
+            <artifactId>environment.monitor.core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
     </dependencies>
 
@@ -44,4 +53,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
