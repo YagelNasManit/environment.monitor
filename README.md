@@ -14,10 +14,9 @@ Particular component availability over time |
 ![RESOURCE DETAILS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/resource_details_dashboard.png)| 
 
 
+## Quickstart with test extension
+- [Quick start with test extension](https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example)  
 
-
-## Quickstart
-- In progress for Release 2.0.0
 
 ## Documentation
 See the [Wiki](https://github.com/YagelNasManit/environment.monitor/wiki) for the available documentation
