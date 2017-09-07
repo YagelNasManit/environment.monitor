@@ -1,33 +1,33 @@
+
 # environment.monitor
+
+[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor) [![Code Climate](https://codeclimate.com/github/YagelNasManit/environment.monitor/badges/gpa.svg)](https://codeclimate.com/github/YagelNasManit/environment.monitor)
 
 Is a tool for continuous gathering, aggregation and representation of environment health, that provides access to environment status information via both UI dashboards & REST API
 
-For example this view and mutch more:
-![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/current_env_status_dashboard.png)
+Current environment components states | Environment components daily statistics  
+--- | --- 
+![CURRENT STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/current_env_status_dashboard.png) | ![ENVIRONMENT DAILY STATUS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/env_daily_status_dashboard.png)
 
-
-# Quickstart
-// todo :)
-
-# Current Functionality (1.0-SNAPSHOT)
-- current environments status dashboard
-- environment last 24h status dashboard
-- current environment status service
+Particular component availability over time |   
+--- |
+![RESOURCE DETAILS DASHBOARD](https://raw.githubusercontent.com/wiki/YagelNasManit/environment.monitor/images/2.0.0/resource_details_dashboard.png)| 
 
 
 
-#add environment monitor artefacts repository with maven:
-```xml
-...
-<repositories>
-    <repository>
-        <id>Cybercat-mvn-repo</id>
-        <url>https://raw.github.com/YagelNasManit/environment.monitor/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-</repositories>
-...
-```
+
+## Quickstart
+- In progress for Release 2.0.0
+
+## Documentation
+See the [Wiki](https://github.com/YagelNasManit/environment.monitor/wiki) for the available documentation
+
+## Feature Requests & Bugs
+Found a bug or would like to see a new feature implemented? Raise an issue in the [Issue Tracker](https://github.com/YagelNasManit/environment.monitor/issues)
+
+## Contributing
+Eager to fix a bug or introduce a new feature? Clone the repository and issue a pull request
+
+
+## License
+environment.monitor is licensed under the [Apache License 2.0](https://github.com/YagelNasManit/environment.monitor/blob/master/LICENSE)
