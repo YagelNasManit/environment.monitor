@@ -57,7 +57,8 @@ public class AggregatedStatusDAOTest extends AbstractDAOTest {
   }
 
 
-  @Test
+  @Deprecated
+  @Test(enabled = false)
   public void testResourceMonthDetailDAOCount() throws Exception {
     String environemntName = environemntNames[0];
 

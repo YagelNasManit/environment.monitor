@@ -29,49 +29,51 @@ public class JarScanner {
   }
 
   public void scanJar() {
-    //classProvider = null;
-    JarFile jarFile;
-    URL[] urls;
 
+    URL[] urls;
     try {
-      jarFile = new JarFile(pathToJar);
       urls = new URL[]{new URL(cannonicalJarPath)};
     } catch (IOException e) {
       throw new PluginException("Unable to locate plugin jar by path provided", e);
     }
 
 
-    URLClassLoader cl = URLClassLoader.newInstance(urls, classLoader);
-    Enumeration<JarEntry> e = jarFile.entries();
+    try (JarFile jarFile = new JarFile(pathToJar); URLClassLoader cl = URLClassLoader.newInstance(urls, classLoader)) {
 
+      Enumeration<JarEntry> e = jarFile.entries();
 
-    while (e.hasMoreElements()) {
-      JarEntry je = e.nextElement();
+      while (e.hasMoreElements()) {
+        JarEntry je = e.nextElement();
 
-      log.debug("File found: " + je.getName());
-      if (je.isDirectory() || !je.getName().endsWith(".class")) {
-        log.debug("not a class, skip");
-        continue;
-      }
-
-      // -6 because of .class
-      String className = je.getName().substring(0, je.getName().length() - 6);
-      className = className.replace('/', '.');
-
-
-      try {
-        log.debug("External class found: " + className);
-        Class c = cl.loadClass(className);
-        log.debug("Loaded class : " + className);
-
-        if (loaderClass.isAssignableFrom(c)) {
-          classProvider = c;
-          log.debug("Found implementation of loader class, taking as plugin provider : " + className);
+        log.debug("File found: " + je.getName());
+        if (je.isDirectory() || !je.getName().endsWith(".class")) {
+          log.debug("not a class, skip");
+          continue;
         }
-      } catch (ClassNotFoundException ex) {
-        throw new PluginException("For some reason was unable to load class from plugin jar", ex);
+
+        // -6 because of .class
+        String className = je.getName().substring(0, je.getName().length() - 6);
+        className = className.replace('/', '.');
+
+
+        try {
+          log.debug("External class found: " + className);
+          Class c = cl.loadClass(className);
+          log.debug("Loaded class : " + className);
+
+          if (loaderClass.isAssignableFrom(c)) {
+            classProvider = c;
+            log.debug("Found implementation of loader class, taking as plugin provider : " + className);
+          }
+        } catch (ClassNotFoundException ex) {
+          throw new PluginException("For some reason was unable to load class from plugin jar", ex);
+        }
       }
+
+    } catch (IOException e) {
+      throw new PluginException("Exception occurred during loading plugin jar", e);
     }
+
 
   }
 
