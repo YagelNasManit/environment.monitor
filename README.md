@@ -1,7 +1,9 @@
 
 # environment.monitor
 
-[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor) [![Code Climate](https://codeclimate.com/github/YagelNasManit/environment.monitor/badges/gpa.svg)](https://codeclimate.com/github/YagelNasManit/environment.monitor)
+[![Build Status](https://travis-ci.org/YagelNasManit/environment.monitor.svg?branch=master)](https://travis-ci.org/YagelNasManit/environment.monitor) 
+[![Code Climate](https://codeclimate.com/github/YagelNasManit/environment.monitor/badges/gpa.svg)](https://codeclimate.com/github/YagelNasManit/environment.monitor)
+[![Quality Gate](http://sonarcloud.io/api/badges/gate?key=org.yagel:environment.monitor)](https://sonarcloud.io/api/badges/gate?key=org.yagel:environment.monitor)
 
 Is a tool for continuous gathering, aggregation and representation of environment health, that provides access to environment status information via both UI dashboards & REST API
 
