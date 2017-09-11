@@ -13,7 +13,9 @@ addons:
       - master
       - develop
 
-script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io
+script:
+  - mvn clean package
+  - sonar-scanner
 
 cache:
   directories:
