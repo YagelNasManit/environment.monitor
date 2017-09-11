@@ -17,6 +17,13 @@ Particular component availability over time |
 
 
 ## Quickstart with test extension
+
+### With docker:
+```bash
+git clone  https://github.com/YagelNasManit/environment.monitor.git
+docker-compose up --build
+```
+### Without docker:
 - [Quick start with test extension](https://github.com/YagelNasManit/environment.monitor/wiki/Run-Test-Example)  
 
 
