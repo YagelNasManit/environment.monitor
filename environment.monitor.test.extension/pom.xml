@@ -3,7 +3,7 @@
     <parent>
         <artifactId>environment.monitor</artifactId>
         <groupId>org.yagel</groupId>
-        <version>2.0.0</version>
+        <version>2.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
