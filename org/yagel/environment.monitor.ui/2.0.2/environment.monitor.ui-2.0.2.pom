@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>environment.monitor</artifactId>
+    <groupId>org.yagel</groupId>
+    <version>2.0.2</version>
+  </parent>
+
+  <artifactId>environment.monitor.ui</artifactId>
+  <packaging>jar</packaging>
+
+  <name>environment.monitor.ui</name>
+
+  <prerequisites>
+    <maven>3</maven>
+  </prerequisites>
+
+  <properties></properties>
+
+  <profiles>
+    <profile>
+      <id>embed-angular</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>npm run build</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+
+                <configuration>
+                  <arguments>run build-embedded</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <resources>
+          <resource>
+            <directory>target/dist</directory>
+            <targetPath>static</targetPath>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>1.4</version>
+
+          <configuration>
+            <nodeVersion>v8.4.0</nodeVersion>
+            <npmVersion>5.3.0</npmVersion>
+            <!--<workingDirectory></workingDirectory>-->
+          </configuration>
+
+          <executions>
+            <execution>
+              <id>install node and npm</id>
+              <goals>
+                <goal>install-node-and-npm</goal>
+              </goals>
+            </execution>
+
+            <execution>
+              <id>npm install</id>
+              <goals>
+                <goal>npm</goal>
+              </goals>
+            </execution>
+
+            <execution>
+              <id>npm run build</id>
+              <goals>
+                <goal>npm</goal>
+              </goals>
+
+              <configuration>
+                <arguments>run build</arguments>
+              </configuration>
+            </execution>
+
+          </executions>
+        </plugin>
+      </plugins>
+
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>
