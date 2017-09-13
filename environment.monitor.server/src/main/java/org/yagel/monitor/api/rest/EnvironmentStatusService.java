@@ -17,6 +17,7 @@ import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -28,45 +29,55 @@ import java.util.stream.Collectors;
 public class EnvironmentStatusService extends AbstractService {
 
 
-  @RequestMapping(value = "current/{environmentName}", method = RequestMethod.GET)
-  public ResponseEntity<EnvironmentStatusDTO> getEnvironmentStatus(@PathVariable("environmentName") String environmentName) {
-    List<ResourceStatus> resourceStatuses = MongoConnector.getInstance().getLastStatusDAO().find(environmentName);
+    @RequestMapping(value = "current/{environmentName}", method = RequestMethod.GET)
+    public ResponseEntity<EnvironmentStatusDTO> getEnvironmentStatus(@PathVariable("environmentName") String environmentName) {
+        List<ResourceStatus> resourceStatuses = MongoConnector.getInstance().getLastStatusDAO().find(environmentName);
 
-    EnvironmentStatusDTO environmentStatus = new EnvironmentStatusDTO(environmentName, resourceStatuses);
-    return ResponseEntity.ok(environmentStatus);
-  }
-
-
-  @RequestMapping(value = "current", method = RequestMethod.GET)
-  public ResponseEntity<List<EnvironmentStatusDTO>> getOverallStatus() {
-
-    List<String> envs = ScheduleRunnerImpl.getInstance().getConfig().getEnvironments()
-        .stream()
-        .map(EnvironmentConfig::getEnvName)
-        .collect(Collectors.toList());
-
-    final ResourceLastStatusDAO statusDAO = MongoConnector.getInstance().getLastStatusDAO();
+        EnvironmentStatusDTO environmentStatus = new EnvironmentStatusDTO(environmentName, resourceStatuses);
+        return ResponseEntity.ok(environmentStatus);
+    }
 
 
-    List<EnvironmentStatusDTO> statusList = envs
-        .stream()
-        .map(env -> new EnvironmentStatusDTO(env, statusDAO.find(env)))
-        .collect(Collectors.toList());
+    @RequestMapping(value = "current", method = RequestMethod.GET)
+    public ResponseEntity<List<EnvironmentStatusDTO>> getOverallStatus() {
 
-    return ResponseEntity.ok(statusList);
-  }
+        List<String> envs = ScheduleRunnerImpl.getInstance().getConfig().getEnvironments()
+                .stream()
+                .map(EnvironmentConfig::getEnvName)
+                .collect(Collectors.toList());
+
+        final ResourceLastStatusDAO statusDAO = MongoConnector.getInstance().getLastStatusDAO();
+
+        List<EnvironmentStatusDTO> statusList = envs
+                .stream()
+                .sorted(String::compareTo)
+                .map(env -> {
+                    List<ResourceStatus> statuses = statusDAO.find(env)
+                            .stream()
+                            .sorted(Comparator.comparing(o -> o.getResource().getName()))
+                            .collect(Collectors.toList());
+
+                    return new EnvironmentStatusDTO(env, statuses);
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(statusList);
+    }
 
 
-  @RequestMapping(value = "aggregated/{environmentName}", method = RequestMethod.GET)
-  public ResponseEntity<List<AggregatedResourceStatus>> getStatus(
-      @PathVariable("environmentName") String environmentName,
-      @RequestParam(value = "resources", required = false) Set<String> resources,
-      @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
-      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+    @RequestMapping(value = "aggregated/{environmentName}", method = RequestMethod.GET)
+    public ResponseEntity<List<AggregatedResourceStatus>> getStatus(
+            @PathVariable("environmentName") String environmentName,
+            @RequestParam(value = "resources", required = false) Set<String> resources,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
-    AggregatedStatusDAO detailDAO = MongoConnector.getInstance().getAggregatedStatusDAO();
-    List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, resources, startDate, endDate);
+        AggregatedStatusDAO detailDAO = MongoConnector.getInstance().getAggregatedStatusDAO();
+        List<AggregatedResourceStatus> aggStatusses = detailDAO.getAggregatedStatuses(environmentName, resources, startDate, endDate)
+                .stream()
+                .sorted(Comparator.comparing(o -> o.getResource().getName()))
+                .collect(Collectors.toList());
 
-    return ResponseEntity.ok(aggStatusses);
-  }
+        return ResponseEntity.ok(aggStatusses);
+    }
 }
