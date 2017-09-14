@@ -9,13 +9,15 @@ install: true
 addons:
   sonarcloud:
     organization: "yagelnasmanit-github"
+    token:
+      secure: "jXDsqo0gfoEfW5IxMAFfDu7CciR4Md/uKD2Iplm9dS519tiJmv2gmeIrlhZoIH3ESQZL2JBOI81AXpW7DbI0pijd6racJ46NIxMw0N1SQK9AxxMJ07OkEg9zXbbxVt1O+VEEmRdvk/XTVWgFMbfJsVVCxh4kTHSlEM6pc9f1litEuifjx1OctD9aVKbRJdMArG6ihxNCGd/LYdXgcJFlZsIGxr2SXIn9i697qCNH/2IXQf/w9ZtR/7H7S0x55N5HdBx5NF/FzQJi3FPQkkZY6C16768OYZa+T0jPMR8qyTXEVphVlp5LiDAEppG2oRPgAtF2H/g333ktqZvceuKRKsTLbKkAHVmbSABVZi8whE9QrKgz1Cq3+85dDV9Qt9wrfPkvmsb6Rwb1ZXEfKjr2jt2C80hsyuRJ+yvusFm1+qYCDkbbiyP8ZwWRWEYmXfzeoRMRiTf/n0LUmtkwKvzzvOeNP4FBgOWvq4IEg3w/kXA7Ch9SCnqeG4P5Y4IQpZlpaeu5TSQsEfYInhRsqYmpxo3RlTaeGqG07ekvSXb1LZ9L1VE13yfDWvMUxSmfZLCUSy8vClQ1zZ9kYO4wfj8a/ikZx6Wh9AmetTwBUiBKch+u+hWsZUHxxmCZaMWtcy9QAXrFohBhJF2jepi9z3IONIZnID7rs+bcZ3iqvFnhuKk="
     branches:
       - master
       - develop
 
 script:
   - mvn clean install
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io
+  - sonar-scanner
 
 cache:
   directories:
