@@ -16,7 +16,8 @@ addons:
       - develop
 
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - mvn clean package
+  - mvn clean --fail-never org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar
 
 
 cache:
