@@ -1,10 +1,9 @@
 package org.yagel.monitor.runner.test.intergation.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yagel.monitor.Resource;
-import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceDAO;
 import org.yagel.monitor.resource.ResourceImpl;
 
@@ -14,14 +13,8 @@ import java.util.stream.Collectors;
 
 public class ResourceDAOTest extends AbstractDAOTest {
 
-
+  @Autowired
   private ResourceDAO resourceDAO;
-
-
-  @BeforeClass
-  public void loadDao() {
-    resourceDAO = MongoConnector.getInstance().getResourceDAO();
-  }
 
   @Test
   public void testInsertFindSingle() throws Exception {

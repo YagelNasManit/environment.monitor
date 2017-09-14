@@ -22,9 +22,9 @@ public class ResourceLastStatusDAO extends AbstractDAO {
   private MongoCollection<Document> thisCollection;
 
 
-  public ResourceLastStatusDAO(MongoDatabase db) {
-    super(db);
-    thisCollection = db.getCollection(COLLECTION_NAME);
+  public ResourceLastStatusDAO(MongoConnect connect) {
+    super(connect);
+    thisCollection = mongoDatabase.getCollection(COLLECTION_NAME);
   }
 
 

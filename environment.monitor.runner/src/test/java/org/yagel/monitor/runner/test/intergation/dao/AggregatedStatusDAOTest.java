@@ -1,13 +1,13 @@
 package org.yagel.monitor.runner.test.intergation.dao;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.AggregatedStatusDAO;
-import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceStatusDetailDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 import org.yagel.monitor.resource.Status;
@@ -18,7 +18,10 @@ import java.util.UUID;
 
 public class AggregatedStatusDAOTest extends AbstractDAOTest {
 
+  @Autowired
   private AggregatedStatusDAO aggregatedStatusDAO;
+
+  @Autowired
   private ResourceStatusDetailDAO monthDetailDAO;
 
   private String[] environemntNames;
@@ -29,9 +32,6 @@ public class AggregatedStatusDAOTest extends AbstractDAOTest {
 
   @BeforeClass
   public void setUp() throws Exception {
-    aggregatedStatusDAO = MongoConnector.getInstance().getAggregatedStatusDAO();
-    monthDetailDAO = MongoConnector.getInstance().getMonthDetailDAO();
-
     String baseEnvName = this.getClass().getName();
     environemntNames = new String[]{baseEnvName + UUID.randomUUID(), baseEnvName + UUID.randomUUID()};
 

@@ -1,8 +1,11 @@
 package org.yagel.monitor.runner.test.intergation.dao;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.yagel.monitor.Resource;
 import org.yagel.monitor.ResourceStatus;
+import org.yagel.monitor.RunnerBeansConfiguration;
 import org.yagel.monitor.resource.ResourceImpl;
 import org.yagel.monitor.resource.ResourceStatusImpl;
 import org.yagel.monitor.resource.Status;
@@ -14,7 +17,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AbstractDAOTest {
+@ContextConfiguration(classes = RunnerBeansConfiguration.class)
+public class AbstractDAOTest extends AbstractTestNGSpringContextTests {
 
   protected String mockResoureId = "Mock_resource";
   protected String mockResoureName = "Mock_resource_Name";

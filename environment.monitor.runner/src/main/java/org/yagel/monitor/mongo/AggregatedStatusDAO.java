@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 
 public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
 
-  public AggregatedStatusDAO(MongoDatabase mongoDatabase) {
-    super(mongoDatabase);
+  public AggregatedStatusDAO(MongoConnect connect) {
+    super(connect);
   }
 
 

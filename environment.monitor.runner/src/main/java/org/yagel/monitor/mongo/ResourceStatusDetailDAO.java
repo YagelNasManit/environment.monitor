@@ -26,8 +26,8 @@ import java.util.List;
 
 public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
 
-  public ResourceStatusDetailDAO(MongoDatabase mongoDatabase) {
-    super(mongoDatabase);
+  public ResourceStatusDetailDAO(MongoConnect connect) {
+    super(connect);
     switchCollection(new Date());
   }
 

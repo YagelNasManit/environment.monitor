@@ -1,10 +1,9 @@
 package org.yagel.monitor.runner.test.intergation.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yagel.monitor.ResourceStatus;
-import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 
 import java.util.List;
@@ -13,14 +12,11 @@ import java.util.stream.Collectors;
 
 public class ResourceLastStatusDAOTest extends AbstractDAOTest {
 
+  @Autowired
   private ResourceLastStatusDAO lastStatusDAO;
+
   private String environmentName = this.getClass().getSimpleName();
   private int resourcesCount = 5;
-
-  @BeforeClass
-  public void loadDao() throws Exception {
-    lastStatusDAO = MongoConnector.getInstance().getLastStatusDAO();
-  }
 
   @Test
   public void testInsertFindMultiple() throws Exception {
@@ -31,7 +27,6 @@ public class ResourceLastStatusDAOTest extends AbstractDAOTest {
 
     Assert.assertTrue(dbStatusList.size() == resourcesCount);
     Assert.assertEquals(statusList, dbStatusList);
-
 
 
   }

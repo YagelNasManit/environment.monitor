@@ -1,6 +1,7 @@
 package org.yagel.monitor.plugins;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.yagel.monitor.MonitorConfig;
 import org.yagel.monitor.plugins.exception.PluginException;
 import org.yagel.monitor.status.collector.MonitorStatusCollectorLoader;
@@ -15,20 +16,19 @@ import java.util.jar.JarFile;
 public class JarScanner {
 
   private final static Logger log = Logger.getLogger(JarScanner.class);
+
   private final static String MONITOR_CONFIG_FILE_NAME = "EnvMonitor.xml";
   private final static Class<MonitorStatusCollectorLoader> loaderClass = MonitorStatusCollectorLoader.class;
-  private final ClassLoader classLoader;
+
+  @Autowired
+  private MonitorConfigReader reader;
+
   private Class classProvider;
-  private String pathToJar;
   private String cannonicalJarPath;
 
-  public JarScanner(ClassLoader classLoader, String pathToJar) {
-    this.classLoader = classLoader;
-    this.pathToJar = pathToJar;
-    this.cannonicalJarPath = "jar:file:" + pathToJar + "!/";
-  }
+  public void scanJar(String pathToJar, ClassLoader classLoader) {
 
-  public void scanJar() {
+    this.cannonicalJarPath = "jar:file:" + pathToJar + "!/";
 
     URL[] urls;
     try {
@@ -86,9 +86,7 @@ public class JarScanner {
   }
 
   public MonitorConfig getMonitorConfig() {
-
-
-    return new MonitorConfigReader().readMonitorConfig(cannonicalJarPath + MONITOR_CONFIG_FILE_NAME);
+    return reader.readMonitorConfig(cannonicalJarPath + MONITOR_CONFIG_FILE_NAME);
 
   }
 

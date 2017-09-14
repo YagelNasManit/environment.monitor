@@ -3,7 +3,7 @@ package org.yagel.monitor;
 
 public interface ScheduleRunner {
 
-  void runTasks();
+  void runTasks(ClassLoader classLoader);
 
   void shutdown();
 

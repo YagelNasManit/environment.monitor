@@ -1,10 +1,10 @@
 package org.yagel.monitor.runner.test.intergation.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yagel.monitor.ResourceStatus;
-import org.yagel.monitor.mongo.MongoConnector;
 import org.yagel.monitor.mongo.ResourceStatusDetailDAO;
 
 import java.util.List;
@@ -12,14 +12,13 @@ import java.util.UUID;
 
 public class ResourceStatusDetailDAOTest extends AbstractDAOTest {
 
+  @Autowired
   private ResourceStatusDetailDAO monthDetailDAO;
 
   private String environemntName;
 
   @BeforeClass
   public void setUp() throws Exception {
-    monthDetailDAO = MongoConnector.getInstance().getMonthDetailDAO();
-
     String baseEnvName = this.getClass().getName();
     environemntName = baseEnvName + UUID.randomUUID();
 

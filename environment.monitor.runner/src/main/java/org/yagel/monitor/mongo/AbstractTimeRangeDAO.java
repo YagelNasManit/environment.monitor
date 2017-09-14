@@ -13,8 +13,8 @@ public abstract class AbstractTimeRangeDAO extends AbstractDAO {
   protected MongoCollection<Document> thisCollection;
   protected int thisDate = -1;
 
-  public AbstractTimeRangeDAO(MongoDatabase mongoDatabase) {
-    super(mongoDatabase);
+  public AbstractTimeRangeDAO(MongoConnect connect) {
+    super(connect);
   }
 
   protected void switchCollection(Date date) {

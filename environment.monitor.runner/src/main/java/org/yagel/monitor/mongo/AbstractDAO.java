@@ -6,8 +6,8 @@ public abstract class AbstractDAO {
 
   protected MongoDatabase mongoDatabase;
 
-  public AbstractDAO(MongoDatabase mongoDatabase) {
-    this.mongoDatabase = mongoDatabase;
+  public AbstractDAO(MongoConnect connect) {
+    this.mongoDatabase = connect.getDatabase();
   }
 
 }

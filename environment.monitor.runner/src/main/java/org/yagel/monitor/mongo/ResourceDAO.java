@@ -22,9 +22,9 @@ public class ResourceDAO extends AbstractDAO {
   private final static String COLLECTION_NAME = "Resources";
   private MongoCollection<Document> thisCollection;
 
-  public ResourceDAO(MongoDatabase db) {
-    super(db);
-    thisCollection = db.getCollection(COLLECTION_NAME);
+  public ResourceDAO(MongoConnect connect) {
+    super(connect);
+    thisCollection = mongoDatabase.getCollection(COLLECTION_NAME);
   }
 
 

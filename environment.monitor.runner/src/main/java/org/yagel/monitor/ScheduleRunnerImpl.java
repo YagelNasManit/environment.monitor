@@ -1,8 +1,11 @@
 package org.yagel.monitor;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.yagel.monitor.exception.ScheduleRunnerException;
-import org.yagel.monitor.mongo.MongoConnector;
+import org.yagel.monitor.mongo.ResourceDAO;
+import org.yagel.monitor.mongo.ResourceLastStatusDAO;
+import org.yagel.monitor.mongo.ResourceStatusDetailDAO;
 import org.yagel.monitor.plugins.JarScanner;
 import org.yagel.monitor.status.collector.MonitorStatusCollectorLoader;
 import org.yagel.monitor.status.collector.ProxyCollectorLoader;
@@ -19,44 +22,39 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import javax.annotation.PreDestroy;
 
 public class ScheduleRunnerImpl implements ScheduleRunner {
 
   private static Logger log = Logger.getLogger(ScheduleRunnerImpl.class);
-  private static ScheduleRunnerImpl scheduleRunnerImpl;
+
+  @Autowired
+  private JarScanner jarScanner;
+
+  @Autowired
+  private ResourceDAO resourceDAO;
+
+  @Autowired
+  private ResourceLastStatusDAO lastStatusDAO;
+
+  @Autowired
+  private ResourceStatusDetailDAO statusDetailDAO;
+
 
   private MonitorStatusCollectorLoader collectorLoader;
   private ClassLoader classLoader;
-
   private ScheduledExecutorService executor;
   private MonitorConfig config;
-  private Map<String, EnvironmentMonitorJobImpl> tasks = new WeakHashMap<>();
+  private Map<String, EnvironmentMonitorJobImpl> tasks;
 
-  private ScheduleRunnerImpl(ClassLoader classLoader) {
+  public void runTasks(ClassLoader classLoader) {
     this.classLoader = classLoader;
-    JarScanner jarScanner = new JarScanner(classLoader, this.getPluginPath());
-    jarScanner.scanJar();
+    this.tasks = new WeakHashMap<>();
+    this.jarScanner.scanJar(this.getPluginPath(), classLoader);
     this.collectorLoader = new ProxyCollectorLoader(jarScanner.getStatusCollectorLoader());
     this.config = jarScanner.getMonitorConfig();
 
-  }
 
-  public static ScheduleRunner getInstance() {
-    if (scheduleRunnerImpl == null)
-      throw new ScheduleRunnerException("Calling schedule runner before initialization, use newInstance first");
-    return scheduleRunnerImpl;
-  }
-
-  public synchronized static ScheduleRunner newInstance(ClassLoader classLoader) {
-    if (scheduleRunnerImpl != null) {
-      scheduleRunnerImpl.shutdown();
-    }
-    scheduleRunnerImpl = new ScheduleRunnerImpl(classLoader);
-
-    return getInstance();
-  }
-
-  public void runTasks() {
     this.executor = setupScheduler(config);
     log.info("Initialize tasks");
 
@@ -108,13 +106,15 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
     synchronized (tasks) {
       Calendar waitDelay = Calendar.getInstance();
       waitDelay.add(Calendar.MINUTE, -10);
+
       for (Map.Entry<String, EnvironmentMonitorJobImpl> task : tasks.entrySet()) {
         if (waitDelay.getTime().after(task.getValue().getUpdated())) {
           log.error("\n\n\n The " + task.getKey() + " task does not respond too long time.\n\n\n");
           log.error("\n\n Schedule service going to restart! \n\n");
-          executor.shutdown();
-          scheduleRunnerImpl = new ScheduleRunnerImpl(scheduleRunnerImpl.classLoader);
-          scheduleRunnerImpl.runTasks();
+          this.shutdown();
+          this.executor = null;
+          this.tasks = null;
+          this.runTasks(this.classLoader);
           throw new Exception("The " + task.getKey() + " task does not respond too long time.");
         }
       }
@@ -129,6 +129,12 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
     return location;
   }
 
+  @PreDestroy
+  public void onDestroy() {
+    System.out.println("Shutting down threads");
+    shutdown();
+    System.out.println("Threads down");
+  }
 
   private class EnvironmentMonitorJobImpl implements EnvironmentMonitorJob {
 
@@ -174,9 +180,9 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
 
         Set<ResourceStatus> status = collector.updateStatus();
 
-        MongoConnector.getInstance().getLastStatusDAO().insert(config.getEnvName(), status);
-        MongoConnector.getInstance().getMonthDetailDAO().insert(config.getEnvName(), status);
-        MongoConnector.getInstance().getResourceDAO().insert(status.stream().map(ResourceStatus::getResource).collect(Collectors.toSet()));
+        lastStatusDAO.insert(config.getEnvName(), status);
+        statusDetailDAO.insert(config.getEnvName(), status);
+        resourceDAO.insert(status.stream().map(ResourceStatus::getResource).collect(Collectors.toSet()));
         this.updateListeners(status);
 
       } catch (Exception e1) {
