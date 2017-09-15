@@ -1,7 +1,7 @@
 package org.yagel.monitor;
 
 
-public interface Resource {
+public interface Resource extends Comparable<Resource> {
 
   String getId();
 
