@@ -52,4 +52,9 @@ public class ResourceImpl implements Resource {
         .append("name", name)
         .toString();
   }
+
+  @Override
+  public int compareTo(Resource o) {
+    return this.getName().compareTo(o.getName());
+  }
 }
