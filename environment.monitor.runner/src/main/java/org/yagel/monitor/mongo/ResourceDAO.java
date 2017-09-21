@@ -5,7 +5,6 @@ import static com.mongodb.client.model.Filters.in;
 import static org.yagel.monitor.mongo.DocumentMapper.resourceToDocument;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOneModel;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class ResourceDAO extends AbstractDAO {
 
-  private final static String COLLECTION_NAME = "Resources";
+  private static final String COLLECTION_NAME = "Resources";
   private MongoCollection<Document> thisCollection;
 
   public ResourceDAO(MongoConnect connect) {

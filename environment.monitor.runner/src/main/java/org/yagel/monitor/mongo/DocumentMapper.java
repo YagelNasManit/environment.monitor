@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 public class DocumentMapper {
 
+  private DocumentMapper() {}
+
   public static Document resourceStatusToDocument(String evnName, ResourceStatus resourceStatus) {
     return new Document()
         .append("environmentName", evnName)

@@ -20,10 +20,6 @@ public enum Status {
     this.seriaNumber = seriaNumber;
   }
 
-  public static int seriaNumbers() {
-    return 3;
-  }
-
   public static Status fromSerialNumber(int serialNumber) {
     return Stream.of(Status.values())
         .filter(status -> status.getSeriaNumber() == serialNumber)

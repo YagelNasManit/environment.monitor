@@ -5,7 +5,6 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.yagel.monitor.ResourceStatus;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class ResourceLastStatusDAO extends AbstractDAO {
 
-  private final static String COLLECTION_NAME = "ResourceLastStatus";
+  private static final String COLLECTION_NAME = "ResourceLastStatus";
   private MongoCollection<Document> thisCollection;
 
 
@@ -30,6 +29,7 @@ public class ResourceLastStatusDAO extends AbstractDAO {
 
   /**
    * Remove all last statuses for particular environment
+   *
    * @param environmentName name of environment to remove statuses for
    */
   public void delete(String environmentName) {
@@ -39,6 +39,7 @@ public class ResourceLastStatusDAO extends AbstractDAO {
 
   /**
    * Replace existing last statuses for environment by new ones
+   *
    * @param environmentName environment to update statuses
    * @param resources       new statuses to be set up
    */
@@ -55,14 +56,13 @@ public class ResourceLastStatusDAO extends AbstractDAO {
 
   /**
    * Get last statuses for environment resources
+   *
    * @param environmentName environment to fetch statuses for
    */
   public List<ResourceStatus> find(String environmentName) {
-    List<ResourceStatus> resources = thisCollection.find(new Document().append("environmentName", environmentName))
+     return thisCollection.find(new Document().append("environmentName", environmentName))
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
-
-    return resources;
   }
 
 
@@ -73,18 +73,17 @@ public class ResourceLastStatusDAO extends AbstractDAO {
    * @return
    */
   public List<ResourceStatus> find(Collection<String> environmentNames) {
-    List<ResourceStatus> resources = thisCollection.find(in("environmentName", environmentNames))
+    return thisCollection.find(in("environmentName", environmentNames))
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
-
-    return resources;
   }
 
 
   /**
    * Get last statuses for particular environment and defined resources
+   *
    * @param environmentName environment to fetch statuses for
-   * @param resourceIds resources to fetch statuses for
+   * @param resourceIds     resources to fetch statuses for
    * @return
    */
   public List<ResourceStatus> find(String environmentName, Set<String> resourceIds) {
@@ -93,11 +92,10 @@ public class ResourceLastStatusDAO extends AbstractDAO {
         in("resource.resourceId", resourceIds)
     );
 
-    List<ResourceStatus> resources = thisCollection.find(query)
+    return thisCollection.find(query)
         .map(DocumentMapper::resourceStatusFromDocument)
         .into(new ArrayList<>());
 
-    return resources;
   }
 
 }

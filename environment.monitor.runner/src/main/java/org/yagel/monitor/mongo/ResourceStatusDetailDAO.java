@@ -9,7 +9,6 @@ import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.include;
 import static org.yagel.monitor.mongo.DocumentMapper.resourceStatusToDocument;
 
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 import org.bson.conversions.Bson;
 import org.yagel.monitor.ResourceStatus;

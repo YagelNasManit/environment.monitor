@@ -14,7 +14,7 @@ import javax.xml.bind.Unmarshaller;
 
 public class MonitorConfigReader {
 
-  private final static Logger log = Logger.getLogger(MonitorConfigReader.class);
+  private static final Logger log = Logger.getLogger(MonitorConfigReader.class);
 
   public MonitorConfig readMonitorConfig(String configUrl) {
 

@@ -6,8 +6,9 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lte;
 
+
 import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.MongoDatabase;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 import org.yagel.monitor.resource.AggregatedStatus;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
+
+  private static final Logger log = Logger.getLogger(AggregatedStatusDAO.class);
 
   public AggregatedStatusDAO(MongoConnect connect) {
     super(connect);
@@ -144,7 +147,7 @@ public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
 
 
   private AggregatedStatus mergeAggregatedStatuses(AggregatedStatus first, AggregatedStatus second) {
-    System.out.println(first + " " + second);
+    log.debug(first + " " + second);
     first.setCount(first.getCount() + second.getCount());
     return first;
   }

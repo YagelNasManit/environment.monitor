@@ -4,13 +4,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import org.apache.log4j.Logger;
+import org.yagel.monitor.exception.DBConnectionException;
 
 import javax.annotation.PreDestroy;
 
 public class MongoConnect {
 
-  private final static Logger log = Logger.getLogger(MongoConnect.class);
-  private final static String MONITOR_DB = "monitor_tmp_newDomain";
+  private static final Logger log = Logger.getLogger(MongoConnect.class);
+  private static final String MONITOR_DB = "monitor_tmp_newDomain";
 
   MongoDatabase database;
   MongoClient client;
@@ -29,8 +30,9 @@ public class MongoConnect {
       }
     }
     catch (Exception e){
-      log.error("Exception on mongoDB connection creation. ", e);
-      throw new RuntimeException(e);
+      String message = "Exception on mongoDB connection creation. ";
+      log.error(message, e);
+      throw new DBConnectionException(message,e);
     }
   }
 
@@ -58,8 +60,8 @@ public class MongoConnect {
 
   @PreDestroy
   public void onDestroy(){
-    System.out.println("Close DB");
+    log.info("Closing database connections ");
    close();
-    System.out.println("DB Closed");
+    log.info("Database connections closed");
   }
 }

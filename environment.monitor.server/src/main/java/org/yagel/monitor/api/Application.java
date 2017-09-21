@@ -22,11 +22,7 @@ public class Application {
 
   @Bean
   public CommandLineRunner schedulingRunner() {
-    return args -> {
-      scheduleRunner.runTasks(Thread.currentThread().getContextClassLoader());
-
-    };
-
+    return args -> scheduleRunner.runTasks(Thread.currentThread().getContextClassLoader());
   }
 
 

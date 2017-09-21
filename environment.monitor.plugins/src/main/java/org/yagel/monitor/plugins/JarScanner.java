@@ -15,10 +15,10 @@ import java.util.jar.JarFile;
 
 public class JarScanner {
 
-  private final static Logger log = Logger.getLogger(JarScanner.class);
+  private static final Logger log = Logger.getLogger(JarScanner.class);
 
-  private final static String MONITOR_CONFIG_FILE_NAME = "EnvMonitor.xml";
-  private final static Class<MonitorStatusCollectorLoader> loaderClass = MonitorStatusCollectorLoader.class;
+  private static final String MONITOR_CONFIG_FILE_NAME = "EnvMonitor.xml";
+  private static final Class<MonitorStatusCollectorLoader> loaderClass = MonitorStatusCollectorLoader.class;
 
   @Autowired
   private MonitorConfigReader reader;
@@ -44,30 +44,16 @@ public class JarScanner {
 
       while (e.hasMoreElements()) {
         JarEntry je = e.nextElement();
-
         log.debug("File found: " + je.getName());
-        if (je.isDirectory() || !je.getName().endsWith(".class")) {
-          log.debug("not a class, skip");
+
+        if (this.checkIfClass(je)) {
+          log.debug("Not a class, skipping");
           continue;
         }
 
-        // -6 because of .class
-        String className = je.getName().substring(0, je.getName().length() - 6);
-        className = className.replace('/', '.');
-
-
-        try {
-          log.debug("External class found: " + className);
-          Class c = cl.loadClass(className);
-          log.debug("Loaded class : " + className);
-
-          if (loaderClass.isAssignableFrom(c)) {
-            classProvider = c;
-            log.debug("Found implementation of loader class, taking as plugin provider : " + className);
-          }
-        } catch (ClassNotFoundException ex) {
-          throw new PluginException("For some reason was unable to load class from plugin jar", ex);
-        }
+        String className = this.getClassNameFromEntry(je);
+        this.loadClass(cl, className);
+        log.debug("Class loaded");
       }
 
     } catch (IOException e) {
@@ -75,6 +61,32 @@ public class JarScanner {
     }
 
 
+  }
+
+  private boolean checkIfClass(JarEntry je) {
+    return je.isDirectory() || !je.getName().endsWith(".class");
+  }
+
+  private String getClassNameFromEntry(JarEntry je) {
+    // -6 because of .class
+    String className = je.getName().substring(0, je.getName().length() - 6);
+    className = className.replace('/', '.');
+    return className;
+  }
+
+  private void loadClass(URLClassLoader cl, String className) {
+    try {
+      log.debug("External class found: " + className);
+      Class c = cl.loadClass(className);
+      log.debug("Loaded class : " + className);
+
+      if (loaderClass.isAssignableFrom(c)) {
+        classProvider = c;
+        log.debug("Found implementation of loader class, taking as plugin provider : " + className);
+      }
+    } catch (ClassNotFoundException ex) {
+      throw new PluginException("For some reason was unable to load class from plugin jar", ex);
+    }
   }
 
   public MonitorStatusCollectorLoader getStatusCollectorLoader() {

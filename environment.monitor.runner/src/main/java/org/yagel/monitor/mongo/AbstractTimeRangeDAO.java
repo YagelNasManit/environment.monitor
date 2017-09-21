@@ -1,7 +1,6 @@
 package org.yagel.monitor.mongo;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.yagel.monitor.utils.DataUtils;
 
@@ -9,7 +8,7 @@ import java.util.Date;
 
 public abstract class AbstractTimeRangeDAO extends AbstractDAO {
 
-  protected final static String COLLECTION_NAME = "ResourceMonthDetail%s";
+  protected static final String COLLECTION_NAME = "ResourceMonthDetail%s";
   protected MongoCollection<Document> thisCollection;
   protected int thisDate = -1;
 

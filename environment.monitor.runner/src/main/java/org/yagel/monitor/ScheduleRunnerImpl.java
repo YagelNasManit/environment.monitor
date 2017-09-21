@@ -2,6 +2,7 @@ package org.yagel.monitor;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yagel.monitor.exception.DiagnosticException;
 import org.yagel.monitor.exception.ScheduleRunnerException;
 import org.yagel.monitor.mongo.ResourceDAO;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
@@ -40,8 +41,6 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
   @Autowired
   private ResourceStatusDetailDAO statusDetailDAO;
 
-
-  private MonitorStatusCollectorLoader collectorLoader;
   private ClassLoader classLoader;
   private ScheduledExecutorService executor;
   private MonitorConfig config;
@@ -51,13 +50,13 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
     this.classLoader = classLoader;
     this.tasks = new WeakHashMap<>();
     this.jarScanner.scanJar(this.getPluginPath(), classLoader);
-    this.collectorLoader = new ProxyCollectorLoader(jarScanner.getStatusCollectorLoader());
     this.config = jarScanner.getMonitorConfig();
 
 
     this.executor = setupScheduler(config);
     log.info("Initialize tasks");
 
+    MonitorStatusCollectorLoader collectorLoader = new ProxyCollectorLoader(jarScanner.getStatusCollectorLoader());
 
     for (EnvironmentConfig env : config.getEnvironments()) {
       EnvironmentMonitorJobImpl task = new EnvironmentMonitorJobImpl(env, collectorLoader.loadCollector(env));
@@ -73,7 +72,6 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
   public void shutdown() {
     try {
       this.executor.shutdown();
-      // todo replace with seconds 20 seconds
       this.executor.awaitTermination(40, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       this.executor.shutdownNow();
@@ -96,13 +94,13 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
 
   private ScheduledExecutorService setupScheduler(MonitorConfig config) {
     log.info("Setup Scheduler");
-    ScheduledExecutorService executor = Executors.newScheduledThreadPool(config.getEnvironments().size());
+    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(config.getEnvironments().size());
     log.info("Setup Scheduler - done");
-    return executor;
+    return executorService;
   }
 
 
-  private void selfDiagnostic() throws Exception {
+  private void selfDiagnostic() throws DiagnosticException {
     synchronized (tasks) {
       Calendar waitDelay = Calendar.getInstance();
       waitDelay.add(Calendar.MINUTE, -10);
@@ -115,7 +113,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
           this.executor = null;
           this.tasks = null;
           this.runTasks(this.classLoader);
-          throw new Exception("The " + task.getKey() + " task does not respond too long time.");
+          throw new DiagnosticException("The " + task.getKey() + " task does not respond too long time.");
         }
       }
     }
@@ -131,9 +129,9 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
 
   @PreDestroy
   public void onDestroy() {
-    System.out.println("Shutting down threads");
+    log.info("Shutting down monitor environment jobs");
     shutdown();
-    System.out.println("Threads down");
+    log.info("Jobs are down");
   }
 
   private class EnvironmentMonitorJobImpl implements EnvironmentMonitorJob {
@@ -144,7 +142,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
     private MonitorStatusCollector collector;
 
 
-    public EnvironmentMonitorJobImpl(EnvironmentConfig config, MonitorStatusCollector collector) {
+    EnvironmentMonitorJobImpl(EnvironmentConfig config, MonitorStatusCollector collector) {
       this.listeners = Collections.synchronizedSet(new HashSet<UpdateStatusListener>());
       this.config = config;
       this.collector = collector;
@@ -161,7 +159,7 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
       this.listeners.add(listener);
     }
 
-    public Date getUpdated() {
+    Date getUpdated() {
       return lastUpdate;
     }
 
