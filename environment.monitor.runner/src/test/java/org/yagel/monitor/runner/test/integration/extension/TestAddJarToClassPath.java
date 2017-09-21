@@ -1,4 +1,4 @@
-package org.yagel.monitor.runner.test.intergation.extension;
+package org.yagel.monitor.runner.test.integration.extension;
 
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;

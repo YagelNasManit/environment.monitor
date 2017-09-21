@@ -12,11 +12,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-class MonitorConfigReader {
+public class MonitorConfigReader {
 
   private final static Logger log = Logger.getLogger(MonitorConfigReader.class);
 
-  MonitorConfig readMonitorConfig(String configUrl) {
+  public MonitorConfig readMonitorConfig(String configUrl) {
 
     try {
       log.info("Loading configuration");

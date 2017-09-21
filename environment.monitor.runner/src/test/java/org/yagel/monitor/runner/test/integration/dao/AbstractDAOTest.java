@@ -1,4 +1,4 @@
-package org.yagel.monitor.runner.test.intergation.dao;
+package org.yagel.monitor.runner.test.integration.dao;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.test.context.ContextConfiguration;

@@ -1,10 +1,11 @@
-package org.yagel.monitor.plugins;
+package org.yagel.monitor.plugins.test.unit;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.yagel.monitor.MonitorConfig;
+import org.yagel.monitor.plugins.MonitorConfigReader;
 
-public class TestMonitorConfigReader {
+public class MonitorConfigReaderTest {
 
   @Test
   void testMonitorConfigDeserialization() {

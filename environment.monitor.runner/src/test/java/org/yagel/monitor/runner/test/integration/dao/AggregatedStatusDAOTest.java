@@ -1,4 +1,4 @@
-package org.yagel.monitor.runner.test.intergation.dao;
+package org.yagel.monitor.runner.test.integration.dao;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
