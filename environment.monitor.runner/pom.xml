@@ -95,7 +95,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>org.yagel.monitor.plugins.test.integration.**</include>
+                        <include>org.yagel.monitor.runner.test.integration.**</include>
                     </includes>
                     <systemProperties>
                         <property>
