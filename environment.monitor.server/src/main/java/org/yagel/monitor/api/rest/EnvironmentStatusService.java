@@ -17,6 +17,7 @@ import org.yagel.monitor.mongo.AggregatedStatusDAO;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 import org.yagel.monitor.resource.AggregatedResourceStatus;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,15 @@ public class EnvironmentStatusService extends AbstractService {
 
     List<EnvironmentStatusDTO> statusList = envs
         .stream()
-        .map(env -> new EnvironmentStatusDTO(env, lastStatusDAO.find(env)))
+        .sorted(String::compareTo)
+        .map(env -> {
+          List<ResourceStatus> statuses = lastStatusDAO.find(env)
+              .stream()
+              .sorted(Comparator.comparing(o -> o.getResource().getName()))
+              .collect(Collectors.toList());
+
+          return new EnvironmentStatusDTO(env, statuses);
+        })
         .collect(Collectors.toList());
 
     return ResponseEntity.ok(statusList);
@@ -71,7 +80,11 @@ public class EnvironmentStatusService extends AbstractService {
       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
 
-    List<AggregatedResourceStatus> aggStatusses = aggregatedStatusDAO.getAggregatedStatuses(environmentName, resources, startDate, endDate);
+
+    List<AggregatedResourceStatus> aggStatusses = aggregatedStatusDAO.getAggregatedStatuses(environmentName, resources, startDate, endDate)
+        .stream()
+        .sorted(Comparator.comparing(o -> o.getResource().getName()))
+        .collect(Collectors.toList());
 
     return ResponseEntity.ok(aggStatusses);
   }
