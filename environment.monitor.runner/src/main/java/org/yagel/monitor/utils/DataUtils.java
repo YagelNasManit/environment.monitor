@@ -16,6 +16,8 @@ import java.util.List;
 
 public class DataUtils {
 
+  private DataUtils() {}
+
   /**
    * @param date
    * @return aggregated year and month values of given date field. Month is counted from 0
@@ -71,7 +73,7 @@ public class DataUtils {
 
   }
 
-  public static List<Date[]> splitDatesIntoMonths(Date from, Date to) throws IllegalArgumentException {
+  public static List<Date[]> splitDatesIntoMonths(Date from, Date to){
 
     List<Date[]> dates = new ArrayList<>();
 

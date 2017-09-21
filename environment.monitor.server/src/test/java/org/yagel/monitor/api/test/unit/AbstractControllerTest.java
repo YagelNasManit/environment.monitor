@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @TestExecutionListeners(MockitoTestExecutionListener.class)
-public class AbstractControllerTest extends AbstractTestNGSpringContextTests {
+public abstract class AbstractControllerTest extends AbstractTestNGSpringContextTests {
 
   @MockBean
   protected ScheduleRunnerImpl scheduleRunner;

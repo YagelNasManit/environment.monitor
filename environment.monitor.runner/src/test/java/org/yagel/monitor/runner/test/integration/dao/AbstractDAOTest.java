@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ContextConfiguration(classes = RunnerBeansConfiguration.class)
-public class AbstractDAOTest extends AbstractTestNGSpringContextTests {
+public abstract class AbstractDAOTest extends AbstractTestNGSpringContextTests {
 
   protected String mockResoureId = "Mock_resource";
   protected String mockResoureName = "Mock_resource_Name";

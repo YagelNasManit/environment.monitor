@@ -7,7 +7,7 @@ import org.yagel.monitor.MonitorStatusCollector;
 
 public class ProxyCollectorLoader implements MonitorStatusCollectorLoader {
 
-  private final static Logger log = Logger.getLogger(ProxyCollectorLoader.class);
+  private static final Logger log = Logger.getLogger(ProxyCollectorLoader.class);
   private final MonitorStatusCollectorLoader originalLoader;
 
   public ProxyCollectorLoader(MonitorStatusCollectorLoader originalLoader) {
