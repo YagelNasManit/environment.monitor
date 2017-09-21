@@ -54,4 +54,28 @@ public class EnvironmentConfigImpl implements EnvironmentConfig {
   public Map<String, String> getAdditionalProperties() {
     return this.additionalProperties;
   }
+
+  public void setEvnName(String evnName) {
+    this.evnName = evnName;
+  }
+
+  public void setTaskDelay(long taskDelay) {
+    this.taskDelay = taskDelay;
+  }
+
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  public void setAppVersion(int appVersion) {
+    this.appVersion = appVersion;
+  }
+
+  public void setCheckedResources(Set<String> checkedResources) {
+    this.checkedResources = checkedResources;
+  }
+
+  public void setAdditionalProperties(Map<String, String> additionalProperties) {
+    this.additionalProperties = additionalProperties;
+  }
 }

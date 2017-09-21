@@ -186,7 +186,14 @@ public class ScheduleRunnerImpl implements ScheduleRunner {
         this.updateListeners(status);
 
       } catch (Exception e1) {
+        // task pool will try to live as much as possible, therefore will proceed
         log.error("exception on status update for " + config.getEnvName() + " environment.", e1);
+      }
+      catch (Error er){
+        // ok, things are getting serious, notify that we have a problem (otherwise task will fail silently)
+        log.error("error on status update for " + config.getEnvName() + " environment.", er);
+        // and kill task
+        throw er;
       }
     }
 

@@ -33,6 +33,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Spring boot dependencies-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,10 +83,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

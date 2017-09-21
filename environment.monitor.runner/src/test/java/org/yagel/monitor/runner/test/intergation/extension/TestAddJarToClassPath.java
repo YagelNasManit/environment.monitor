@@ -17,7 +17,6 @@ public class TestAddJarToClassPath extends AbstractTestNGSpringContextTests{
   @Test(enabled = false)
   public void testLoaderIsFound() throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JAXBException {
 
-
     String pathToLocalJar = System.getProperty("plugin.jar.location");//"/Users/oleh_kovalyshyn/Self_Development/Github/EnvMonitor/source/plugin-extension/target/plugin-extension-1.0-SNAPSHOT.jar";
 
     JarScanner collectorFinder = new JarScanner();

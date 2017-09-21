@@ -13,13 +13,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MonitorConfigImpl implements MonitorConfig {
 
-  private static MonitorConfig config;
-
   @XmlElement(type = EnvironmentConfigImpl.class)
   private Set<EnvironmentConfig> environments;
-
-  @XmlElement
-  private String pluginCollectorLocation;
 
   @Override
   public Set<EnvironmentConfig> getEnvironments() {
@@ -27,4 +22,7 @@ public class MonitorConfigImpl implements MonitorConfig {
   }
 
 
+  public void setEnvironments(Set<EnvironmentConfig> environments) {
+    this.environments = environments;
+  }
 }
