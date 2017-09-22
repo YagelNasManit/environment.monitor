@@ -55,8 +55,12 @@ public class EnvironmentConfigImpl implements EnvironmentConfig {
     return this.additionalProperties;
   }
 
-  public void setEvnName(String evnName) {
-    this.evnName = evnName;
+  public void setAdditionalProperties(Map<String, String> additionalProperties) {
+    this.additionalProperties = additionalProperties;
+  }
+
+  public void setAppVersion(int appVersion) {
+    this.appVersion = appVersion;
   }
 
   public void setTaskDelay(long taskDelay) {
@@ -67,15 +71,11 @@ public class EnvironmentConfigImpl implements EnvironmentConfig {
     this.host = host;
   }
 
-  public void setAppVersion(int appVersion) {
-    this.appVersion = appVersion;
+  public void setEvnName(String evnName) {
+    this.evnName = evnName;
   }
 
   public void setCheckedResources(Set<String> checkedResources) {
     this.checkedResources = checkedResources;
-  }
-
-  public void setAdditionalProperties(Map<String, String> additionalProperties) {
-    this.additionalProperties = additionalProperties;
   }
 }
