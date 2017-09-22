@@ -18,7 +18,7 @@ addons:
 
 script:
   - mvn clean package
-  - mvn clean --fail-never org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar
+  - mvn -pl !environment.monitor.test.extension clean --fail-never org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar
 
 
 cache:
