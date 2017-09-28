@@ -1,5 +1,6 @@
 package org.yagel.monitor.resource;
 
+import java.util.List;
 import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -31,5 +32,11 @@ public enum Status {
     return seriaNumber;
   }
 
+  public static Status getOverallStatus(List<Integer> statuses) {
+    return statuses.stream().allMatch(e -> e == Unknown.getSeriaNumber()) ?
+        Unknown :
+        fromSerialNumber(statuses.stream().filter(e -> e != Unknown.getSeriaNumber()).max(Integer::compare).get());
+
+  }
 
 }

@@ -24,6 +24,7 @@ export class EnvironmentStatusService {
       .map(envs => {
         // TODO find better solution that recursive iterate
         envs.forEach((env, index) => {
+          env.overallStatus = Status[env.overallStatus];
           env.resourcesStatus.forEach((status, index) => {
             status.updated = new Date(status.updated);
             status.status = Status[status.status];
