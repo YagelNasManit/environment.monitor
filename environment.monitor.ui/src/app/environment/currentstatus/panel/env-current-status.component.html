@@ -1,6 +1,18 @@
 <div class="box  box-default">
   <div class="box-header with-border">
-    <h3 class="box-title">{{environmentStatus.name}}</h3>
+    <div class="header-icon">
+      <span [ngSwitch]="environmentStatus.overallStatus">
+            <!--Online-->
+            <i *ngSwitchCase="0" class="fa fa-check-square" style="color:#00a65a"></i>
+        <!--BorderLine-->
+            <i *ngSwitchCase="1" class="fa fa-check-square" style="color:#f39c12"></i>
+        <!--Unavailable-->
+            <i *ngSwitchCase="2" class="fa fa-minus-square" style="color:#dd4b39"></i>
+        <!--Unknown-->
+            <i *ngSwitchCase="3" class="fa fa-minus-square" style="color:#444444"></i>
+        </span>
+      <h3 class="box-title shift">{{environmentStatus.name}}</h3>
+    </div>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->

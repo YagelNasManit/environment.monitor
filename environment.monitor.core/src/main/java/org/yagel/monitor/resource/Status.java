@@ -1,7 +1,7 @@
 package org.yagel.monitor.resource;
 
-import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlEnumValue;
+import java.util.stream.Stream;
 
 public enum Status {
 
@@ -22,14 +22,13 @@ public enum Status {
 
   public static Status fromSerialNumber(int serialNumber) {
     return Stream.of(Status.values())
-        .filter(status -> status.getSeriaNumber() == serialNumber)
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("illegal resource status"));
+            .filter(status -> status.getSeriaNumber() == serialNumber)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("illegal resource status"));
   }
 
   public int getSeriaNumber() {
     return seriaNumber;
   }
-
 
 }
