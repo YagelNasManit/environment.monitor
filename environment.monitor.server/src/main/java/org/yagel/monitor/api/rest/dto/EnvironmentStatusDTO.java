@@ -4,7 +4,6 @@ import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.resource.Status;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EnvironmentStatusDTO {
 
@@ -17,10 +16,6 @@ public class EnvironmentStatusDTO {
   public EnvironmentStatusDTO(String name, List<ResourceStatus> resourcesStatus) {
     this.name = name;
     this.resourcesStatus = resourcesStatus;
-    setOverallStatus(Status.getOverallStatus(
-        resourcesStatus.stream()
-        .map(r -> r.getStatus().getSeriaNumber())
-        .collect(Collectors.toList())));
   }
 
   public String getName() {
