@@ -6,12 +6,8 @@
         <taskDelay>60</taskDelay>
         <appVersion>1</appVersion>
         <checkedResources>
-            <resource>
-                Mock1Resource
-            </resource>
-            <resource>
-                Mock2Resource
-            </resource>
+            <resource>Mock1Resource</resource>
+            <resource>Mock2Resource</resource>
         </checkedResources>
         <additionalProperties>
             <entry>
@@ -30,14 +26,10 @@
         <taskDelay>60</taskDelay>
         <appVersion>1</appVersion>
         <checkedResources>
-            <resource>
-                Mock1Resource
-            </resource>
-            <resource>
-                Mock2Resource
-            </resource>
+            <resource>Mock1Resource</resource>
+            <resource>Mock2Resource</resource>
         </checkedResources>
-        <envProperties>
+        <additionalProperties>
             <entry>
                 <key>prop1</key>
                 <value>1</value>    
@@ -46,7 +38,7 @@
                 <key>prop2</key>
                 <value>2</value>    
             </entry>
-        </envProperties>
+        </additionalProperties>
     </environments>
     <mailConfig>
         <notification>false</notification>
