@@ -15,33 +15,57 @@ import java.util.stream.Collectors;
 
 public class DocumentMapper {
 
-  private DocumentMapper() {}
+  private static final String DOC_ID_KEY = "_id";
+
+  // env
+  private static final String ENV_MANE_KEY = "environmentName";
+
+  // resource
+  private static final String RES_NAME_KEY = "name";
+
+  // status
+  private static final String STATUS_ORDINAL_KEY = "statusOrdinal";
+  private static final String STATUS_UPDATED_KEY = "updated";
+  private static final String STATUS_RES_REF_KEY = "resource";
+  private static final String STATUS_RES_NAME_KEY = "resourceName";
+  private static final String STATUS_RES_ID_KEY = "resourceId";
+  private static final String STATUS_RES_DETAILS_KEY = "statusDetails";
+
+  //aggregated status
+  private static final String AGG_COUNT_KEY = "count";
+  private static final String AGG_STATUSES_KEY = "statuses";
+
+
+  private DocumentMapper() {
+  }
 
   public static Document resourceStatusToDocument(String evnName, ResourceStatus resourceStatus) {
     return new Document()
-        .append("environmentName", evnName)
-        .append("resource", resourceToStatusRef(resourceStatus.getResource()))
-        .append("statusOrdinal", resourceStatus.getStatus().getSeriaNumber())
-        .append("updated", resourceStatus.getUpdated());
+        .append(ENV_MANE_KEY, evnName)
+        .append(STATUS_RES_REF_KEY, resourceToStatusRef(resourceStatus.getResource()))
+        .append(STATUS_ORDINAL_KEY, resourceStatus.getStatus().getSeriaNumber())
+        .append(STATUS_UPDATED_KEY, resourceStatus.getUpdated())
+        .append(STATUS_RES_DETAILS_KEY, resourceStatus.getStatusDetails());
   }
 
   public static ResourceStatus resourceStatusFromDocument(Document document) {
-    Document resourceDoc = (Document) document.get("resource");
+    Document resourceDoc = (Document) document.get(STATUS_RES_REF_KEY);
     Resource resource = resourceFromStatusRef(resourceDoc);
 
-    Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
-    Date updated = document.getDate("updated");
-    return new ResourceStatusImpl(resource, status, updated);
+    Status status = Status.fromSerialNumber(document.getInteger(STATUS_ORDINAL_KEY));
+    Date updated = document.getDate(STATUS_UPDATED_KEY);
+    String details = document.getString(STATUS_RES_DETAILS_KEY);
+    return new ResourceStatusImpl(resource, status, updated,details);
 
   }
 
   public static AggregatedResourceStatus aggregatedResourceStatusFromDocument(Document document) {
-    Document id = (Document) document.get("_id");
-    Resource resource = resourceFromStatusRef((Document) id.get("resource"));
+    Document id = (Document) document.get(DOC_ID_KEY);
+    Resource resource = resourceFromStatusRef((Document) id.get(STATUS_RES_REF_KEY));
 
-    long totalCount = document.getInteger("count");
+    long totalCount = document.getInteger(AGG_COUNT_KEY);
 
-    List<Document> statuses = (List<Document>) document.get("statuses");
+    List<Document> statuses = (List<Document>) document.get(AGG_STATUSES_KEY);
 
     List<AggregatedStatus> aggregatedStatuses = statuses
         .stream()
@@ -58,25 +82,25 @@ public class DocumentMapper {
   }
 
   public static Resource resourceFromStatusRef(Document document) {
-    return new ResourceImpl(document.getString("resourceId"), document.getString("resourceName"));
+    return new ResourceImpl(document.getString(STATUS_RES_ID_KEY), document.getString(STATUS_RES_NAME_KEY));
   }
 
   public static Document resourceToStatusRef(Resource resource) {
-    return new Document("resourceId", resource.getId()).append("resourceName", resource.getName());
+    return new Document(STATUS_RES_ID_KEY, resource.getId()).append(STATUS_RES_NAME_KEY, resource.getName());
   }
 
   public static Document resourceToDocument(Resource resource) {
-    return new Document("_id", resource.getId()).append("name", resource.getName());
+    return new Document(DOC_ID_KEY, resource.getId()).append(RES_NAME_KEY, resource.getName());
   }
 
   public static Resource resourceFromDocument(Document document) {
-    return new ResourceImpl(document.getString("_id"), document.getString("name"));
+    return new ResourceImpl(document.getString(DOC_ID_KEY), document.getString(RES_NAME_KEY));
   }
 
   private static AggregatedStatus aggregatedStatusFromDocument(Document document) {
 
-    Status status = Status.fromSerialNumber(document.getInteger("statusOrdinal"));
-    long count = document.getInteger("count");
+    Status status = Status.fromSerialNumber(document.getInteger(STATUS_ORDINAL_KEY));
+    long count = document.getInteger(AGG_COUNT_KEY);
 
     AggregatedStatus aggregatedStatus = new AggregatedStatus();
     aggregatedStatus.setStatus(status);
