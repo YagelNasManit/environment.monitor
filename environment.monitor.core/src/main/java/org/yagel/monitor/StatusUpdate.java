@@ -14,4 +14,8 @@ public interface StatusUpdate {
   Date getUpdated();
 
   void setUpdated(Date updated);
+
+  String getStatusDetails();
+
+  void setStatusDetails(String details);
 }

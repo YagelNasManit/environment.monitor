@@ -12,6 +12,7 @@ public class ResourceStatusImpl implements ResourceStatus {
   private Resource resource;
   private Status status;
   private Date updated = new Date();
+  private String statusDetails;
 
 
   public ResourceStatusImpl(Resource resource, Status status) {
@@ -22,6 +23,11 @@ public class ResourceStatusImpl implements ResourceStatus {
   public ResourceStatusImpl(Resource resource, Status status, Date updated) {
     this(resource, status);
     this.updated = updated;
+  }
+
+  public ResourceStatusImpl(Resource resource, Status status, Date updated, String details) {
+    this(resource, status, updated);
+    this.statusDetails = details;
   }
 
 
@@ -53,6 +59,16 @@ public class ResourceStatusImpl implements ResourceStatus {
   @Override
   public void setUpdated(Date updated) {
     this.updated = updated;
+  }
+
+  @Override
+  public String getStatusDetails() {
+    return this.statusDetails;
+  }
+
+  @Override
+  public void setStatusDetails(String details) {
+    this.statusDetails = details;
   }
 
   @Override

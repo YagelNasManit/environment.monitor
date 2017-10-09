@@ -8,7 +8,7 @@ public class StatusUpdateImpl implements StatusUpdate {
 
   private Status status;
   private Date updated = new Date();
-
+  private String statusDetails;
 
   public StatusUpdateImpl(Status status, Date updated) {
     this.status = status;
@@ -33,5 +33,15 @@ public class StatusUpdateImpl implements StatusUpdate {
   @Override
   public void setUpdated(Date updated) {
     this.updated = updated;
+  }
+
+  @Override
+  public String getStatusDetails() {
+    return this.statusDetails;
+  }
+
+  @Override
+  public void setStatusDetails(String details) {
+    this.statusDetails = details;
   }
 }

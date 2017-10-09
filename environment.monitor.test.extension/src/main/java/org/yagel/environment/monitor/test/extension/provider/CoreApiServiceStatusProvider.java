@@ -1,11 +1,9 @@
 package org.yagel.environment.monitor.test.extension.provider;
 
 
-import org.yagel.environment.monitor.test.util.StatusRandomizer;
 import org.yagel.monitor.EnvironmentConfig;
 import org.yagel.monitor.Resource;
 import org.yagel.monitor.resource.ResourceImpl;
-import org.yagel.monitor.resource.Status;
 
 public class CoreApiServiceStatusProvider extends AbstractResourceStatusProvider {
 
@@ -16,12 +14,6 @@ public class CoreApiServiceStatusProvider extends AbstractResourceStatusProvider
   @Override
   public String getName() {
     return null;
-  }
-
-  @Override
-  public Status reloadStatus() {
-
-    return StatusRandomizer.random();
   }
 
   @Override

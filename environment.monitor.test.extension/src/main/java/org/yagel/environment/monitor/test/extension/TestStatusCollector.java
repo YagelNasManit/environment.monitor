@@ -40,11 +40,15 @@ public class TestStatusCollector implements MonitorStatusCollector {
 
 
     for (AbstractResourceStatusProvider provider : providerList)
-      statusSet.add(new ResourceStatusImpl(provider.getResource(), provider.reloadStatus()));
+      statusSet.add(provider.reloadStatus());
 
 
     for (ResourceStatus status : statusSet) {
-      log.info("Environment: " + config.getEnvName() + " Status of resource: " + status.getResource().getId() + " is: " + status.getStatus());
+      log.info("Environment: " + config.getEnvName()
+          + " Status of resource: " + status.getResource().getId()
+          + " is: " + status.getStatus()
+          + " status detsils: "+ status.getStatusDetails()
+      );
     }
 
     return statusSet;

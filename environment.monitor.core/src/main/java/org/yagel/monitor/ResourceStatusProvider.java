@@ -1,13 +1,11 @@
 package org.yagel.monitor;
 
 
-import org.yagel.monitor.resource.Status;
-
 public interface ResourceStatusProvider {
 
-  String getName();
+  ResourceStatus reloadStatus();
 
-  Status reloadStatus();
+  String getName();
 
   Resource getResource();
 
