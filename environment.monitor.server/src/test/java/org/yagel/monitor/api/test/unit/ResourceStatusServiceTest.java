@@ -1,10 +1,14 @@
 package org.yagel.monitor.api.test.unit;
 
 
+import static org.hamcrest.Matchers.emptyArray;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,9 +41,11 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
   private ResourceStatusDetailDAO statusDetailDAO;
 
   private List<StatusUpdate> updateList;
+  private List<StatusUpdate> updateListDetailed;
   private int updatesCount = 100;
   private Date date = new Date();
   private Status status = Status.Online;
+  private String statusDetails = "Details";
 
   private String defaultStartDate = "2017-09-12T01:00:00.000Z";
   private String defaultEndDate = "2017-09-15T01:00:00.000Z";
@@ -50,6 +56,7 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
   public void configureMocks() {
 
     updateList = generateListN(updatesCount, () -> new StatusUpdateImpl(status, date));
+    updateListDetailed = generateListN(updatesCount, () -> new StatusUpdateImpl(status, date,statusDetails));
 
     given(
         statusDetailDAO.getStatusUpdatesShort(
@@ -61,6 +68,15 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
     ).willReturn(updateList);
 
     given(
+        statusDetailDAO.getStatusUpdatesDetailed(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.any(Date.class),
+            Mockito.any(Date.class)
+        )
+    ).willReturn(updateListDetailed);
+
+    given(
         statusDetailDAO.getStatusUpdatesShort(
             Mockito.eq("INVALID"),
             Mockito.anyString(),
@@ -77,6 +93,7 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
             Mockito.any(Date.class)
         )
     ).willReturn(new ArrayList<>());
+
   }
 
 
@@ -187,7 +204,53 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
         .andExpect(jsonPath("$[*]", hasSize(updateList.size())))
         .andExpect(jsonPath("$..status", everyItem(is(status.name()))))
         .andExpect(jsonPath("$..updated", everyItem(equalTo(date.getTime()))))
+        .andExpect(jsonPath("$..statusDetails", emptyIterable()))
         .andReturn();
   }
 
+
+  @Test
+  public void testGetResourceStatusWithDetailsSetToFalse() throws Exception {
+
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .get("/resource/status/Env/Resource")
+        .param("startDate", defaultStartDate)
+        .param("endDate", defaultEndDate)
+        .param("endDate", defaultEndDate)
+        .param("statusDetails", "false")
+
+        .accept(MediaType.APPLICATION_JSON);
+
+    this.mockMvc.perform(requestBuilder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[*]", hasSize(updateList.size())))
+        .andExpect(jsonPath("$..status", everyItem(is(status.name()))))
+        .andExpect(jsonPath("$..updated", everyItem(equalTo(date.getTime()))))
+        .andExpect(jsonPath("$..statusDetails", emptyIterable()))
+        .andReturn();
+  }
+
+  @Test
+  public void testGetResourceStatusWithDetailsSetToTrue() throws Exception {
+
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .get("/resource/status/Env/Resource")
+        .param("startDate", defaultStartDate)
+        .param("endDate", defaultEndDate)
+        .param("endDate", defaultEndDate)
+        .param("statusDetails", "true")
+
+        .accept(MediaType.APPLICATION_JSON);
+
+    this.mockMvc.perform(requestBuilder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[*]", hasSize(updateList.size())))
+        .andExpect(jsonPath("$..status", everyItem(is(status.name()))))
+        .andExpect(jsonPath("$..updated", everyItem(equalTo(date.getTime()))))
+        .andExpect(jsonPath("$..statusDetails", hasSize(updateList.size())))
+        .andExpect(jsonPath("$..statusDetails", everyItem(is(statusDetails))))
+        .andReturn();
+  }
 }
