@@ -26,7 +26,7 @@ public abstract class AbstractResourceStatusProvider implements ResourceStatusPr
     Status status = StatusRandomizer.random();
     return new ResourceStatusImpl(
         getResource(),
-        StatusRandomizer.random(),
+        status,
         date,
         "Status check for "+ getResource().getId()+" at date: "+ date+ " finalised with status: "+ status
     );
