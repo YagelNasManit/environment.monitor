@@ -1,13 +1,17 @@
-import {Component, ElementRef, Input, ViewChild} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
 import * as d3 from "d3";
 import {ResourceStatus} from "../../../shared/model/ResourceStatus";
 import {Status} from "../../../shared/model/Status";
+import {DateRange} from "../../../shared/model/DateRange";
 
 @Component({
   selector: "resource-timescale-chart",
   templateUrl: "./resource-timescale-chart.component.html"
 })
 export class ResourceTimescaleChartComponent {
+
+  @Output() onDetailsTimeRangeSelected = new EventEmitter<DateRange>();
+
   @ViewChild("containerBarChart") element: ElementRef;
 
   //private statuses: ResourceStatus[];
@@ -87,7 +91,7 @@ export class ResourceTimescaleChartComponent {
     this.svg = d3.select(this.element.nativeElement)
       .append("svg") // the overall space
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${this.width + this.margin.left + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`)
+      .attr("viewBox", `0 0 ${this.width + this.margin.left + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`);
     //.attr("width", this.width + this.margin.left + this.margin.right)
     //.attr("height", this.height + this.margin.top + this.margin.bottom);
 
@@ -98,7 +102,7 @@ export class ResourceTimescaleChartComponent {
 
     this.brushMain = d3.brushX()
       .extent([[0, 0], [this.width, this.height]])
-      .on("brush", this.brushedMain);
+      .on("end", this.brushedMain);
 
     // build charts
     this.buildMainChart(data);
@@ -242,10 +246,18 @@ export class ResourceTimescaleChartComponent {
   };
 
   private brushedMain = () => {
-    console.log("brushed");
+    if (!d3.event.sourceEvent) return; // Only transition after input.
+    if (!d3.event.selection) return; // Ignore empty selections.
+
     let selection = d3.event.selection;
-    console.log(this.x.invert(selection[0]) + " -" + this.x.invert(selection[1]))
-    // TODO having this dates we can query for exact statuses in future
+    console.log(`Changed selection on details chart: ${this.x.invert(selection[0])} - ${this.x.invert(selection[1])}`);
+
+    let startDate = this.x.invert(selection[0]);
+    let endDate = this.x.invert(selection[1]);
+
+    let daterange = new DateRange(startDate,endDate,null);
+
+    this.onDetailsTimeRangeSelected.emit(daterange);
   };
 
 

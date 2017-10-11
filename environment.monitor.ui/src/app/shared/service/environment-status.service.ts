@@ -79,11 +79,15 @@ export class EnvironmentStatusService {
       });
   }
 
-  getResourceStatuses(env: string, resourceId: string, startDate: Date, endDate: Date): Observable<ResourceStatus[]> {
+  public getResourceStatuses(env: string, resourceId: string, startDate: Date, endDate: Date): Observable<ResourceStatus[]> {
+    return this.getResourceStatusesDetailed(env,resourceId,startDate,endDate,false);
+  }
+
+  public getResourceStatusesDetailed(env: string, resourceId: string, startDate: Date, endDate: Date, details:boolean): Observable<ResourceStatus[]> {
     let start = moment(startDate).toISOString();
     let end = moment(endDate).toISOString();
 
-    return this.http.get(`${environment.apiBaseUrl}/resource/status/${env}/${resourceId}?startDate=${start}&endDate=${end}`)
+    return this.http.get(`${environment.apiBaseUrl}/resource/status/${env}/${resourceId}?startDate=${start}&endDate=${end}&statusDetails=${details}`)
       .map((resp: Response) => {
         return resp.json();
       })

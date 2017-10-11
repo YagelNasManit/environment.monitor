@@ -1,6 +1,9 @@
 <div *ngIf="statuses?.length >0">
   <status-legend></status-legend>
-  <resource-timescale-chart [statuses]="statuses"></resource-timescale-chart>
+  <resource-timescale-chart
+    [statuses]="statuses"
+    (onDetailsTimeRangeSelected)="onDetailsTimeRangeSelected($event)">
+  </resource-timescale-chart>
 </div>
 <div *ngIf="statuses?.length  === 0">
   <div class="text-center text-muted">

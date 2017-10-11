@@ -15,6 +15,12 @@ public class StatusUpdateImpl implements StatusUpdate {
     this.updated = updated;
   }
 
+  public StatusUpdateImpl(Status status, Date updated,String statusDetails) {
+    this.status = status;
+    this.updated = updated;
+    this.statusDetails = statusDetails;
+  }
+
   @Override
   public Status getStatus() {
     return status;

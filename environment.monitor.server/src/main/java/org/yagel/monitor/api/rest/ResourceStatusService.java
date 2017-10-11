@@ -27,9 +27,15 @@ public class ResourceStatusService extends AbstractService {
       @PathVariable("environmentName") String environmentName,
       @PathVariable(value = "resourceId") String resourceId,
       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
-      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate,
+      @RequestParam(value = "statusDetails", required = false, defaultValue = "false") boolean statusDetails
+  ) {
 
-    List<StatusUpdate> updateList = statusDetailDAO.getStatusUpdates(environmentName, resourceId, startDate, endDate);
+    List<StatusUpdate> updateList;
+    if (statusDetails)
+      updateList = statusDetailDAO.getStatusUpdatesDetailed(environmentName, resourceId, startDate, endDate);
+    else
+      updateList = statusDetailDAO.getStatusUpdatesShort(environmentName, resourceId, startDate, endDate);
 
     return ResponseEntity.ok(updateList);
 

@@ -70,11 +70,45 @@
   </div>
 
   <div class="row">
+  <div class="col-lg-12">
+
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">Resource Status Details Over Time </h3>
+        <div class="box-tools pull-right">
+          <!-- Buttons, labels, and many other things can be placed here! -->
+          <!-- Here is a label for example -->
+          <button class="btn btn-box-tool" data-widget="collapse" type="button">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+        <!-- /.box-tools -->
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+
+
+        <div *ngIf="statusTimerange">
+          <resource-timescale-details-panel
+            [statusTimerange]="statusTimerange"
+            (onDetailsStatusTimerangeChanged)="onDetailsStatusTimerangeChanged($event)">
+          </resource-timescale-details-panel>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+    </div>
+  </div>
+
+</div>
+
+  <div class="row">
     <div class="col-lg-12">
 
       <div class="box">
         <div class="box-header with-border">
-          <h3 class="box-title">Resource Status Details Over Time </h3>
+          <h3 class="box-title">Resource Check Results </h3>
           <div class="box-tools pull-right">
             <!-- Buttons, labels, and many other things can be placed here! -->
             <!-- Here is a label for example -->
@@ -88,9 +122,12 @@
         <div class="box-body">
 
 
-          <div *ngIf="statusTimerange">
+          <resource-timescale-details-timeline [detailsStatusTimerange]="detailsStatusTimerange">
+
+          </resource-timescale-details-timeline>
+       <!--   <div *ngIf="statusTimerange">
             <resource-timescale-details-panel [statusTimerange]="statusTimerange"></resource-timescale-details-panel>
-          </div>
+          </div>-->
           <!-- /.box-body -->
         </div>
         <!-- /.box -->

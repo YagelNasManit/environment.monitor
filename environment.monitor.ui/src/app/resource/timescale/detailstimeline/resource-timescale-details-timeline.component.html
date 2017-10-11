@@ -1,0 +1,91 @@
+<div *ngIf="statuses && statuses.length >0">
+
+<!--<div>
+  <dl class="dl-horizontal">
+    <dt>Environment</dt>
+    <dd>{{viewRange.environment.environmentName}}</dd>
+    <dt>Resource</dt>
+    <dd>{{viewRange.resource.name}}</dd>
+    <dt>Time Frame</dt>
+    <dd>{{viewRange.daterange.start| date:'EEEE, MMMM  dd, yyyy'}} - {{viewRange.daterange.end | date:'EEEE, MMMM  dd, yyyy'}}</dd>
+  </dl>
+</div>-->
+
+<ul class="timeline">
+
+  <span *ngFor="let status of statuses">
+    <!-- timeline time label -->
+    <li class="time-label">
+          <span class="bg-gray">{{status.date | date:'EEEE, MMMM  dd, yyyy'}}</span>
+    </li>
+    <!-- /.timeline-label -->
+
+
+    <!-- timeline item -->
+    <li *ngFor="let check of status.statuses">
+
+
+        <span [ngSwitch]="check.status">
+            <!--Online-->
+           <span *ngSwitchCase="0">
+                <i class="fa fa-check bg-green status-icon"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i>{{check.updated | date:'HH:mm:ss'}} </span>
+                  <h3 class="timeline-header"><a href="#" class="text-green">Online</a></h3>
+                  <div class="timeline-body">{{check.statusDetails}}</div>
+                </div>
+           </span>
+          <!--BorderLine-->
+          <span *ngSwitchCase="1">
+                <i class="fa fa-check bg-yellow status-icon"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i>{{check.updated | date:'HH:mm:ss'}} </span>
+                  <h3 class="timeline-header"><a href="#" class="text-yellow">Border Line</a></h3>
+                  <div class="timeline-body">{{check.statusDetails}}</div>
+                </div>
+           </span>
+          <!--Unavailable-->
+          <span *ngSwitchCase="2">
+                <i class="fa fa-minus bg-red status-icon"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i>{{check.updated | date:'HH:mm:ss'}} </span>
+                  <h3 class="timeline-header"><a href="#" class="text-red">Unavailable</a></h3>
+                  <div class="timeline-body">{{check.statusDetails}}</div>
+                </div>
+           </span>
+          <!--Unknown-->
+          <span *ngSwitchCase="3">
+                <i class="fa fa-minus bg-gray status-icon"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i>{{check.updated | date:'HH:mm:ss'}} </span>
+                  <h3 class="timeline-header"><a href="#" class="text-gray">Unknown</a></h3>
+                  <div class="timeline-body">{{check.statusDetails}}</div>
+                </div>
+           </span>
+        </span>
+    </li>
+    </span>
+
+  <!-- /.timeline item-->
+
+  <li class="time-label">
+    <i class="fa fa-clock-o bg-gray"></i>
+  </li>
+
+</ul>
+
+</div>
+
+<div *ngIf="! statuses">
+  <div class="text-center text-muted">
+    <div><i class="fa   fa-calendar-o fa-5x align-middle"></i></div>
+    <div><h3>Select Time Frame On Details Chart To View Resource Timeline</h3></div>
+  </div>
+</div>
+
+<div *ngIf="statuses.length === 0">
+  <div class="text-center text-muted">
+    <div><i class="fa   fa-calendar-o fa-5x align-middle"></i></div>
+    <div><h3>No Data For Selected Period</h3></div>
+  </div>
+</div>

@@ -45,6 +45,7 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
 
   /**
    * Inserts multiple resource statuses into corresponding month collection
+   *
    * @param environmentName
    * @param resourcesStatus
    */
@@ -73,15 +74,25 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
 
   }
 
+  public List<StatusUpdate> getStatusUpdatesDetailed(String environmentName, String resourceId, Date from, Date to) {
+    return getStatusUpdates(environmentName, resourceId, from, to, true);
+  }
+
+  public List<StatusUpdate> getStatusUpdatesShort(String environmentName, String resourceId, Date from, Date to) {
+    return getStatusUpdates(environmentName, resourceId, from, to, false);
+  }
+
   /**
    * Fetch time scale statuses for particular resource
+   *
    * @param environmentName environment that resource belongs to
-   * @param resourceId resource id to fetch statuses
-   * @param from start date for statuses fetching
-   * @param to end date for statuses fetching
+   * @param resourceId      resource id to fetch statuses
+   * @param from            start date for statuses fetching
+   * @param to              end date for statuses fetching
    * @return
    */
-  public List<StatusUpdate> getStatusUpdates(String environmentName, String resourceId, Date from, Date to) {
+  private List<StatusUpdate> getStatusUpdates(String environmentName, String resourceId, Date from, Date to,
+      boolean fetchStatusDetails) {
     List<Date[]> dateFrames = DataUtils.splitDatesIntoMonths(from, to);
     List<StatusUpdate> updates = new ArrayList<>();
 
@@ -95,7 +106,15 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
           lte("updated", dates[1])
       );
 
-      Bson project = fields(include("updated", "statusOrdinal"), excludeId());
+
+      List<String> fieldsToInclude = new ArrayList<>();
+      fieldsToInclude.add("updated");
+      fieldsToInclude.add("statusOrdinal");
+
+      if (fetchStatusDetails)
+        fieldsToInclude.add("statusDetails");
+
+      Bson project = fields(include(fieldsToInclude), excludeId());
 
       List<StatusUpdate> monthlyUpdates = this.thisCollection
           .find(filter)
@@ -103,7 +122,8 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
           .map(
               doc -> new StatusUpdateImpl(
                   Status.fromSerialNumber(doc.getInteger("statusOrdinal")),
-                  doc.getDate("updated")
+                  doc.getDate("updated"),
+                  doc.getString("statusDetails")
               )
           )
           .into(new ArrayList<>());
@@ -113,4 +133,6 @@ public class ResourceStatusDetailDAO extends AbstractTimeRangeDAO {
     return updates;
 
   }
+
+
 }

@@ -1,7 +1,8 @@
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {EnvironmentStatusService} from "../../../shared/service/environment-status.service";
 import {StatusTimeRange} from "../../../shared/model/StatusTimeRange";
 import {ResourceStatus} from "../../../shared/model/ResourceStatus";
+import {DateRange} from "../../../shared/model/DateRange";
 
 @Component({
   moduleId: module.id,
@@ -12,6 +13,8 @@ import {ResourceStatus} from "../../../shared/model/ResourceStatus";
 export class ResourceTimescaleDetailsPanel {
 
   private statuses: ResourceStatus[];
+
+  @Output() onDetailsStatusTimerangeChanged = new EventEmitter<DateRange>();
 
   constructor(public statusService: EnvironmentStatusService) {
   }
@@ -29,6 +32,11 @@ export class ResourceTimescaleDetailsPanel {
         this.statuses = statuses;
         console.log("statuses arrived");
       });
+  }
+
+  onDetailsTimeRangeSelected(dateRange: DateRange){
+    // propagating value to dashboard
+    this.onDetailsStatusTimerangeChanged.emit(dateRange);
   }
 
 }

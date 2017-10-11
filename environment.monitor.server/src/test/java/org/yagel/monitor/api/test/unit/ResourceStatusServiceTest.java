@@ -52,7 +52,7 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
     updateList = generateListN(updatesCount, () -> new StatusUpdateImpl(status, date));
 
     given(
-        statusDetailDAO.getStatusUpdates(
+        statusDetailDAO.getStatusUpdatesShort(
             Mockito.anyString(),
             Mockito.anyString(),
             Mockito.any(Date.class),
@@ -61,7 +61,7 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
     ).willReturn(updateList);
 
     given(
-        statusDetailDAO.getStatusUpdates(
+        statusDetailDAO.getStatusUpdatesShort(
             Mockito.eq("INVALID"),
             Mockito.anyString(),
             Mockito.any(Date.class),
@@ -70,7 +70,7 @@ public class ResourceStatusServiceTest extends AbstractControllerTest {
     ).willReturn(new ArrayList<>());
 
     given(
-        statusDetailDAO.getStatusUpdates(
+        statusDetailDAO.getStatusUpdatesShort(
             Mockito.anyString(),
             Mockito.eq("INVALID"),
             Mockito.any(Date.class),

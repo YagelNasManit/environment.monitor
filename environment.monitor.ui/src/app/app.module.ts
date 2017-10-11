@@ -25,6 +25,7 @@ import {ResourceTimescaleChartComponent} from "./resource/timescale/chart/resour
 import {EnvironmentTimescaleAggregatedPanelComponent} from "./environment/timescale/aggregatedpanel/env-timescale-aggregated-panel.component";
 import {StatusLegendComponent} from "./shared/components/statuslegend/status-legend.component";
 import {ResourceTimescaleDetailsPanel} from "./resource/timescale/detailspanel/resource-timescale-details-panel.component";
+import {ResourceTimescaleDetailsTimeline} from "./resource/timescale/detailstimeline/resource-timescale-details-timeline.component";
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import {ResourceTimescaleDetailsPanel} from "./resource/timescale/detailspanel/r
     ResourceTimescaleDashboardComponent,
     ResourceTimescaleTableComponent,
     ResourceTimescaleChartComponent,
+    ResourceTimescaleDetailsTimeline,
 
     //shared
     StatusTimeRangePicker,
