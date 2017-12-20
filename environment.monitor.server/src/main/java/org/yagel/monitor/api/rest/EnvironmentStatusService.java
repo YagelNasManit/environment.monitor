@@ -93,9 +93,13 @@ public class EnvironmentStatusService extends AbstractService {
             .stream()
             .map(r -> r.getStatus().getSeriaNumber())
             .collect(Collectors.toList());
+
     return statusesIds.stream().allMatch(e -> e == Status.Unknown.getSeriaNumber()) ?
             Status.Unknown :
-            Status.fromSerialNumber(statusesIds.stream().filter(e -> e != Status.Unknown.getSeriaNumber()).max(Integer::compare).get());
+            Status.fromSerialNumber(
+                statusesIds.stream().filter(
+                    e -> e != Status.Unknown.getSeriaNumber()).max(Integer::compare).orElse(Status.Unknown.getSeriaNumber())
+            );
 
   }
 }
