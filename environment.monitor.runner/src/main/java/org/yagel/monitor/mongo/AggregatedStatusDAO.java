@@ -33,23 +33,6 @@ public class AggregatedStatusDAO extends AbstractTimeRangeDAO {
     super(connect);
   }
 
-
-  @Deprecated
-  public synchronized long getStatusCount(String environmentName, String resourceId, Status status, Date from, Date to) {
-    // todo consider month switch during data extraction, if will be used
-    switchCollection(from);
-
-    return thisCollection.count(and(
-        eq("statusOrdinal", status.getSeriaNumber()),
-        eq("resource.resourceId", resourceId),
-        eq("environmentName", environmentName),
-        gte("updated", from),
-        lte("updated", to)));
-
-
-  }
-
-
   /**
    * Extracts aggregated statuses for environment resources over time
    *

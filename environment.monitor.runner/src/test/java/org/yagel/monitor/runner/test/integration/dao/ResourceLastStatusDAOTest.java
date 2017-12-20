@@ -6,8 +6,11 @@ import org.testng.annotations.Test;
 import org.yagel.monitor.ResourceStatus;
 import org.yagel.monitor.mongo.ResourceLastStatusDAO;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ResourceLastStatusDAOTest extends AbstractDAOTest {
@@ -42,6 +45,28 @@ public class ResourceLastStatusDAOTest extends AbstractDAOTest {
 
     Assert.assertEquals(dbStatusList.size(), statusList.size());
     Assert.assertEquals(statusList, dbStatusList);
+
+
+  }
+
+  @Test(dependsOnMethods = "testInsertFindMultipleWithIds")
+  public void testInsertFindMultipleEnvironments() throws Exception {
+
+    int envCount = 3;
+
+    List<ResourceStatus> statusList = new ArrayList<>();
+    Set<String> envSet = new HashSet<>(generateN(envCount,() -> UUID.randomUUID().toString()));
+
+    for(String env:envSet) {
+      List<ResourceStatus> envStatusList = generateN(resourcesCount, this::rndResStatus);
+      statusList.addAll(envStatusList);
+      lastStatusDAO.insert(env, envStatusList);
+    }
+
+    List<ResourceStatus> resources = lastStatusDAO.find(envSet);
+
+    Assert.assertEquals(resources.size(), resourcesCount*envCount);
+    Assert.assertTrue(resources.containsAll(statusList));
 
 
   }

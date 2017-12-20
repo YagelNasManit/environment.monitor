@@ -57,26 +57,6 @@ public class AggregatedStatusDAOTest extends AbstractDAOTest {
   }
 
 
-  @Deprecated
-  @Test(enabled = false)
-  public void testResourceMonthDetailDAOCount() throws Exception {
-    String environemntName = environemntNames[0];
-
-    long statusOnlineCount = aggregatedStatusDAO.getStatusCount(environemntName, resource.getId(), Status.Online, startDate, endDate);
-    Assert.assertTrue(statusOnlineCount > 0);
-    Assert.assertEquals(statusOnlineCount, 100);
-
-    long statusUnavailableCount = aggregatedStatusDAO.getStatusCount(environemntName, resource.getId(), Status.Unavailable, startDate, endDate);
-    Assert.assertTrue(statusUnavailableCount > 0);
-    Assert.assertEquals(statusUnavailableCount, 100);
-
-    long statusUnknownCount = aggregatedStatusDAO.getStatusCount(environemntName, resource.getId(), Status.Unknown, startDate, endDate);
-    Assert.assertTrue(statusUnknownCount > 0);
-    Assert.assertEquals(statusUnknownCount, 100);
-
-  }
-
-
   @Test
   public void testResourceMonthDetailDAOGetAggregatedStatuses() throws Exception {
 
