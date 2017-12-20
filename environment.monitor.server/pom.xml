@@ -28,6 +28,17 @@
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <configuration>
+                        <includes>org.yagel.monitor.api.test.sanity.**</includes>
+                    </configuration>
+                </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -76,7 +87,35 @@
 
 
     <build>
+        <!--TODO consider move into parent pom?-->
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org.yagel.monitor.api.test.integration.**</exclude>
+                        <exclude>org.yagel.monitor.api.test.sanity.**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>org.yagel.monitor.api.test.integration.**</include>
+                    </includes>
+                    <systemProperties>
+                        <property>
+                            <name>plugin.jar.location</name>
+                            <value>
+                                ${root.dir}/environment.monitor.test.extension/target/environment.monitor.test.extension-${project.version}.jar
+                            </value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
